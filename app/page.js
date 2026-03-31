@@ -29,43 +29,41 @@ export default async function Home() {
         body { background: #0f0f0d; }
         .nav { display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem; border-bottom: 0.5px solid #2a2a26; }
         .logo { font-family: 'Playfair Display', serif; font-size: 22px; color: #e8e4dc; text-decoration: none; }
-        .nav-links { display: flex; gap: 1.5rem; font-size: 13px; color: #6b6b60; }
-        .nav-signup { color: #c9a96e; cursor: pointer; }
+        .nav-links { display: flex; gap: 1.5rem; font-size: 13px; color: #8a8a80; }
         .hero { padding: 3rem 2rem 2rem; }
         .eyebrow { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 2px; color: #c9a96e; text-transform: uppercase; margin-bottom: 0.75rem; }
         .headline { font-family: 'Playfair Display', serif; font-size: 48px; line-height: 1.1; color: #e8e4dc; margin-bottom: 1rem; }
-        .sub { font-size: 15px; color: #6b6b60; line-height: 1.6; max-width: 500px; }
+        .sub { font-size: 15px; color: #8a8a80; line-height: 1.6; max-width: 500px; }
         .search-wrap { padding: 1.5rem 2rem; }
         .search-box { background: #1a1a16; border: 0.5px solid #2a2a26; border-radius: 8px; padding: 0.75rem 1rem; display: flex; gap: 1rem; align-items: center; max-width: 700px; }
         .search-box input { background: none; border: none; color: #e8e4dc; font-family: 'DM Sans', sans-serif; font-size: 14px; outline: none; flex: 1; }
-        .search-box input::placeholder { color: #444440; }
+        .search-box input::placeholder { color: #6b6b60; }
         .filters { display: flex; gap: 0.5rem; padding: 0 2rem 1.5rem; flex-wrap: wrap; }
         .filter-btn { font-size: 12px; padding: 5px 14px; border-radius: 20px; border: 0.5px solid #2a2a26; color: #6b6b60; background: transparent; cursor: pointer; font-family: 'DM Sans', sans-serif; }
         .filter-btn.active { border-color: #c9a96e; color: #c9a96e; }
-        .section-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 2px; color: #444440; text-transform: uppercase; padding: 0 2rem 1rem; }
+        .section-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 2px; color: #a8a49c; text-transform: uppercase; padding: 0 2rem 1rem; }
         .restaurant-list { padding: 0 2rem; }
         .card { background: #1a1a16; border: 0.5px solid #2a2a26; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.5rem; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 1rem; text-decoration: none; color: inherit; transition: border-color 0.15s; }
         .card:hover { border-color: #3a3a32; }
         .restaurant-name { font-size: 15px; font-weight: 500; color: #e8e4dc; margin-bottom: 3px; }
-        .restaurant-meta { font-size: 12px; color: #6b6b60; }
+        .restaurant-meta { font-size: 12px; color: #8a8a80; }
         .card-right { text-align: right; }
         .release-time { font-family: 'DM Mono', monospace; font-size: 13px; color: #c9a96e; }
-        .days-out { font-size: 11px; color: #444440; margin-top: 2px; }
+        .days-out { font-size: 11px; color: #a8a49c; margin-top: 2px; }
         .badge { display: inline-block; font-size: 10px; padding: 2px 7px; border-radius: 4px; margin-left: 6px; font-family: 'DM Mono', monospace; }
         .badge-vh { background: #2a0f0f; color: #c96e6e; }
         .badge-h { background: #2a1f0f; color: #c9a96e; }
         .badge-m { background: #1a1a16; color: #6b6b60; border: 0.5px solid #2a2a26; }
-        .upsell { margin: 2rem; background: #1a1a16; border: 0.5px solid #2a2a26; border-left: 2px solid #c9a96e; border-radius: 8px; padding: 1rem 1.25rem; font-size: 13px; color: #6b6b60; display: flex; justify-content: space-between; align-items: center; flex-wrap: gap; }
-        .upsell-cta { color: #c9a96e; cursor: pointer; font-weight: 500; white-space: nowrap; margin-left: 1rem; }
-        .closed-badge { display: inline-block; font-size: 10px; padding: 2px 7px; border-radius: 4px; margin-left: 6px; background: #1a1a16; color: #444440; border: 0.5px solid #2a2a26; font-family: 'DM Mono', monospace; }
+        .upsell { margin: 2rem; background: #1a1a16; border: 0.5px solid #2a2a26; border-left: 2px solid #c9a96e; border-radius: 8px; padding: 1rem 1.25rem; font-size: 13px; color: #8a8a80; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+        .upsell-cta { color: #c9a96e; font-weight: 500; white-space: nowrap; text-decoration: none; }
+        .closed-badge { display: inline-block; font-size: 10px; padding: 2px 7px; border-radius: 4px; margin-left: 6px; background: #1a1a16; color: #6b6b60; border: 0.5px solid #2a2a26; font-family: 'DM Mono', monospace; }
       `}</style>
 
       <nav className="nav">
         <Link href="/" className="logo">Scoopd</Link>
         <div className="nav-links">
-          <span>Directory</span>
-          <span>How it works</span>
-          <span className="nav-signup">Sign up</span>
+          <Link href="/how-it-works" style={{color:'#8a8a80', textDecoration:'none'}}>How it works</Link>
+          <Link href="/signup" style={{color:'#c9a96e', textDecoration:'none'}}>Sign up</Link>
         </div>
       </nav>
 
@@ -77,7 +75,7 @@ export default async function Home() {
 
       <div className="search-wrap">
         <div className="search-box">
-          <span style={{color: '#444440', fontSize: '16px'}}>⌕</span>
+          <span style={{color: '#6b6b60', fontSize: '16px'}}>⌕</span>
           <input placeholder="Search restaurants, neighborhoods, cuisine..." id="search-input" />
         </div>
       </div>
@@ -123,7 +121,7 @@ export default async function Home() {
 
       <div className="upsell">
         <span>* Release windows vary by platform — we do the math for you.</span>
-        <span className="upsell-cta">Unlock exact drop dates →</span>
+        <Link href="/signup" className="upsell-cta">Unlock exact drop dates →</Link>
       </div>
 
       <script dangerouslySetInnerHTML={{__html: `
