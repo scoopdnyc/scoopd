@@ -1,0 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Mono:wght@300;400&family=DM+Sans:wght@300;400;500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}body{background:#0f0f0d}
+.nav{display:flex;justify-content:space-between;align-items:center;padding:1.25rem 2rem;border-bottom:0.5px solid #2a2a26}
+.logo{font-family:'Playfair Display',serif;font-size:22px;color:#e8e4dc;text-decoration:none}
+.hero{padding:3rem 2rem 2rem;border-bottom:0.5px solid #2a2a26;max-width:780px}
+.eyebrow{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;color:#c9a96e;text-transform:uppercase;margin-bottom:0.75rem}
+.headline{font-family:'Playfair Display',serif;font-size:42px;line-height:1.1;color:#e8e4dc;margin-bottom:1rem}
+.hero-sub{font-size:16px;color:#8a8a80;line-height:1.7}
+.content{max-width:780px;padding:0 2rem 4rem}
+.section{padding:2.5rem 0;border-bottom:0.5px solid #2a2a26}
+.section:last-of-type{border-bottom:none}
+.section-num{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;color:#c9a96e;text-transform:uppercase;margin-bottom:0.5rem}
+.section-title{font-family:'Playfair Display',serif;font-size:26px;color:#e8e4dc;margin-bottom:1rem;line-height:1.2}
+.section-body{font-size:15px;color:#8a8a80;line-height:1.8}
+.section-body p{margin-bottom:1.1rem}
+.section-body p:last-child{margin-bottom:0}
+.highlight{background:#1a1a16;border:0.5px solid #2a2a26;border-left:2px solid #c9a96e;border-radius:8px;padding:1rem 1.25rem;margin:1.5rem 0;font-size:14px;color:#a8a49c;line-height:1.7}
+.platform-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin:1.5rem 0}
+.platform-card{background:#1a1a16;border:0.5px solid #2a2a26;border-radius:8px;padding:1.25rem}
+.platform-name{font-family:'DM Mono',monospace;font-size:12px;color:#c9a96e;margin-bottom:0.5rem;letter-spacing:1px}
+.platform-desc{font-size:13px;color:#8a8a80;line-height:1.6}
+.tip-list{list-style:none;margin:1rem 0}
+.tip-list li{font-size:14px;color:#8a8a80;padding:0.6rem 0;padding-left:1.25rem;position:relative;line-height:1.6;border-bottom:0.5px solid #1a1a16}
+.tip-list li:before{content:'';position:absolute;left:0;top:14px;width:5px;height:5px;border-radius:50%;background:#c9a96e}
+.cta-block{background:#1a1a16;border:0.5px solid #2a2a26;border-radius:8px;padding:2rem;margin-top:2.5rem;text-align:center}
+.cta-title{font-family:'Playfair Display',serif;font-size:24px;color:#e8e4dc;margin-bottom:0.75rem}
+.cta-sub{font-size:14px;color:#8a8a80;margin-bottom:1.5rem;line-height:1.6}
+.cta-btn{display:inline-block;background:#c9a96e;color:#0f0f0d;padding:0.75rem 2rem;border-radius:6px;font-size:14px;font-weight:500;text-decoration:none;font-family:'DM Sans',sans-serif}
+@media(max-width:600px){.platform-grid{grid-template-columns:1fr}}
