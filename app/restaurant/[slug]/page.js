@@ -36,32 +36,32 @@ export default async function RestaurantPage({ params }) {
   const diffColor = r.difficulty === 'Very Hard' ? '#c96e6e' : r.difficulty === 'Hard' ? '#c9a96e' : '#8a8a80'
 
   return (
-    <main style={{background:'#0f0f0d',minHeight:'100vh',color:'#e8e4dc',fontFamily:"'DM Sans', sans-serif"}}>
-      <nav className="nav">
-        <Link href="/" className="logo">Scoopd</Link>
-        <div className="nav-links">
+    <main style={{background:'#0f0f0d',minHeight:'100vh',color:'#e8e4dc',fontFamily:"var(--font-dm-sans), sans-serif"}}>
+      <nav className="rp-nav">
+        <Link href="/" className="rp-logo">Scoopd</Link>
+        <div className="rp-nav-links">
           <Link href="/how-it-works" style={{color:'#8a8a80',textDecoration:'none'}}>How it works</Link>
-          <Link href="/signup" className="nav-signup">Sign up</Link>
+          <Link href="/signup" className="rp-nav-signup">Sign up</Link>
         </div>
       </nav>
-      <Link href="/" className="back">← Back to directory</Link>
-      <div className="hero">
-        <div className="eyebrow">{r.neighborhood} · {r.cuisine}</div>
-        <h1 className="restaurant-name">{r.restaurant}</h1>
-        <div className="restaurant-meta">{r.platform}{r.michelin_stars && r.michelin_stars !== '—' ? ` · ${r.michelin_stars}` : ''}{r.price_tier ? ` · ${r.price_tier}` : ''}</div>
+      <Link href="/" className="rp-back">← Back to directory</Link>
+      <div className="rp-hero">
+        <div className="rp-eyebrow">{r.neighborhood} · {r.cuisine}</div>
+        <h1 className="rp-restaurant-name">{r.restaurant}</h1>
+        <div className="rp-restaurant-meta">{r.platform}{r.michelin_stars && r.michelin_stars !== '—' ? ` · ${r.michelin_stars}` : ''}{r.price_tier ? ` · ${r.price_tier}` : ''}</div>
       </div>
-      {isClosed && <div className="closed-notice">This restaurant is permanently closed.</div>}
-      {isWalkin && <div className="walkin-notice">Walk-in only — no reservations accepted. Arrive early.</div>}
+      {isClosed && <div className="rp-closed-notice">This restaurant is permanently closed.</div>}
+      {isWalkin && <div className="rp-walkin-notice">Walk-in only — no reservations accepted. Arrive early.</div>}
       {!isClosed && <>
-        <div className="content">
-          <div className="info-card"><div className="info-label">Release Time</div><div className={`info-value ${r.release_time ? 'mono' : 'na'}`}>{r.release_time || (isWalkin ? 'Walk-in only' : isPhone ? 'Phone only' : 'TBD')}</div></div>
-          <div className="info-card"><div className="info-label">Days Out</div><div className={`info-value ${r.stated_days_out ? 'mono' : 'na'}`}>{r.stated_days_out ? `${r.stated_days_out} days*` : (isWalkin ? '—' : 'TBD')}</div></div>
-          <div className="info-card"><div className="info-label">Platform</div><div className="info-value">{r.platform || '—'}</div></div>
-          <div className="info-card"><div className="info-label">Difficulty</div><div className="info-value" style={{color:diffColor}}>{r.difficulty || '—'}</div></div>
-          {r.seat_count && <div className="info-card"><div className="info-label">Seats</div><div className="info-value">{r.seat_count}</div></div>}
-          <div className="info-card"><div className="info-label">Confidence</div><div className="info-value" style={{fontSize:'13px'}}>{r.confidence || '—'}</div></div>
+        <div className="rp-content">
+          <div className="rp-info-card"><div className="rp-info-label">Release Time</div><div className={`rp-info-value ${r.release_time ? 'mono' : 'na'}`}>{r.release_time || (isWalkin ? 'Walk-in only' : isPhone ? 'Phone only' : 'TBD')}</div></div>
+          <div className="rp-info-card"><div className="rp-info-label">Days Out</div><div className={`rp-info-value ${r.stated_days_out ? 'mono' : 'na'}`}>{r.stated_days_out ? `${r.stated_days_out} days*` : (isWalkin ? '—' : 'TBD')}</div></div>
+          <div className="rp-info-card"><div className="rp-info-label">Platform</div><div className="rp-info-value">{r.platform || '—'}</div></div>
+          <div className="rp-info-card"><div className="rp-info-label">Difficulty</div><div className="rp-info-value" style={{color:diffColor}}>{r.difficulty || '—'}</div></div>
+          {r.seat_count && <div className="rp-info-card"><div className="rp-info-label">Seats</div><div className="rp-info-value">{r.seat_count}</div></div>}
+          <div className="rp-info-card"><div className="rp-info-label">Confidence</div><div className="rp-info-value" style={{fontSize:'13px'}}>{r.confidence || '—'}</div></div>
         </div>
-        <div className="upsell"><span>* Release windows vary by platform — we do the math for you.</span><Link href="/signup" className="upsell-cta">Unlock exact drop dates →</Link></div>
+        <div className="rp-upsell"><span>* Release windows vary by platform — we do the math for you.</span><Link href="/signup" className="rp-upsell-cta">Unlock exact drop dates →</Link></div>
       </>}
     </main>
   )
