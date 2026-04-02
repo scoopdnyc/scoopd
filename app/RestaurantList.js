@@ -3,6 +3,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 
 const FILTERS = ['All', 'West Village', 'Williamsburg', 'Lower East Side', 'Omakase', 'Italian']
+const BADGE_DIFFICULTIES = ['Extremely Hard', 'Very Hard', 'Hard', 'Medium', 'Easy']
 
 export default function RestaurantList({ restaurants }) {
   const [query, setQuery] = useState('')
@@ -53,8 +54,11 @@ export default function RestaurantList({ restaurants }) {
           const badgeClass = r.difficulty === 'Extremely Hard' ? 'badge badge-eh'
             : r.difficulty === 'Very Hard' ? 'badge badge-vh'
             : r.difficulty === 'Hard' ? 'badge badge-h'
-            : 'badge badge-m'
+            : r.difficulty === 'Medium' ? 'badge badge-m'
+            : r.difficulty === 'Easy' ? 'badge badge-e'
+            : null
           const isClosed = r.platform === 'CLOSED'
+          const showBadge = !isClosed && badgeClass !== null
           return (
             <Link key={r.id} href={`/restaurant/${r.slug}`} className="card">
               <div>
@@ -62,7 +66,7 @@ export default function RestaurantList({ restaurants }) {
                   {r.restaurant}
                   {isClosed
                     ? <span className="closed-badge">Closed</span>
-                    : r.difficulty && <span className={badgeClass}>{r.difficulty}</span>
+                    : showBadge && <span className={badgeClass}>{r.difficulty}</span>
                   }
                 </div>
                 <div className="restaurant-meta">

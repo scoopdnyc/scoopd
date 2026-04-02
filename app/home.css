@@ -21,11 +21,11 @@
 .release-time{font-family:var(--font-dm-mono),monospace;font-size:13px;color:#c9a96e}
 .days-out{font-size:11px;color:#a8a49c;margin-top:2px}
 .badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:4px;margin-left:6px;font-family:var(--font-dm-mono),monospace}
-/* Extremely Hard — purple (switch to crimson: background:#2a0505;color:#e03030) */
 .badge-eh{background:#1a0a2e;color:#a855f7}
 .badge-vh{background:#2a0f0f;color:#c96e6e}
-.badge-h{background:#2a1f0f;color:#c9a96e}
-.badge-m{background:#1a1a16;color:#6b6b60;border:0.5px solid #2a2a26}
+.badge-h{background:#2a1a05;color:#e38f09}
+.badge-m{background:#1a160a;color:#c9b882;border:0.5px solid #2a220f}
+.badge-e{background:#0f1a16;color:#6ec9a0;border:0.5px solid #1f3a2a}
 .upsell{margin:2rem;background:#1a1a16;border:0.5px solid #2a2a26;border-left:2px solid #c9a96e;border-radius:8px;padding:1rem 1.25rem;font-size:13px;color:#8a8a80;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem}
 .upsell-cta{color:#c9a96e;font-weight:500;white-space:nowrap;text-decoration:none}
 .closed-badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:4px;margin-left:6px;background:#1a1a16;color:#6b6b60;border:0.5px solid #2a2a26;font-family:var(--font-dm-mono),monospace}
