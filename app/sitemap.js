@@ -1,9 +1,9 @@
-import { supabase } from './lib/supabase'
+import { supabase } from '../lib/supabase'
 
 export default async function sitemap() {
   const { data: restaurants } = await supabase
     .from('restaurants')
-    .select('slug, last_verified')
+    .select('slug')
 
   const restaurantPages = (restaurants || [])
     .filter(r => r.slug)
