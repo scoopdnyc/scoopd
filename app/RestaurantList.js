@@ -1,5 +1,4 @@
 'use client'
-
 import { useState } from 'react'
 import Link from 'next/link'
 
@@ -51,7 +50,10 @@ export default function RestaurantList({ restaurants }) {
           <div className="no-results">No restaurants found.</div>
         )}
         {filtered.map(r => {
-          const badgeClass = r.difficulty === 'Very Hard' ? 'badge badge-vh' : r.difficulty === 'Hard' ? 'badge badge-h' : 'badge badge-m'
+          const badgeClass = r.difficulty === 'Extremely Hard' ? 'badge badge-eh'
+            : r.difficulty === 'Very Hard' ? 'badge badge-vh'
+            : r.difficulty === 'Hard' ? 'badge badge-h'
+            : 'badge badge-m'
           const isClosed = r.platform === 'CLOSED'
           return (
             <Link key={r.id} href={`/restaurant/${r.slug}`} className="card">

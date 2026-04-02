@@ -8,7 +8,7 @@ export const revalidate = 3600
 async function getRestaurant(slug) {
   const { data, error } = await supabase
     .from('restaurants')
-    .select('restaurant, neighborhood, platform, cuisine, release_time, stated_days_out, seat_count, michelin_stars, beli_score, price_tier, difficulty, confidence, slug')
+    .select('restaurant, neighborhood, platform, cuisine, release_time, stated_days_out, seat_count, michelin_stars, price_tier, difficulty, slug')
     .eq('slug', slug)
     .single()
   if (error || !data) return null
@@ -58,8 +58,7 @@ export default async function RestaurantPage({ params }) {
           <div className="rp-info-card"><div className="rp-info-label">Days Out</div><div className={`rp-info-value ${r.stated_days_out ? 'mono' : 'na'}`}>{r.stated_days_out ? `${r.stated_days_out} days*` : (isWalkin ? '—' : 'TBD')}</div></div>
           <div className="rp-info-card"><div className="rp-info-label">Platform</div><div className="rp-info-value">{r.platform || '—'}</div></div>
           <div className="rp-info-card"><div className="rp-info-label">Difficulty</div><div className="rp-info-value" style={{color:diffColor}}>{r.difficulty || '—'}</div></div>
-          {r.seat_count && <div className="rp-info-card"><div className="rp-info-label">Seats</div><div className="rp-info-value">{r.seat_count}</div></div>}
-          <div className="rp-info-card"><div className="rp-info-label">Confidence</div><div className="rp-info-value" style={{fontSize:'13px'}}>{r.confidence || '—'}</div></div>
+          <div className="rp-info-card"><div className="rp-info-label">Seats</div><div className={`rp-info-value ${r.seat_count ? '' : 'na'}`}>{r.seat_count || '—'}</div></div>
         </div>
         <div className="rp-upsell"><span>* Release windows vary by platform — we do the math for you.</span><Link href="/signup" className="rp-upsell-cta">Unlock exact drop dates →</Link></div>
       </>}

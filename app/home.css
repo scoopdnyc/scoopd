@@ -21,6 +21,8 @@
 .release-time{font-family:var(--font-dm-mono),monospace;font-size:13px;color:#c9a96e}
 .days-out{font-size:11px;color:#a8a49c;margin-top:2px}
 .badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:4px;margin-left:6px;font-family:var(--font-dm-mono),monospace}
+/* Extremely Hard — purple (switch to crimson: background:#2a0505;color:#e03030) */
+.badge-eh{background:#1a0a2e;color:#a855f7}
 .badge-vh{background:#2a0f0f;color:#c96e6e}
 .badge-h{background:#2a1f0f;color:#c9a96e}
 .badge-m{background:#1a1a16;color:#6b6b60;border:0.5px solid #2a2a26}
