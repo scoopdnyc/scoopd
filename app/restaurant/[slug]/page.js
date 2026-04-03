@@ -33,7 +33,14 @@ export default async function RestaurantPage({ params }) {
   const isClosed = r.platform === 'CLOSED'
   const isWalkin = r.platform === 'Walk-in'
   const isPhone = r.platform === 'Phone' || r.platform === 'Phone/Relationships'
-  const diffColor = r.difficulty === 'Very Hard' ? '#c96e6e' : r.difficulty === 'Hard' ? '#c9a96e' : '#8a8a80'
+
+  const diffColor =
+    r.difficulty === 'Extremely Hard' ? '#a855f7'
+    : r.difficulty === 'Very Hard' ? '#c96e6e'
+    : r.difficulty === 'Hard' ? '#e38f09'
+    : r.difficulty === 'Medium' ? '#c9b882'
+    : r.difficulty === 'Easy' ? '#6ec9a0'
+    : '#8a8a80'
 
   return (
     <main style={{background:'#0f0f0d',minHeight:'100vh',color:'#e8e4dc',fontFamily:"var(--font-dm-sans), sans-serif"}}>

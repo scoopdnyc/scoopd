@@ -11,7 +11,7 @@ const DEMAND_ORDER = { 'Very High': 0, 'High': 1, 'Medium': 2, 'Low': 3 }
 async function getRestaurants() {
   const { data, error } = await supabase
     .from('restaurants')
-    .select('id, restaurant, neighborhood, platform, cuisine, release_time, stated_days_out, difficulty, notify_demand, slug')
+    .select('id, restaurant, neighborhood, platform, cuisine, release_time, stated_days_out, difficulty, notify_demand, beli_score, slug')
   if (error) console.error(error)
   return (data || []).sort((a, b) => {
     const diffA = DIFFICULTY_ORDER[a.difficulty] ?? 99
@@ -19,7 +19,10 @@ async function getRestaurants() {
     if (diffA !== diffB) return diffA - diffB
     const demandA = DEMAND_ORDER[a.notify_demand] ?? 99
     const demandB = DEMAND_ORDER[b.notify_demand] ?? 99
-    return demandA - demandB
+    if (demandA !== demandB) return demandA - demandB
+    const beliA = parseFloat(a.beli_score) || 0
+    const beliB = parseFloat(b.beli_score) || 0
+    return beliB - beliA
   })
 }
 
