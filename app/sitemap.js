@@ -1,6 +1,10 @@
-import { supabase } from '../lib/supabase'
+  import { supabase } from '../lib/supabase'
 
 export default async function sitemap() {
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    return []
+  }
+
   const { data: restaurants } = await supabase
     .from('restaurants')
     .select('slug')
