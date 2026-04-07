@@ -98,11 +98,22 @@ export default async function RestaurantPage({ params }) {
           <div className="rp-info-card"><div className="rp-info-label">Difficulty</div><div className="rp-info-value" style={{color:diffColor}}>{r.difficulty || '—'}</div></div>
           <div className="rp-info-card"><div className="rp-info-label">Seats</div><div className={`rp-info-value ${r.seat_count ? '' : 'na'}`}>{r.seat_count || '—'}</div></div>
         </div>
+                {!isWalkin && (
+          <div className="rp-drop-card">
+            <div className="rp-drop-label">Next Drop Date</div>
+            <div className="rp-drop-blurred">Tuesday, April 15 at 10:00 AM ET</div>
+            <div className="rp-drop-overlay">
+              <span className="rp-drop-lock">🔒</span>
+              <span className="rp-drop-overlay-text">Sign up to unlock exact drop dates</span>
+              <Link href="/signup" className="rp-drop-cta">Get access →</Link>
+            </div>
+          </div>
+        )}
         {r.notes
           ? <div className="rp-description">{r.notes}</div>
           : autoSentence && <div className="rp-description">{autoSentence}</div>
         }
-        <div className="rp-upsell"><span>* Release windows vary by platform — we do the math for you.</span><Link href="/signup" className="rp-upsell-cta">Unlock exact drop dates →</Link></div>
+
       </>}
     </main>
   )

@@ -19,3 +19,11 @@
 .rp-upsell-cta{color:#c9a96e;font-weight:500;white-space:nowrap;text-decoration:none}
 .rp-closed-notice{margin:2rem;background:#1a0f0f;border:0.5px solid #3a1f1f;border-radius:8px;padding:1.25rem;font-size:14px;color:#c96e6e}
 .rp-walkin-notice{margin:2rem;background:#0f1a16;border:0.5px solid #1f3a2a;border-radius:8px;padding:1.25rem;font-size:14px;color:#6ec9a0}
+.rp-drop-card{position:relative;margin:0 2rem 2rem;background:#1a1a16;border:1px solid #c9a96e;border-radius:10px;padding:1.75rem;overflow:hidden}
+.rp-drop-label{font-family:var(--font-dm-mono),monospace;font-size:10px;letter-spacing:1.5px;color:#c9a96e;text-transform:uppercase;margin-bottom:0.75rem}
+.rp-drop-blurred{font-family:var(--font-dm-mono),monospace;font-size:26px;color:#e8e4dc;font-weight:600;filter:blur(6px);user-select:none;pointer-events:none}
+.rp-drop-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.5rem;background:rgba(15,15,13,0.55);backdrop-filter:blur(1px)}
+.rp-drop-lock{font-size:20px}
+.rp-drop-overlay-text{font-size:14px;color:#e8e4dc;font-weight:500}
+.rp-drop-cta{background:#c9a96e;color:#0f0f0d;font-size:13px;font-weight:600;padding:0.5rem 1.25rem;border-radius:6px;text-decoration:none;margin-top:0.25rem}
+.rp-drop-cta:hover{background:#e8c98e}
