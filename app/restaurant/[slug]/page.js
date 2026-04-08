@@ -1,12 +1,11 @@
-import { supabase } from '../../../lib/supabase'
+import { createSupabaseServer } from '../../../lib/supabase-server'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import NavSignOut from '../../components/NavSignOut'
 import './restaurant.css'
 
-export const revalidate = 3600
-
-async function getRestaurant(slug) {
-  const { data, error } = await supabase
+async function getRestaurant(slug, client) {
+  const { data, error } = await client
     .from('restaurants')
     .select('restaurant, neighborhood, platform, cuisine, release_time, observed_days, release_schedule, seat_count, michelin_stars, price_tier, difficulty, notes, slug')
     .eq('slug', slug)
@@ -17,7 +16,8 @@ async function getRestaurant(slug) {
 
 export async function generateMetadata({ params }) {
   const { slug } = await params
-  const r = await getRestaurant(slug)
+  const serverSupabase = await createSupabaseServer()
+  const r = await getRestaurant(slug, serverSupabase)
   if (!r) return { title: 'Not Found' }
   return {
     title: `${r.restaurant} Reservation Tips | Scoopd`,
@@ -27,8 +27,79 @@ export async function generateMetadata({ params }) {
 
 export default async function RestaurantPage({ params }) {
   const { slug } = await params
-  const r = await getRestaurant(slug)
+  const serverSupabase = await createSupabaseServer()
+  const r = await getRestaurant(slug, serverSupabase)
   if (!r) notFound()
+  const { data: { user } } = await serverSupabase.auth.getUser()
+  let isPremium = false
+  if (user) {
+    const { data: sub } = await serverSupabase
+      .from('subscriptions')
+      .select('status')
+      .eq('user_id', user.id)
+      .single()
+    isPremium = sub?.status === 'active'
+  }
+
+  // Calculate next drop date for premium users with rolling window restaurants
+  let dropDateDisplay = null
+  if (isPremium && r.observed_days) {
+    const now = new Date()
+
+    // Current ET time as 0-23 hour and minute
+    const etTimeParts = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'America/New_York',
+      hour: 'numeric',
+      minute: '2-digit',
+      hourCycle: 'h23',
+    }).formatToParts(now)
+    const etHour = parseInt(etTimeParts.find(p => p.type === 'hour').value, 10)
+    const etMinute = parseInt(etTimeParts.find(p => p.type === 'minute').value, 10)
+
+    // Parse release_time string e.g. "9:00 AM", "12:00 AM", "11:59 PM"
+    let releaseHour = 0
+    let releaseMinute = 0
+    if (r.release_time) {
+      const match = r.release_time.match(/^(\d+):(\d+)\s*(AM|PM)$/i)
+      if (match) {
+        let h = parseInt(match[1], 10)
+        const m = parseInt(match[2], 10)
+        const meridiem = match[3].toUpperCase()
+        if (meridiem === 'AM' && h === 12) h = 0
+        else if (meridiem === 'PM' && h !== 12) h += 12
+        releaseHour = h
+        releaseMinute = m
+      }
+    }
+
+    // Build ET calendar date as a local midnight Date (no timezone shift on output)
+    const etDateParts = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'America/New_York',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    }).formatToParts(now)
+    const etYear  = parseInt(etDateParts.find(p => p.type === 'year').value, 10)
+    const etMonth = parseInt(etDateParts.find(p => p.type === 'month').value, 10) - 1
+    const etDay   = parseInt(etDateParts.find(p => p.type === 'day').value, 10)
+
+    // If current ET time is before release time, the window hasn't advanced yet —
+    // treat yesterday as the restaurant's current date
+    const restaurantDate = new Date(etYear, etMonth, etDay)
+    if (etHour * 60 + etMinute < releaseHour * 60 + releaseMinute) {
+      restaurantDate.setDate(restaurantDate.getDate() - 1)
+    }
+
+    // Next bookable date = restaurant current date + observed_days - 1
+    restaurantDate.setDate(restaurantDate.getDate() + r.observed_days - 1)
+
+    const formatted = restaurantDate.toLocaleDateString('en-US', {
+      weekday: 'long',
+      month: 'long',
+      day: 'numeric',
+    })
+    dropDateDisplay = r.release_time ? `${formatted} at ${r.release_time} ET` : formatted
+  }
 
   const isClosed = r.platform === 'CLOSED'
   const isWalkin = r.platform === 'Walk-in'
@@ -79,7 +150,17 @@ export default async function RestaurantPage({ params }) {
         <Link href="/" className="rp-logo">Scoopd</Link>
         <div className="rp-nav-links">
           <Link href="/how-it-works" style={{color:'#8a8a80',textDecoration:'none'}}>How it works</Link>
-          <Link href="/signup" className="rp-nav-signup">Sign up</Link>
+          {user ? (
+            <>
+              <Link href="/account" style={{color:'#8a8a80',textDecoration:'none',fontSize:'13px'}}>My account</Link>
+              <NavSignOut />
+            </>
+          ) : (
+            <>
+              <Link href="/login" style={{color:'#8a8a80',textDecoration:'none',fontSize:'13px'}}>Log in</Link>
+              <Link href="/signup" className="rp-nav-signup">Sign up</Link>
+            </>
+          )}
         </div>
       </nav>
       <Link href="/" className="rp-back">← Back to directory</Link>
@@ -99,15 +180,31 @@ export default async function RestaurantPage({ params }) {
           <div className="rp-info-card"><div className="rp-info-label">Seats</div><div className={`rp-info-value ${r.seat_count ? '' : 'na'}`}>{r.seat_count || '—'}</div></div>
         </div>
                 {!isWalkin && (
-          <div className="rp-drop-card">
-            <div className="rp-drop-label">Next Drop Date</div>
-            <div className="rp-drop-blurred">Tuesday, April 15 at 10:00 AM ET</div>
-            <div className="rp-drop-overlay">
-              <span className="rp-drop-lock">🔒</span>
-              <span className="rp-drop-overlay-text">Sign up to unlock exact drop dates</span>
-              <Link href="/signup" className="rp-drop-cta">Get access →</Link>
+          isPremium && r.observed_days ? (
+            <div className="rp-drop-card">
+              <div className="rp-drop-label">Next Drop Date</div>
+              <div style={{fontFamily:"'DM Mono',monospace",color:'#c9a96e',fontSize:'18px',fontWeight:400,letterSpacing:'0.5px',marginTop:'0.5rem'}}>
+                {dropDateDisplay}
+              </div>
             </div>
-          </div>
+          ) : isPremium && r.release_schedule ? (
+            <div className="rp-drop-card">
+              <div className="rp-drop-label">Next Drop Date</div>
+              <div style={{fontFamily:"'DM Mono',monospace",color:'#c9a96e',fontSize:'15px',fontWeight:400,letterSpacing:'0.5px',marginTop:'0.5rem'}}>
+                {r.release_schedule}
+              </div>
+            </div>
+          ) : (
+            <div className="rp-drop-card">
+              <div className="rp-drop-label">Next Drop Date</div>
+              <div className="rp-drop-blurred">Tuesday, April 15 at 10:00 AM ET</div>
+              <div className="rp-drop-overlay">
+                <span className="rp-drop-lock">🔒</span>
+                <span className="rp-drop-overlay-text">Sign up to unlock exact drop dates</span>
+                <Link href="/signup" className="rp-drop-cta">Get access →</Link>
+              </div>
+            </div>
+          )
         )}
         {r.notes
           ? <div className="rp-description">{r.notes}</div>

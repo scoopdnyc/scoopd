@@ -1,4 +1,6 @@
 import Link from 'next/link'
+import { createSupabaseServer } from '../../lib/supabase-server'
+import NavSignOut from '../components/NavSignOut'
 import './how-it-works.css'
 
 export const metadata = {
@@ -6,14 +8,27 @@ export const metadata = {
   description: 'Learn how NYC restaurant reservations work, why hard tables drop at specific times, and how to position yourself to book before anyone else.',
 }
 
-export default function HowItWorks() {
+export default async function HowItWorks() {
+  const serverSupabase = await createSupabaseServer()
+  const { data: { user } } = await serverSupabase.auth.getUser()
+
   return (
     <main style={{background:'#0f0f0d',minHeight:'100vh',color:'#e8e4dc',fontFamily:"var(--font-dm-sans), sans-serif"}}>
       <nav className="hiw-nav">
         <Link href="/" className="hiw-logo">Scoopd</Link>
-        <div style={{display:'flex',gap:'1.5rem',fontSize:'13px'}}>
+        <div style={{display:'flex',gap:'1.5rem',fontSize:'13px',alignItems:'center'}}>
           <Link href="/how-it-works" style={{color:'#c9a96e',textDecoration:'none'}}>How it works</Link>
-          <Link href="/signup" style={{color:'#8a8a80',textDecoration:'none'}}>Sign up</Link>
+          {user ? (
+            <>
+              <Link href="/account" style={{color:'#8a8a80',textDecoration:'none'}}>My account</Link>
+              <NavSignOut />
+            </>
+          ) : (
+            <>
+              <Link href="/login" style={{color:'#8a8a80',textDecoration:'none'}}>Log in</Link>
+              <Link href="/signup" style={{color:'#8a8a80',textDecoration:'none'}}>Sign up</Link>
+            </>
+          )}
         </div>
       </nav>
 
@@ -100,8 +115,17 @@ export default function HowItWorks() {
 
           <div className="hiw-cta-block">
             <div className="hiw-cta-title">Be first to know.</div>
-            <p className="hiw-cta-sub">Join the waitlist for exact drop date calculations, real-time alerts, and the full Scoopd platform when it launches.</p>
-            <Link href="/signup" className="hiw-cta-btn">Join the waitlist</Link>
+            {user ? (
+              <>
+                <p className="hiw-cta-sub">Track your restaurants and manage your subscription.</p>
+                <Link href="/account" className="hiw-cta-btn">Go to my account →</Link>
+              </>
+            ) : (
+              <>
+                <p className="hiw-cta-sub">Join the waitlist for exact drop date calculations, real-time alerts, and the full Scoopd platform when it launches.</p>
+                <Link href="/signup" className="hiw-cta-btn">Join the waitlist</Link>
+              </>
+            )}
           </div>
 
         </div>

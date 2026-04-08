@@ -55,6 +55,7 @@ export default function Signup() {
         <Link href="/" className="su-logo">Scoopd</Link>
         <div style={{display:'flex',gap:'1.5rem',fontSize:'13px'}}>
           <Link href="/how-it-works" style={{color:'#8a8a80',textDecoration:'none'}}>How it works</Link>
+          <Link href="/login" style={{color:'#8a8a80',textDecoration:'none'}}>Log in</Link>
           <Link href="/signup" style={{color:'#c9a96e',textDecoration:'none'}}>Sign up</Link>
         </div>
       </nav>

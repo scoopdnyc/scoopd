@@ -1,0 +1,285 @@
+/* Nav */
+.dr-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 2rem;
+  border-bottom: 0.5px solid #2a2a26;
+}
+.dr-logo {
+  font-family: var(--font-playfair), serif;
+  font-size: 22px;
+  color: #e8e4dc;
+  text-decoration: none;
+}
+.dr-nav-links {
+  display: flex;
+  gap: 1.5rem;
+  font-size: 13px;
+  align-items: center;
+}
+.dr-nav-link {
+  color: #8a8a80;
+  text-decoration: none;
+}
+.dr-nav-link:hover {
+  color: #e8e4dc;
+}
+.dr-nav-signup {
+  color: #c9a96e;
+  text-decoration: none;
+}
+.dr-nav-signup:hover {
+  color: #e8c98e;
+}
+
+/* Header */
+.dr-header {
+  padding: 3rem 2rem 2rem;
+  border-bottom: 0.5px solid #2a2a26;
+}
+.dr-eyebrow {
+  font-family: var(--font-dm-mono), monospace;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: #c9a96e;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+.dr-headline {
+  font-family: var(--font-playfair), serif;
+  font-size: 42px;
+  line-height: 1.1;
+  color: #e8e4dc;
+  margin: 0 0 0.75rem;
+}
+.dr-date {
+  font-family: var(--font-dm-mono), monospace;
+  font-size: 14px;
+  color: #c9a96e;
+  letter-spacing: 0.5px;
+}
+
+/* Upsell banner */
+.dr-upsell-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  background: #1a1a16;
+  border-bottom: 0.5px solid #2a2a26;
+  border-left: 2px solid #c9a96e;
+  padding: 0.9rem 2rem;
+  font-size: 13px;
+  flex-wrap: wrap;
+}
+.dr-upsell-text {
+  color: #8a8a80;
+}
+.dr-upsell-cta {
+  color: #c9a96e;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  font-size: 13px;
+}
+.dr-upsell-cta:hover {
+  color: #e8c98e;
+}
+
+/* Table wrapper */
+.dr-table-wrap {
+  overflow-x: auto;
+  padding: 0 0 2rem;
+}
+
+/* Table */
+.dr-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 640px;
+}
+
+/* Header row */
+.dr-th {
+  font-family: var(--font-dm-mono), monospace;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: #6b6b60;
+  text-transform: uppercase;
+  text-align: left;
+  padding: 0.85rem 1.25rem;
+  border-bottom: 0.5px solid #2a2a26;
+  font-weight: 400;
+  white-space: nowrap;
+}
+.dr-th-tz {
+  font-size: 9px;
+  color: #8a8a80;
+  letter-spacing: 1px;
+}
+
+/* Rows */
+.dr-row {
+  border-bottom: 0.5px solid #1e1e1a;
+  transition: background 0.1s;
+}
+.dr-row:hover {
+  background: #141410;
+}
+
+/* Urgency buckets — opacity fades as drop time gets further away */
+.dr-bucket-1 { opacity: 1.0; }
+.dr-bucket-2 { opacity: 0.80; }
+.dr-bucket-3 { opacity: 0.65; }
+.dr-bucket-4 { opacity: 0.50; }
+.dr-bucket-5 { opacity: 0.35; }
+/* Cells */
+.dr-td {
+  padding: 0.9rem 1.25rem;
+  font-size: 14px;
+  color: #e8e4dc;
+  vertical-align: middle;
+}
+
+/* Restaurant name */
+.dr-restaurant-link {
+  color: #e8e4dc;
+  text-decoration: none;
+  font-weight: 500;
+}
+.dr-restaurant-link:hover {
+  color: #c9a96e;
+}
+
+/* Neighborhood */
+.dr-td-hood {
+  color: #8a8a80;
+  font-size: 13px;
+}
+
+/* Platform */
+.dr-td-platform {
+  color: #8a8a80;
+  font-size: 13px;
+}
+
+/* Drop time */
+.dr-time-mono {
+  font-family: var(--font-dm-mono), monospace;
+  font-size: 13px;
+  color: #c9a96e;
+  white-space: nowrap;
+}
+/* Difficulty */
+.dr-diff-badge {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* Opens For */
+.dr-opens-date {
+  font-family: var(--font-dm-mono), monospace;
+  font-size: 12px;
+  color: #e8e4dc;
+  white-space: nowrap;
+}
+
+/* Blurred / locked state */
+.dr-opens-locked {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.dr-opens-blurred {
+  font-family: var(--font-dm-mono), monospace;
+  font-size: 12px;
+  color: #e8e4dc;
+  filter: blur(5px);
+  user-select: none;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.dr-lock-icon {
+  font-size: 11px;
+  flex-shrink: 0;
+}
+
+/* Footer note */
+.dr-footer-note {
+  opacity: 1;
+  padding: 0 2rem 3rem;
+  font-size: 12px;
+  color: #8a8a80;
+  font-family: var(--font-dm-mono), monospace;
+  letter-spacing: 0.3px;
+}
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  .dr-header {
+    padding: 2rem 1.25rem 1.5rem;
+  }
+  .dr-headline {
+    font-size: 30px;
+  }
+  .dr-upsell-banner {
+    padding: 0.9rem 1.25rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.6rem;
+  }
+  .dr-table-wrap {
+    padding: 0;
+  }
+  .dr-table {
+    min-width: unset;
+    width: 100%;
+  }
+  /* Hide neighborhood and platform on small screens */
+  .dr-th-hood,
+  .dr-td-hood,
+  .dr-th-platform,
+  .dr-td-platform {
+    display: none;
+  }
+  .dr-th,
+  .dr-td {
+    padding: 0.75rem 1rem;
+  }
+  .dr-td-restaurant {
+    padding-left: 1.25rem;
+  }
+  .dr-th-restaurant {
+    padding-left: 1.25rem;
+  }
+  .dr-opens-blurred {
+    font-size: 11px;
+    /* shorten the placeholder text visually */
+    max-width: 100px;
+    overflow: hidden;
+  }
+  .dr-footer-note {
+    padding: 1rem 1.25rem 2.5rem;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dr-nav {
+    padding: 1rem 1.25rem;
+  }
+  .dr-nav-links {
+    gap: 1rem;
+  }
+  .dr-headline {
+    font-size: 26px;
+  }
+  .dr-diff-badge {
+    font-size: 12px;
+  }
+  .dr-restaurant-link {
+    font-size: 13px;
+  }
+}
