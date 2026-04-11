@@ -1,6 +1,7 @@
 import { createSupabaseServer } from '../../lib/supabase-server'
 import Link from 'next/link'
-import NavSignOut from '../components/NavSignOut'
+import ScoopNav from '../components/ScoopNav'
+import ScoopFooter from '../components/ScoopFooter'
 import './drops.css'
 
 export const metadata = {
@@ -130,23 +131,7 @@ export default async function DropsPage() {
 
   return (
     <main style={{ background: '#0f0f0d', minHeight: '100vh', color: '#e8e4dc', fontFamily: "var(--font-dm-sans), sans-serif" }}>
-      <nav className="dr-nav">
-        <Link href="/" className="dr-logo">Scoopd</Link>
-        <div className="dr-nav-links">
-          <Link href="/how-it-works" className="dr-nav-link">How it works</Link>
-          {user ? (
-            <>
-              <Link href="/account" className="dr-nav-link">My account</Link>
-              <NavSignOut />
-            </>
-          ) : (
-            <>
-              <Link href="/login" className="dr-nav-link">Log in</Link>
-              <Link href="/signup" className="dr-nav-signup">Sign up</Link>
-            </>
-          )}
-        </div>
-      </nav>
+      <ScoopNav />
 
       <div className="dr-header">
         <div className="dr-eyebrow">Daily Drop Schedule</div>
@@ -216,6 +201,7 @@ export default async function DropsPage() {
       <div className="dr-footer-note">
         Drop times are in Eastern Time. Always shows the next upcoming drop — rolls forward automatically.
       </div>
+      <ScoopFooter />
     </main>
   )
 }

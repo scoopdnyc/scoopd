@@ -1,10 +1,14 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 import { getSupabaseBrowser } from '@/lib/supabase-browser'
+import ScoopFooter from '../components/ScoopFooter'
 
-export default function Login() {
+function LoginForm() {
+  const searchParams = useSearchParams()
+  const next = searchParams.get('next')
   const supabase = getSupabaseBrowser()
   const [mode, setMode] = useState('password') // 'password' | 'magic'
   const [email, setEmail] = useState('')
@@ -21,7 +25,7 @@ export default function Login() {
       setStatus('error')
       setErrorMsg(error.message)
     } else {
-      window.location.href = '/account'
+      window.location.href = next || '/account'
     }
   }
 
@@ -31,7 +35,7 @@ export default function Login() {
     setErrorMsg('')
     const { error } = await supabase.auth.signInWithOtp({
       email,
-      options: { emailRedirectTo: `${window.location.origin}/account` },
+      options: { emailRedirectTo: `${window.location.origin}${next || '/account'}` },
     })
     if (error) {
       setStatus('error')
@@ -174,6 +178,11 @@ export default function Login() {
           </p>
         </div>
       </div>
+      <ScoopFooter />
     </main>
   )
+}
+
+export default function Login() {
+  return <Suspense><LoginForm /></Suspense>
 }

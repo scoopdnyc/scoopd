@@ -2,6 +2,8 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createSupabaseServer } from '@/lib/supabase-server'
 import SignOutButton from './SignOutButton'
+import ScoopNav from '../components/ScoopNav'
+import ScoopFooter from '../components/ScoopFooter'
 
 export const metadata = {
   title: 'My Account | Scoopd',
@@ -51,12 +53,7 @@ export default async function AccountPage() {
         .ac-divider{border:none;border-top:0.5px solid #2a2a26;margin:1.75rem 0}
       `}</style>
 
-      <nav className="ac-nav">
-        <Link href="/" className="ac-logo">Scoopd</Link>
-        <div style={{ display: 'flex', gap: '1.5rem', fontSize: '13px' }}>
-          <Link href="/" style={{ color: '#8a8a80', textDecoration: 'none' }}>Browse restaurants</Link>
-        </div>
-      </nav>
+      <ScoopNav />
 
       <div className="ac-wrap">
         <div className="ac-eyebrow">My Account</div>
@@ -106,6 +103,7 @@ export default async function AccountPage() {
           </div>
         )}
       </div>
+      <ScoopFooter />
     </main>
   )
 }

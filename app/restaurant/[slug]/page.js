@@ -1,7 +1,8 @@
 import { createSupabaseServer } from '../../../lib/supabase-server'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import NavSignOut from '../../components/NavSignOut'
+import ScoopNav from '../../components/ScoopNav'
+import ScoopFooter from '../../components/ScoopFooter'
 import './restaurant.css'
 
 async function getRestaurant(slug, client) {
@@ -146,23 +147,7 @@ export default async function RestaurantPage({ params }) {
 
   return (
     <main style={{background:'#0f0f0d',minHeight:'100vh',color:'#e8e4dc',fontFamily:"var(--font-dm-sans), sans-serif"}}>
-      <nav className="rp-nav">
-        <Link href="/" className="rp-logo">Scoopd</Link>
-        <div className="rp-nav-links">
-          <Link href="/how-it-works" style={{color:'#8a8a80',textDecoration:'none'}}>How it works</Link>
-          {user ? (
-            <>
-              <Link href="/account" style={{color:'#8a8a80',textDecoration:'none',fontSize:'13px'}}>My account</Link>
-              <NavSignOut />
-            </>
-          ) : (
-            <>
-              <Link href="/login" style={{color:'#8a8a80',textDecoration:'none',fontSize:'13px'}}>Log in</Link>
-              <Link href="/signup" className="rp-nav-signup">Sign up</Link>
-            </>
-          )}
-        </div>
-      </nav>
+      <ScoopNav />
       <Link href="/" className="rp-back">← Back to directory</Link>
       <div className="rp-hero">
         <div className="rp-eyebrow">{r.neighborhood} · {r.cuisine}</div>
@@ -212,6 +197,7 @@ export default async function RestaurantPage({ params }) {
         }
 
       </>}
+      <ScoopFooter />
     </main>
   )
 }

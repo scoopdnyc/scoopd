@@ -1,10 +1,15 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
+import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { getSupabaseBrowser } from '@/lib/supabase-browser'
+import ScoopFooter from '../components/ScoopFooter'
 
-export default function Register() {
+function RegisterForm() {
+  const searchParams = useSearchParams()
+  const next = searchParams.get('next')
+
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirm, setConfirm] = useState('')
@@ -94,6 +99,16 @@ export default function Register() {
             <div className="rg-success">
               <strong>Check your email.</strong><br />
               We sent a confirmation link to <strong>{email}</strong>. Click it to activate your account, then sign in.
+              {next && (
+                <>
+                  <br /><br />
+                  Check your email to verify your account, then continue.
+                  <br />
+                  <a href={next} style={{ color: '#6ec9a0', fontWeight: 600, textDecoration: 'underline', display: 'inline-block', marginTop: '0.75rem' }}>
+                    Continue →
+                  </a>
+                </>
+              )}
             </div>
           ) : (
             <form onSubmit={handleSubmit}>
@@ -150,6 +165,15 @@ export default function Register() {
           </p>
         </div>
       </div>
+      <ScoopFooter />
     </main>
+  )
+}
+
+export default function Register() {
+  return (
+    <Suspense>
+      <RegisterForm />
+    </Suspense>
   )
 }

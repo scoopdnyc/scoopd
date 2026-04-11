@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { createSupabaseServer } from '../../lib/supabase-server'
-import NavSignOut from '../components/NavSignOut'
+import ScoopNav from '../components/ScoopNav'
+import ScoopFooter from '../components/ScoopFooter'
 import './how-it-works.css'
 
 export const metadata = {
@@ -14,23 +15,7 @@ export default async function HowItWorks() {
 
   return (
     <main style={{background:'#0f0f0d',minHeight:'100vh',color:'#e8e4dc',fontFamily:"var(--font-dm-sans), sans-serif"}}>
-      <nav className="hiw-nav">
-        <Link href="/" className="hiw-logo">Scoopd</Link>
-        <div style={{display:'flex',gap:'1.5rem',fontSize:'13px',alignItems:'center'}}>
-          <Link href="/how-it-works" style={{color:'#c9a96e',textDecoration:'none'}}>How it works</Link>
-          {user ? (
-            <>
-              <Link href="/account" style={{color:'#8a8a80',textDecoration:'none'}}>My account</Link>
-              <NavSignOut />
-            </>
-          ) : (
-            <>
-              <Link href="/login" style={{color:'#8a8a80',textDecoration:'none'}}>Log in</Link>
-              <Link href="/signup" style={{color:'#8a8a80',textDecoration:'none'}}>Sign up</Link>
-            </>
-          )}
-        </div>
-      </nav>
+      <ScoopNav />
 
       <div style={{padding:'0 2rem'}}>
         <div className="hiw-hero">
@@ -130,6 +115,7 @@ export default async function HowItWorks() {
 
         </div>
       </div>
+      <ScoopFooter />
     </main>
   )
 }
