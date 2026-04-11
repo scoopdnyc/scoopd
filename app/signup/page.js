@@ -1,8 +1,20 @@
 import SignupClient from './SignupClient'
 
 export const metadata = {
-  title: 'Get Access | Scoopd',
-  description: 'Unlock exact drop dates for NYC\'s hardest restaurant reservations.',
+  title: 'Get Premium Access — Scoopd NYC Reservation Intelligence',
+  description: 'Know the exact date every NYC reservation drops. $9.99/month or $60/year. Cancel anytime.',
+  openGraph: {
+    title: 'Get Premium Access — Scoopd NYC Reservation Intelligence',
+    description: 'Know the exact date every NYC reservation drops. $9.99/month or $60/year. Cancel anytime.',
+    url: 'https://scoopd.nyc/signup',
+    siteName: 'Scoopd',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Get Premium Access — Scoopd NYC Reservation Intelligence',
+    description: 'Know the exact date every NYC reservation drops. $9.99/month or $60/year. Cancel anytime.',
+  },
 }
 
 export default function SignupPage() {

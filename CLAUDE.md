@@ -223,10 +223,27 @@ This logic is already implemented in app/restaurant/[slug]/page.js — reference
 - Availability probability data — not started
 - Corner Store observed_days unconfirmed
 
-### Phase 4 — Editorial + Blog (not started)
+### Phase 4 — Editorial + SEO (in progress)
+
+**SEO — Complete:**
+- Dynamic meta titles and descriptions on all public pages
+- Open Graph and Twitter card tags on all public pages
+- Default metadata in layout.js with metadataBase set to https://scoopd.nyc
+- Sitemap correct and live at /sitemap.xml
+- Google Analytics connected via Next.js Script component
+- Google site verification TXT record in DNS
+
+**SEO — Still to build:**
+- Structured data / JSON-LD — schema.org Restaurant markup on each restaurant page so Google understands the content and can serve rich results
+- Internal linking — cross-linking between restaurant pages by neighborhood, platform, and difficulty to build site authority
+- Search-optimized content — pages or blog posts targeting high-intent queries like "how to get a Carbone reservation" or "Lilia reservation tips"
+- Backlink strategy — outreach to Eater NY, Grub Street, The Infatuation, and NYC food newsletters to generate domain authority
+- Restaurant photos — images on restaurant pages improve click-through from search results
+
+**Editorial — Not started:**
 - Blog layer behind paywall
+- Topics identified: secondary market economics, reservation scalping, platform risk, execution guide (how to actually win a reservation once you know when it drops)
 - Restaurant photos
-- Topics identified: secondary market economics, reservation scalping, platform risk
 
 ### Phase 5 — Scale (not started)
 - AdSense and sponsorships

@@ -5,8 +5,20 @@ import ScoopFooter from '../components/ScoopFooter'
 import './how-it-works.css'
 
 export const metadata = {
-  title: 'How to Get NYC Restaurant Reservations | Scoopd',
-  description: 'Learn how NYC restaurant reservations work, why hard tables drop at specific times, and how to position yourself to book before anyone else.',
+  title: 'How Scoopd Works — Restaurant Reservation Drop Times Explained',
+  description: 'Scoopd tracks when NYC restaurants release reservations — the exact platform, time, and date. Here\'s how we do it and how to use it.',
+  openGraph: {
+    title: 'How Scoopd Works — Restaurant Reservation Drop Times Explained',
+    description: 'Scoopd tracks when NYC restaurants release reservations — the exact platform, time, and date. Here\'s how we do it and how to use it.',
+    url: 'https://scoopd.nyc/how-it-works',
+    siteName: 'Scoopd',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'How Scoopd Works — Restaurant Reservation Drop Times Explained',
+    description: 'Scoopd tracks when NYC restaurants release reservations — the exact platform, time, and date. Here\'s how we do it and how to use it.',
+  },
 }
 
 export default async function HowItWorks() {

@@ -20,11 +20,19 @@ const dmSans = DM_Sans({
 });
 
 export const metadata = {
-  title: "Scoopd — NYC Reservation Intelligence",
-  description: "Know exactly when reservations drop at NYC's hardest tables. Release times, drop dates, and booking intelligence for Resy, OpenTable, and DoorDash.",
+  title: {
+    default: "Scoopd — NYC Restaurant Reservation Intelligence",
+    template: "%s | Scoopd",
+  },
+  description: "NYC restaurant reservation intelligence. Know when tables drop.",
+  metadataBase: new URL("https://scoopd.nyc"),
   verification: {
     google: "nC1PVw6rF_tediEZTf6m8N9aQQf6yiw-usiNBbSYbcc",
   },
+};
+
+export const viewport = {
+  themeColor: "#0f0f0d",
 };
 
 export default function RootLayout({ children }) {

@@ -5,6 +5,23 @@ import ScoopNav from './components/ScoopNav'
 import ScoopFooter from './components/ScoopFooter'
 import './home.css'
 
+export const metadata = {
+  title: 'Scoopd — NYC Restaurant Reservation Intelligence',
+  description: 'Know exactly when NYC\'s hardest restaurant reservations drop. Drop times, release schedules, and booking intelligence for Carbone, Lilia, Via Carota, and 190+ more.',
+  openGraph: {
+    title: 'Scoopd — NYC Restaurant Reservation Intelligence',
+    description: 'Know exactly when NYC\'s hardest restaurant reservations drop. Drop times, release schedules, and booking intelligence for Carbone, Lilia, Via Carota, and 190+ more.',
+    url: 'https://scoopd.nyc',
+    siteName: 'Scoopd',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Scoopd — NYC Restaurant Reservation Intelligence',
+    description: 'Know exactly when NYC\'s hardest restaurant reservations drop. Drop times, release schedules, and booking intelligence for Carbone, Lilia, Via Carota, and 190+ more.',
+  },
+}
+
 const DIFFICULTY_ORDER = { 'Extremely Hard': 0, 'Very Hard': 1, 'Hard': 2, 'Medium': 3, 'Easy': 4 }
 const DEMAND_ORDER = { 'Very High': 0, 'High': 1, 'Medium': 2, 'Low': 3 }
 

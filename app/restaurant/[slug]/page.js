@@ -20,9 +20,35 @@ export async function generateMetadata({ params }) {
   const serverSupabase = await createSupabaseServer()
   const r = await getRestaurant(slug, serverSupabase)
   if (!r) return { title: 'Not Found' }
+
+  const title = `${r.restaurant} Reservations — Drop Time & Booking Intelligence | Scoopd`
+
+  let description
+  if (r.notes) {
+    description = r.notes.length > 155 ? r.notes.slice(0, 152) + '...' : r.notes
+  } else if (r.observed_days && r.release_time && r.platform) {
+    description = `${r.restaurant} releases reservations on ${r.platform} at ${r.release_time}, ${r.observed_days} days out. Know exactly when to book on Scoopd.`
+  } else {
+    description = `Find out exactly when ${r.restaurant} reservations drop in NYC. Release time, platform, and booking intelligence on Scoopd.`
+  }
+
+  const url = `https://scoopd.nyc/restaurant/${slug}`
+
   return {
-    title: `${r.restaurant} Reservation Tips | Scoopd`,
-    description: `Find out exactly when ${r.restaurant} reservations drop in NYC. Release time, platform, and booking tips on Scoopd.`,
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url,
+      siteName: 'Scoopd',
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary',
+      title,
+      description,
+    },
   }
 }
 
