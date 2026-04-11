@@ -11,7 +11,7 @@ const DEMAND_ORDER = { 'Very High': 0, 'High': 1, 'Medium': 2, 'Low': 3 }
 async function getRestaurants(client) {
   const { data, error } = await client
     .from('restaurants')
-    .select('id, restaurant, neighborhood, platform, cuisine, release_time, stated_days_out, difficulty, notify_demand, beli_score, slug')
+    .select('id, restaurant, neighborhood, platform, cuisine, release_time, observed_days, release_schedule, difficulty, notify_demand, beli_score, slug')
   if (error) console.error(error)
   return (data || []).sort((a, b) => {
     const diffA = DIFFICULTY_ORDER[a.difficulty] ?? 99

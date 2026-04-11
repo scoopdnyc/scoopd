@@ -76,7 +76,7 @@ export default function RestaurantList({ restaurants }) {
               <div className="card-right">
                 <div className="release-time">{r.release_time || '—'}</div>
                 <div className="days-out">
-                  {r.stated_days_out ? `${r.stated_days_out} days out*` : r.platform === 'Walk-in' ? 'Walk-in only' : '—'}
+                  {r.observed_days ? `${r.observed_days} days out*` : r.release_schedule ? r.release_schedule : r.platform === 'Walk-in' ? 'Walk-in only' : '—'}
                 </div>
               </div>
             </Link>
