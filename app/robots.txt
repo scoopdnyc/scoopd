@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /_next/static/
+Disallow: /api/
+
+Sitemap: https://scoopd.nyc/sitemap.xml
