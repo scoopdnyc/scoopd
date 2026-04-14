@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import ScoopNav from '../../components/ScoopNav'
 import ScoopFooter from '../../components/ScoopFooter'
+import ShareButton from '../../components/ShareButton'
 import './restaurant.css'
 
 async function getRestaurant(slug, client) {
@@ -217,7 +218,10 @@ export default async function RestaurantPage({ params }) {
       <div className="rp-hero">
         <div className="rp-eyebrow">{r.neighborhood} · {r.cuisine}</div>
         <h1 className="rp-restaurant-name">{r.restaurant}</h1>
-        <div className="rp-restaurant-meta">{r.platform}{r.michelin_stars && r.michelin_stars !== '—' ? ` · ${r.michelin_stars}` : ''}{r.price_tier ? ` · ${r.price_tier}` : ''}</div>
+        <div className="rp-hero-footer">
+          <div className="rp-restaurant-meta">{r.platform}{r.michelin_stars && r.michelin_stars !== '—' ? ` · ${r.michelin_stars}` : ''}{r.price_tier ? ` · ${r.price_tier}` : ''}</div>
+          <ShareButton restaurantName={r.restaurant} platform={r.platform} releaseTime={r.release_time} observedDays={r.observed_days} slug={slug} />
+        </div>
       </div>
       {isClosed && <div className="rp-closed-notice">This restaurant is permanently closed.</div>}
       {isWalkin && <div className="rp-walkin-notice">Walk-in only — no reservations accepted. Arrive early.</div>}

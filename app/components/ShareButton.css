@@ -1,0 +1,5 @@
+.sh-btn{display:inline-flex;align-items:center;gap:0.4rem;background:none;border:none;cursor:pointer;padding:0;color:#8a8a80;font-family:var(--font-dm-sans),sans-serif;font-size:13px;transition:color 0.15s}
+.sh-btn:hover{color:#e8e4dc}
+.sh-icon{flex-shrink:0}
+.sh-label{line-height:1}
+.sh-label.copied{color:#c9a96e}
