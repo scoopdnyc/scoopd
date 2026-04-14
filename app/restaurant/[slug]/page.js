@@ -57,6 +57,23 @@ export default async function RestaurantPage({ params }) {
   const serverSupabase = await createSupabaseServer()
   const r = await getRestaurant(slug, serverSupabase)
   if (!r) notFound()
+
+  // Fetch other restaurants in the same neighborhood
+  const { data: neighborhoodRaw } = await serverSupabase
+    .from('restaurants')
+    .select('restaurant, slug, difficulty, cuisine')
+    .eq('neighborhood', r.neighborhood)
+    .neq('slug', slug)
+  // Fisher-Yates shuffle, take 4
+  const neighborhoodRestaurants = (() => {
+    const arr = [...(neighborhoodRaw || [])]
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]]
+    }
+    return arr.slice(0, 4)
+  })()
+
   const { data: { user } } = await serverSupabase.auth.getUser()
   let isPremium = false
   if (user) {
@@ -245,6 +262,28 @@ export default async function RestaurantPage({ params }) {
         }
 
       </>}
+      {neighborhoodRestaurants.length > 0 && (
+        <div className="nb-section">
+          <div className="nb-heading">More in {r.neighborhood}</div>
+          <div className="nb-row">
+            {neighborhoodRestaurants.map(nr => {
+              const badgeColor =
+                nr.difficulty === 'Extremely Hard' ? '#a855f7'
+                : nr.difficulty === 'Very Hard' ? '#c96e6e'
+                : nr.difficulty === 'Hard' ? '#e38f09'
+                : nr.difficulty === 'Medium' ? '#c9b882'
+                : nr.difficulty === 'Easy' ? '#6ec9a0'
+                : '#8a8a80'
+              return (
+                <Link key={nr.slug} href={`/restaurant/${nr.slug}`} className="nb-card">
+                  <span className="nb-name">{nr.restaurant}</span>
+                  {nr.difficulty && <span className="nb-badge" style={{color: badgeColor}}>{nr.difficulty}</span>}
+                </Link>
+              )
+            })}
+          </div>
+        </div>
+      )}
       <ScoopFooter />
     </main>
   )
