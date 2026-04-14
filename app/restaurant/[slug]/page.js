@@ -8,7 +8,7 @@ import './restaurant.css'
 async function getRestaurant(slug, client) {
   const { data, error } = await client
     .from('restaurants')
-    .select('restaurant, neighborhood, platform, cuisine, release_time, observed_days, release_schedule, seat_count, michelin_stars, price_tier, difficulty, notes, slug')
+    .select('restaurant, neighborhood, platform, cuisine, release_time, observed_days, release_schedule, seat_count, michelin_stars, price_tier, difficulty, notes, slug, address')
     .eq('slug', slug)
     .single()
   if (error || !data) return null
@@ -171,8 +171,30 @@ export default async function RestaurantPage({ params }) {
     }
   }
 
+  const streetAddress = r.address ? r.address.split(',')[0].trim() : undefined
+  const postalCode = r.address ? (r.address.match(/\b\d{5}\b/) || [])[0] : undefined
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Restaurant',
+    name: r.restaurant,
+    ...(r.cuisine && { servesCuisine: r.cuisine }),
+    ...(r.address && {
+      address: {
+        '@type': 'PostalAddress',
+        ...(streetAddress && { streetAddress }),
+        addressLocality: 'New York',
+        addressRegion: 'NY',
+        addressCountry: 'US',
+        ...(postalCode && { postalCode }),
+      },
+    }),
+    url: `https://scoopd.nyc/restaurant/${slug}`,
+    ...(r.notes && { description: r.notes }),
+  }
+
   return (
     <main style={{background:'#0f0f0d',minHeight:'100vh',color:'#e8e4dc',fontFamily:"var(--font-dm-sans), sans-serif"}}>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <ScoopNav />
       <Link href="/" className="rp-back">← Back to directory</Link>
       <div className="rp-hero">
