@@ -24,6 +24,7 @@ Required in .env.local and Vercel:
 - STRIPE_WEBHOOK_SECRET
 - NEXT_PUBLIC_SITE_URL
 - RESEND_API_KEY
+- GOOGLE_PLACES_API_KEY
 
 ## Supabase Clients — Critical
 There are three Supabase clients. Use the correct one or auth will break:
@@ -46,7 +47,8 @@ There are three Supabase clients. Use the correct one or auth will break:
 - michelin_stars — text
 - price_tier — $, $$, $$$, $$$$
 - difficulty — Easy, Medium, Hard, Very Hard, Extremely Hard
-- notes — editorial description (~96 restaurants have hand-written copy; if null, auto-sentence is generated)
+- notes — editorial description. ~140 restaurants have hand-written copy. If null, auto-sentence is generated. Do not overwrite existing notes with scripts without explicit instruction. Do-not-touch list: 4 Charles Prime Rib, Bemelmans Bar, Bistrot Ha, Carbone, Cote, Double Chicken Please, Eleven Madison Park, Ha's Snack Bar, Jeju Noodle Bar, Joo Ok, Lilia, Minetta Tavern, Tatiana, Theodora, Torrisi, Via Carota.
+- address — full street address, populated via Google Places API
 - beli_score — numeric
 
 ### subscriptions table
@@ -174,11 +176,22 @@ This logic is already implemented in app/restaurant/[slug]/page.js — reference
 - Free tier: 3,000 emails/month
 - Used for: drop alerts (Phase 3), transactional auth emails
 
+## Content Status
+- ~140 of 192 restaurants have editorial notes
+- Tock restaurants: all complete
+- Resy restaurants: all complete
+- OpenTable: partially complete, in progress
+- DoorDash: partially complete, in progress
+- Walk-in, Phone, Own Site, Yelp: in progress
+- Notes sourcing method: minimum 3 sources required (Michelin, restaurant website, press coverage). Never fabricate. Never plagiarize. Rewrite from scratch using sources as reference only.
+- Saga needs to be added as a separate restaurant entry (two Michelin stars, Chef Charlie Mitchell, 63rd floor 70 Pine Street, Resy)
+- Cote 550 needs to be added as a separate restaurant entry (550 Madison Avenue, Resy, 14 days out, 10 AM)
+
 ## Editorial Rules
 - No em dashes anywhere in copy
 - observed_days is the only public-facing days-out field, not release_schedule
 - Auto-generated booking sentence when notes field is null
-- Notes field contains hand-written editorial descriptions (~96 restaurants populated as of April 2026)
+- Notes field contains hand-written editorial descriptions (~140 restaurants populated as of April 2026)
 - Scoopd voice: specific, insider, no marketing language, no generic adjectives
 - Do-not-touch restaurants (notes must never be overwritten by scripts):
   4 Charles Prime Rib, Bemelmans Bar, Bistrot Ha, Carbone, Cote, Double Chicken Please,
@@ -195,7 +208,7 @@ This logic is already implemented in app/restaurant/[slug]/page.js — reference
 - Notes field surfaced as styled description card with gold accent bar
 - Days-out display using observed_days with release_schedule fallback
 - ~192 active restaurant rows in DB
-- ~96 restaurants have editorial notes copy
+- ~140 restaurants have editorial notes copy
 
 ### Phase 2 — Complete
 - Stripe module-level initialization fixed in checkout, portal, and webhook routes
@@ -213,13 +226,9 @@ This logic is already implemented in app/restaurant/[slug]/page.js — reference
 ### Phase 3 — Drop Intelligence (in progress)
 - /drops page — built locally, premium gated, ready to push with Phase 2
 - /plan page (plan by date) — built locally, premium gated, ready to push with Phase 2
-- Alerts system — NOT YET BUILT
-  - Bell icon on restaurant page next to restaurant name
-  - Premium only, unlimited alerts
-  - Email via Resend, digest format (one email per release time grouping)
-  - Fires 5 minutes before drop time ET
-  - /account page shows active alerts with remove option
-  - Scheduler: Inngest (free tier)
+- Alerts system — DEFERRED until user base grows
+  - Design spec preserved in Alerts System Design section below
+  - Will revisit when there is sufficient subscriber volume to justify the infrastructure
 - Availability probability data — not started
 - Corner Store observed_days unconfirmed
 
@@ -232,10 +241,14 @@ This logic is already implemented in app/restaurant/[slug]/page.js — reference
 - Sitemap correct and live at /sitemap.xml
 - Google Analytics connected via Next.js Script component
 - Google site verification TXT record in DNS
+- JSON-LD structured data (schema.org Restaurant) live on all restaurant pages
+- Street addresses added to all 192 restaurants via Google Places API, stored in address column
+- robots.txt added blocking /_next/static/ and /api/
+- Key pages manually submitted for indexing in Google Search Console
+- Neighborhood internal linking live on all restaurant pages (random, up to 4 per page)
+- Share button live on all restaurant pages
 
 **SEO — Still to build:**
-- Structured data / JSON-LD — schema.org Restaurant markup on each restaurant page so Google understands the content and can serve rich results
-- Internal linking — cross-linking between restaurant pages by neighborhood, platform, and difficulty to build site authority
 - Search-optimized content — pages or blog posts targeting high-intent queries like "how to get a Carbone reservation" or "Lilia reservation tips"
 - Backlink strategy — outreach to Eater NY, Grub Street, The Infatuation, and NYC food newsletters to generate domain authority
 - Restaurant photos — images on restaurant pages improve click-through from search results
