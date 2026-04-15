@@ -32,6 +32,66 @@ There are three Supabase clients. Use the correct one or auth will break:
 - lib/supabase-server.js — server components and API routes with user context
 - lib/supabase.js — sitemap only, do not use anywhere else
 
+## Project File Structure
+Claude Code should read the actual directory tree on first load, but the known structure is:
+
+```
+app/
+  page.js                  — homepage directory
+  layout.js                — root layout, fonts, metadata base, Google Analytics
+  globals.css              — Tailwind preflight + global resets only
+  components/
+    ScoopNav.js            — top nav bar, logo left, The Scoop pill right
+    ScoopSubBar.js         — secondary auth bar, animates on dropdown open
+    ScoopFooter.js         — footer, Terms + Privacy links
+    NavSignOut.js          — client component, handles sign out action
+  restaurant/[slug]/
+    page.js                — individual restaurant page, drop date calc lives here
+  drops/
+    page.js                — What Drops Today, premium gated
+  plan/
+    page.js                — Plan by Date / When can I book, premium gated
+  how-it-works/
+  signup/
+  login/
+  register/
+  account/
+  admin/
+  founding/
+  alerts/
+  forgot-password/
+  reset-password/
+  terms/
+  privacy/
+  api/
+    stripe/
+      checkout/route.js
+      portal/route.js
+      webhook/route.js
+lib/
+  supabase-browser.js      — client components only
+  supabase-server.js       — server components and API routes
+  supabase.js              — sitemap only, do not use elsewhere
+```
+
+Note: each page typically has a co-located CSS file using the page-specific class prefix convention.
+
+## Shared Components and Patterns
+
+### Premium Gate / Blur Pattern
+Free users see a blurred placeholder with a lock icon and a "Get access →" CTA in place of the exact drop date. This pattern is implemented on:
+- /restaurant/[slug] — drop date field
+- /drops — "Opens For" date column
+- /plan — "Drop Date" column
+
+On /drops and /plan, free users see restaurant name, neighborhood, platform, drop time ET, and difficulty badge unblurred. Only the date column is locked. This is intentional — the intelligence is visible, the convenience of the exact date is the premium value.
+
+### Difficulty Badge
+Five-tier color system rendered inline. Colors defined in Design System section. Used on restaurant pages and both drop intelligence pages.
+
+### Drop Date Calculation
+Canonical implementation is in app/restaurant/[slug]/page.js. Both /drops and /plan reference the same logic. Always use that file as the source of truth — do not reimplement independently.
+
 ## Database Schema
 
 ### restaurants table (key fields)
@@ -158,8 +218,8 @@ This logic is already implemented in app/restaurant/[slug]/page.js — reference
 - /alerts — The Dish coming soon placeholder, premium gated messaging
 - /forgot-password — password reset request page
 - /reset-password — password update page, linked from Supabase reset email
-- /drops — what drops today, premium gated, built locally, ready to push with Phase 2
-- /plan — plan by date, premium gated, built locally, ready to push with Phase 2
+- /drops — what drops today, premium gated, live
+- /plan — plan by date, premium gated, live
 - /terms — Terms of Service, noindex
 - /privacy — Privacy Policy, noindex
 
@@ -177,12 +237,8 @@ This logic is already implemented in app/restaurant/[slug]/page.js — reference
 - Used for: drop alerts (Phase 3), transactional auth emails
 
 ## Content Status
-- ~140 of 192 restaurants have editorial notes
-- Tock restaurants: all complete
-- Resy restaurants: all complete
-- OpenTable: partially complete, in progress
-- DoorDash: partially complete, in progress
-- Walk-in, Phone, Own Site, Yelp: in progress
+- ~192 restaurants total in DB; editorial notes complete for all Tock, Resy, OpenTable, DoorDash, Phone, and Own Site restaurants as of April 2026
+- Walk-in restaurants: notes in progress
 - Notes sourcing method: minimum 3 sources required (Michelin, restaurant website, press coverage). Never fabricate. Never plagiarize. Rewrite from scratch using sources as reference only.
 - Saga needs to be added as a separate restaurant entry (two Michelin stars, Chef Charlie Mitchell, 63rd floor 70 Pine Street, Resy)
 - Cote 550 needs to be added as a separate restaurant entry (550 Madison Avenue, Resy, 14 days out, 10 AM)
@@ -208,7 +264,7 @@ This logic is already implemented in app/restaurant/[slug]/page.js — reference
 - Notes field surfaced as styled description card with gold accent bar
 - Days-out display using observed_days with release_schedule fallback
 - ~192 active restaurant rows in DB
-- ~140 restaurants have editorial notes copy
+- Editorial notes complete for all non-walk-in restaurants; walk-ins in progress
 
 ### Phase 2 — Complete
 - Stripe module-level initialization fixed in checkout, portal, and webhook routes
@@ -223,10 +279,10 @@ This logic is already implemented in app/restaurant/[slug]/page.js — reference
 - Resend domain verified, RESEND_API_KEY in Vercel
 - Zoho Mail configured, support@scoopd.nyc inbox live
 
-### Phase 3 — Drop Intelligence (in progress)
-- /drops page — built locally, premium gated, ready to push with Phase 2
-- /plan page (plan by date) — built locally, premium gated, ready to push with Phase 2
-- Alerts system — DEFERRED until user base grows
+### Phase 3 — Drop Intelligence (Complete)
+- /drops page — live, premium gated. Shows every restaurant dropping today sorted by drop time ET. Free users see restaurant name, neighborhood, platform, drop time, and difficulty. The "Opens For" date column is blurred with lock icon for free users. Banner copy prompts conversion.
+- /plan page — live, premium gated. User enters a target dinner date; page returns every restaurant whose reservation window hasn't opened for that date yet, with exact drop date and time. Free users see restaurant name, neighborhood, platform, drop time, and difficulty unblurred; drop date column is blurred with lock icon.
+- Alerts system — DEFERRED to Phase 4 until user base grows
   - Design spec preserved in Alerts System Design section below
   - Will revisit when there is sufficient subscriber volume to justify the infrastructure
 - Availability probability data — not started
@@ -273,7 +329,7 @@ This logic is already implemented in app/restaurant/[slug]/page.js — reference
   - Push notifications for token earnings, reward milestones, and drop alerts
   - Token/reward system is native app only, not built on web
 
-## Alerts System Design (Phase 3)
+## Alerts System Design (Deferred to Phase 4)
 - Inngest for scheduling (free tier, easy to migrate to Vercel Pro cron later)
 - Resend for email (3,000/month free tier)
 - Digest format: one email per release time group, all restaurants alerting at that time
