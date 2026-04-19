@@ -346,3 +346,38 @@ This logic is already implemented in app/restaurant/[slug]/page.js — reference
 - Stripe live mode active, customer portal configured with Terms and Privacy policy URLs
 - Zoho Mail: support@scoopd.nyc inbox live
 - Resend: sending from noreply@scoopd.nyc, domain verified
+## Session Updates — April 18-19, 2026
+
+### New Restaurants Added
+- Saga (slug: saga) — two Michelin stars, Chef Charlie Mitchell, 63rd floor 70 Pine Street Financial District, Resy, 10 AM, 1st of month 2 absolute months, Medium difficulty, $$$$
+- Cote 550 (slug: cote-550) — Simon Kim's second Manhattan location, 550 Madison Avenue Midtown, Resy, 10 AM, 14 days out, Very Hard difficulty, $$$
+
+### Notes Completed This Session
+- Corner Store, The Eighty Six, Or'Esh — full rewrites in Scoopd voice
+- Jean-Georges — written and pushed
+- Saga — written and pushed with note
+- Cote 550 — written and pushed with note
+- All Tock, DoorDash, and previously incomplete OpenTable restaurants written and pushed earlier in extended session
+
+### Non-Standard Inventory System
+- non_standard_inventory boolean column added to restaurants table
+- Set true for: corner-store, the-86, oresh
+- NsiField component built at app/components/NsiField.js
+- Blue-gray tint on release time and days out cards when flag is true
+- Info icon with hover/click callout on those two fields
+- Callout text: "This restaurant opens its booking window on a set schedule but has not released general availability inventory with an observable pattern. Read how booking actually works here."
+- Blog stub at app/blog/how-catch-hospitality-reservations-work/page.js — content TBD, URL may be shortened
+
+### Booking Line Corrections
+- 18 booking line errors corrected across existing notes via targeted replace script
+- Critical rule: booking intel must always come from observed_days and release_time in Supabase DB, never from third-party sources
+
+### Deferred Tasks
+- Need to Know box system — deferred to later update, needs full policy data sourced across 190+ restaurants before building
+- Catch Hospitality blog post — deferred, mechanic needs to be properly understood before writing
+- Walk-in notes (14 remaining) — not started
+- OpenTable notes (13 remaining) — not started
+- Others: Crown Shy, Hillstone, Sushi Ginza Onodera, Don Peppe, Din Tai Fung — not started
+
+### Em Dash Rule
+No em dashes anywhere in Scoopd copy. Ever. Use a period, colon, or restructure the sentence.
