@@ -27,7 +27,7 @@ Expected: no output. Any match is a Critical failure. Do not ship.
 ## Check 3: Em-dashes in modified files
 
 ```bash
-cd /Users/piggy/scoopd && git diff --name-only HEAD | xargs grep -ln "—" 2>/dev/null
+cd /Users/piggy/scoopd && git diff --name-only HEAD | xargs -r grep -ln "—" 2>/dev/null
 ```
 
 Expected: no output. Any match means a modified file contains an em-dash. Find the line,
@@ -38,7 +38,7 @@ fix the copy (use a period or colon), then re-run.
 ```bash
 cd /Users/piggy/scoopd && git diff --name-only HEAD \
   | grep -v "app/restaurant/\[slug\]/page\.js" \
-  | xargs grep -l "releaseHour\|releaseMinute\|parseReleaseMinutes" 2>/dev/null
+  | xargs -r grep -l "releaseHour\|releaseMinute\|parseReleaseMinutes" 2>/dev/null
 ```
 
 Expected: no output. If any file returns, drop date logic was modified outside the
@@ -47,7 +47,7 @@ canonical file. Review before shipping.
 ## Check 5: Supabase client correctness
 
 ```bash
-cd /Users/piggy/scoopd && git diff --name-only HEAD | xargs grep -l "supabase-browser" 2>/dev/null \
+cd /Users/piggy/scoopd && git diff --name-only HEAD | xargs -r grep -l "supabase-browser" 2>/dev/null \
   | grep -v "components/"
 ```
 
