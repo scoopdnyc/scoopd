@@ -198,13 +198,15 @@ Note: ADMIN_PASSWORD will be added as a server-only environment variable.
 
 ## Non-Standard Inventory (NSI)
 
-- non_standard_inventory boolean column added to restaurants table
-- Set true for: corner-store, the-86, oresh
-- NsiField component built at app/components/NsiField.js
-- Blue-gray tint on release time and days out cards when flag is true
-- Info icon with hover/click callout on those two fields
-- Callout text: "This restaurant opens its booking window on a set schedule but has not released general availability inventory with an observable pattern. Read how booking actually works here."
-- Blog stub at app/blog/how-catch-hospitality-reservations-work/page.js — content TBD, URL may be shortened
+The `non_standard_inventory` boolean column flags restaurants whose booking window
+opens on a set schedule but without an observable general availability pattern.
+
+Restaurants currently flagged: `corner-store`, `the-86`, `oresh`
+
+Component: `app/components/NsiField.js` renders the release time and days-out fields
+with a blue-gray tint and an info callout when this flag is true.
+
+Blog stub: `app/blog/how-catch-hospitality-reservations-work/page.js` (content TBD)
 
 ## Content Status
 
