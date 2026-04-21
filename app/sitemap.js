@@ -1,13 +1,16 @@
-  import { supabase } from '../lib/supabase'
+import { supabase } from '../lib/supabase'
+import { slugify } from '../lib/slugify'
 
 export default async function sitemap() {
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
     return []
   }
 
-  const { data: restaurants } = await supabase
-    .from('restaurants')
-    .select('slug')
+  const [{ data: restaurants }, { data: neighborhoodRows }, { data: platformRows }] = await Promise.all([
+    supabase.from('restaurants').select('slug'),
+    supabase.from('restaurants').select('neighborhood'),
+    supabase.from('restaurants').select('platform'),
+  ])
 
   const restaurantPages = (restaurants || [])
     .filter(r => r.slug)
@@ -17,6 +20,22 @@ export default async function sitemap() {
       changeFrequency: 'weekly',
       priority: 0.8,
     }))
+
+  const neighborhoods = [...new Set((neighborhoodRows || []).map(r => r.neighborhood).filter(Boolean))]
+  const neighborhoodPages = neighborhoods.map(n => ({
+    url: `https://scoopd.nyc/neighborhood/${slugify(n)}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly',
+    priority: 0.7,
+  }))
+
+  const platforms = [...new Set((platformRows || []).map(r => r.platform).filter(Boolean))]
+  const platformPages = platforms.map(p => ({
+    url: `https://scoopd.nyc/platform/${slugify(p)}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly',
+    priority: 0.7,
+  }))
 
   return [
     {
@@ -44,5 +63,7 @@ export default async function sitemap() {
       priority: 0.8,
     },
     ...restaurantPages,
+    ...neighborhoodPages,
+    ...platformPages,
   ]
 }
