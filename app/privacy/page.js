@@ -123,7 +123,7 @@ export default function PrivacyPage() {
             instructions.
           </p>
           <p className="lg-p">
-            Stripe, Inc. -- payment processing. Stripe's privacy policy is available at stripe.com/privacy. Supabase --
+            Stripe, Inc. -- payment processing. Stripe&apos;s privacy policy is available at stripe.com/privacy. Supabase --
             database hosting and user authentication infrastructure. Vercel -- website hosting and deployment
             infrastructure. Google LLC -- analytics via Google Analytics. Data is anonymized before transmission. Resend --
             transactional email delivery for account and alert emails sent from scoopd.nyc. Zoho Corporation -- support
@@ -187,7 +187,7 @@ export default function PrivacyPage() {
           <p className="lg-p">
             If you are located in the European Economic Area or United Kingdom and believe we have processed your personal
             information in violation of applicable law, you have the right to lodge a complaint with your local data
-            protection authority. In the UK this is the Information Commissioner's Office at ico.org.uk. A list of EU
+            protection authority. In the UK this is the Information Commissioner&apos;s Office at ico.org.uk. A list of EU
             supervisory authorities is available at edpb.europa.eu.
           </p>
         </div>

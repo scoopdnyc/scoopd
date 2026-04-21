@@ -237,7 +237,7 @@ export default function PlanClient({
         <div className="pb-eyebrow">Plan by Date</div>
         <h1 className="pb-headline">When can I book?</h1>
         <p className="pb-sub">
-          Enter a target dinner date. We'll show every restaurant whose reservation window hasn't reached it yet — and exactly when the drop fires.
+          Enter a target dinner date. We&apos;ll show every restaurant whose reservation window hasn&apos;t reached it yet — and exactly when the drop fires.
         </p>
 
         <div className="pb-date-row">

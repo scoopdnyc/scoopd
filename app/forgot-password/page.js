@@ -63,7 +63,7 @@ export default function ForgotPassword() {
         <div className="fp-card">
           <div className="fp-eyebrow">Account</div>
           <h1 className="fp-headline">Reset your password.</h1>
-          <p className="fp-sub">Enter your email and we'll send you a link to set a new password.</p>
+          <p className="fp-sub">Enter your email and we&apos;ll send you a link to set a new password.</p>
 
           {status === 'error' && (
             <div className="fp-error">{errorMsg || 'Something went wrong. Please try again.'}</div>

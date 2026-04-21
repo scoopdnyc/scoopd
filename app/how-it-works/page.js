@@ -44,7 +44,7 @@ export default async function HowItWorks() {
             <div className="hiw-section-body">
               <p>Ten years ago, getting into a popular NYC restaurant meant calling ahead or showing up and hoping. Now it means competing with hundreds of people the second a booking window opens. Sometimes at midnight. Sometimes at 9 AM sharp, weeks in advance.</p>
               <p>Resy and OpenTable made reservations more accessible. They also created a new problem. Everyone knows how to book online, which means the best tables at the hardest restaurants are gone in seconds. Often before most people have had their first coffee.</p>
-              <p>NYC dining has split into two worlds. Restaurants you can book whenever. And restaurants where you either know when to move or you don't get in.</p>
+              <p>NYC dining has split into two worlds. Restaurants you can book whenever. And restaurants where you either know when to move or you don&apos;t get in.</p>
             </div>
           </div>
 
@@ -104,7 +104,7 @@ export default async function HowItWorks() {
             <h2 className="hiw-section-title">Where Scoopd fits in</h2>
             <div className="hiw-section-body">
               <p>The information about when restaurants drop, on which platform, and at what exact time is scattered across the internet. Most of it is wrong or out of date. Restaurant bios get ignored, secondary articles repeat old information, and the work of keeping it accurate has never been done properly.</p>
-              <p>Scoopd maintains the database so you don't have to. Every release time we publish has been verified against what actually happens, not what a restaurant bio claims or what a blog post written two years ago says.</p>
+              <p>Scoopd maintains the database so you don&apos;t have to. Every release time we publish has been verified against what actually happens, not what a restaurant bio claims or what a blog post written two years ago says.</p>
               <p>The free directory gives you the release time and booking window for every restaurant we track. The window is accurate. Using it still requires knowing how to count correctly across platforms, which is where most people get tripped up. The premium tier handles that for you. Instead of knowing a restaurant drops 30 days out at 10 AM and doing the math yourself, Scoopd tells you that Carbone opens for April 15 tomorrow morning at 10 AM. Set your alarm.</p>
               <p>Not every diner is chasing a specific restaurant. Some people have a date locked in and want to know what is worth going after. Scoopd works for that too. Tell us you want to dine on May 5th and we show you what becomes bookable between now and then, across every restaurant we track, in the order it drops.</p>
             </div>
