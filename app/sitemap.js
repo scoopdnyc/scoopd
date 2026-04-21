@@ -7,7 +7,7 @@ export default async function sitemap() {
   }
 
   const [{ data: restaurants }, { data: neighborhoodRows }, { data: platformRows }] = await Promise.all([
-    supabase.from('restaurants').select('slug'),
+    supabase.from('restaurants').select('slug, last_updated_at'),
     supabase.from('restaurants').select('neighborhood'),
     supabase.from('restaurants').select('platform'),
   ])
@@ -16,7 +16,7 @@ export default async function sitemap() {
     .filter(r => r.slug)
     .map(r => ({
       url: `https://scoopd.nyc/restaurant/${r.slug}`,
-      lastModified: new Date(),
+      lastModified: r.last_updated_at ? new Date(r.last_updated_at) : new Date(),
       changeFrequency: 'weekly',
       priority: 0.8,
     }))

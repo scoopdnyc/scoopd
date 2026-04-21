@@ -10,6 +10,15 @@ import './restaurant.css'
 
 export const revalidate = 3600
 
+function shuffleTake4(arr) {
+  const a = [...(arr || [])]
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]]
+  }
+  return a.slice(0, 4)
+}
+
 async function getRestaurant(slug, client) {
   const { data, error } = await client
     .from('restaurants')
@@ -58,15 +67,6 @@ export async function generateMetadata({ params }) {
   }
 }
 
-function shuffleArray(input) {
-  const arr = [...input]
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]]
-  }
-  return arr
-}
-
 export default async function RestaurantPage({ params }) {
   const { slug } = await params
   const db = createSupabaseStatic()
@@ -81,13 +81,20 @@ export default async function RestaurantPage({ params }) {
     .single()
   const isNonStandardInventory = nsiRow?.non_standard_inventory === true
 
-  // Fetch other restaurants in the same neighborhood
-  const { data: neighborhoodRaw } = await db
-    .from('restaurants')
-    .select('restaurant, slug, difficulty, cuisine')
-    .eq('neighborhood', r.neighborhood)
-    .neq('slug', slug)
-  const neighborhoodRestaurants = shuffleArray(neighborhoodRaw || []).slice(0, 4)
+  // Fetch cross-linking sections in parallel
+  const [
+    { data: neighborhoodRaw },
+    { data: difficultyRaw },
+    { data: platformRaw },
+  ] = await Promise.all([
+    db.from('restaurants').select('restaurant, slug, difficulty, cuisine').eq('neighborhood', r.neighborhood).neq('slug', slug),
+    r.difficulty ? db.from('restaurants').select('restaurant, slug, difficulty').eq('difficulty', r.difficulty).neq('slug', slug) : { data: [] },
+    r.platform   ? db.from('restaurants').select('restaurant, slug, difficulty').eq('platform', r.platform).neq('slug', slug)   : { data: [] },
+  ])
+
+  const neighborhoodRestaurants = shuffleTake4(neighborhoodRaw)
+  const difficultyRestaurants   = shuffleTake4(difficultyRaw)
+  const platformRestaurants     = shuffleTake4(platformRaw)
 
   // Calculate next drop date server-side — always computed regardless of auth.
   // PremiumReveal decides client-side whether to show it based on subscription status.
@@ -245,7 +252,7 @@ export default async function RestaurantPage({ params }) {
       <Link href="/" className="rp-back">← Back to directory</Link>
       <div className="rp-hero">
         <div className="rp-eyebrow">{r.neighborhood} · {r.cuisine}</div>
-        <h1 className="rp-restaurant-name">{r.restaurant}</h1>
+        <h1 className="rp-restaurant-name">{r.restaurant} Reservations</h1>
         <div className="rp-hero-footer">
           <div className="rp-restaurant-meta">{r.platform}{r.michelin_stars && r.michelin_stars !== '—' ? ` · ${r.michelin_stars}` : ''}{r.price_tier ? ` · ${r.price_tier}` : ''}</div>
           <ShareButton restaurantName={r.restaurant} platform={r.platform} releaseTime={r.release_time} observedDays={r.observed_days} slug={slug} />
@@ -254,6 +261,7 @@ export default async function RestaurantPage({ params }) {
       {isClosed && <div className="rp-closed-notice">This restaurant is permanently closed.</div>}
       {isWalkin && <div className="rp-walkin-notice">Walk-in only — no reservations accepted. Arrive early.</div>}
       {!isClosed && <>
+        <h2 className="rp-section-heading">Booking Intelligence</h2>
         <div className="rp-content">
           <div className="rp-info-card" style={nsiCardStyle}>
             <div className="rp-info-label">Release Time</div>
@@ -274,6 +282,7 @@ export default async function RestaurantPage({ params }) {
           <div className="rp-info-card"><div className="rp-info-label">Seats</div><div className={`rp-info-value ${r.seat_count ? '' : 'na'}`}>{r.seat_count || '—'}</div></div>
         </div>
         <PremiumReveal dropDate={dropDateDisplay} isPlatformWalkIn={isWalkin} />
+        {(r.notes || autoSentence) && <h2 className="rp-section-heading">About</h2>}
         {r.notes
           ? <div className="rp-description">{r.notes}</div>
           : autoSentence && <div className="rp-description">{autoSentence}</div>
@@ -281,9 +290,53 @@ export default async function RestaurantPage({ params }) {
       </>}
       {neighborhoodRestaurants.length > 0 && (
         <div className="nb-section">
-          <div className="nb-heading">More in {r.neighborhood}</div>
+          <h2 className="nb-heading">More in {r.neighborhood}</h2>
           <div className="nb-row">
             {neighborhoodRestaurants.map(nr => {
+              const badgeColor =
+                nr.difficulty === 'Extremely Hard' ? '#a855f7'
+                : nr.difficulty === 'Very Hard' ? '#c96e6e'
+                : nr.difficulty === 'Hard' ? '#e38f09'
+                : nr.difficulty === 'Medium' ? '#c9b882'
+                : nr.difficulty === 'Easy' ? '#6ec9a0'
+                : '#8a8a80'
+              return (
+                <Link key={nr.slug} href={`/restaurant/${nr.slug}`} className="nb-card">
+                  <span className="nb-name">{nr.restaurant}</span>
+                  {nr.difficulty && <span className="nb-badge" style={{color: badgeColor}}>{nr.difficulty}</span>}
+                </Link>
+              )
+            })}
+          </div>
+        </div>
+      )}
+      {difficultyRestaurants.length > 0 && r.difficulty && (
+        <div className="nb-section">
+          <h2 className="nb-heading">More {r.difficulty} restaurants</h2>
+          <div className="nb-row">
+            {difficultyRestaurants.map(nr => {
+              const badgeColor =
+                nr.difficulty === 'Extremely Hard' ? '#a855f7'
+                : nr.difficulty === 'Very Hard' ? '#c96e6e'
+                : nr.difficulty === 'Hard' ? '#e38f09'
+                : nr.difficulty === 'Medium' ? '#c9b882'
+                : nr.difficulty === 'Easy' ? '#6ec9a0'
+                : '#8a8a80'
+              return (
+                <Link key={nr.slug} href={`/restaurant/${nr.slug}`} className="nb-card">
+                  <span className="nb-name">{nr.restaurant}</span>
+                  {nr.difficulty && <span className="nb-badge" style={{color: badgeColor}}>{nr.difficulty}</span>}
+                </Link>
+              )
+            })}
+          </div>
+        </div>
+      )}
+      {platformRestaurants.length > 0 && r.platform && (
+        <div className="nb-section">
+          <h2 className="nb-heading">More on {r.platform}</h2>
+          <div className="nb-row">
+            {platformRestaurants.map(nr => {
               const badgeColor =
                 nr.difficulty === 'Extremely Hard' ? '#a855f7'
                 : nr.difficulty === 'Very Hard' ? '#c96e6e'
