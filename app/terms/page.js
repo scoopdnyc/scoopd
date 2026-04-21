@@ -50,7 +50,7 @@ export default function TermsPage() {
           does not broker, transfer, or resell reservations. We provide information only. Any reservation you make as a result
           of using our Services is made directly by you through the relevant reservation platform.
           <br /><br />
-          When we use the word "you" in these Terms, it refers to any visitor or user of the Services, whether free or paid.
+          When we use the word &quot;you&quot; in these Terms, it refers to any visitor or user of the Services, whether free or paid.
         </p>
 
         <div className="lg-section">
@@ -160,8 +160,8 @@ export default function TermsPage() {
             invitation channel.
           </p>
           <p className="lg-p">
-            All payments are processed by Stripe, Inc. By subscribing you agree to Stripe's Terms of Service at
-            stripe.com/legal and Stripe's Privacy Policy at stripe.com/privacy. Scoopd is not responsible for any errors or
+            All payments are processed by Stripe, Inc. By subscribing you agree to Stripe&apos;s Terms of Service at
+            stripe.com/legal and Stripe&apos;s Privacy Policy at stripe.com/privacy. Scoopd is not responsible for any errors or
             acts of Stripe in processing your payment.
           </p>
         </div>
@@ -267,7 +267,7 @@ export default function TermsPage() {
             SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, PUNITIVE, OR CONSEQUENTIAL DAMAGES OF ANY KIND
             ARISING OUT OF OR RELATED TO YOUR USE OF OR INABILITY TO USE THE SERVICES, INCLUDING BUT NOT LIMITED TO MISSED
             RESERVATIONS, LOST DINING OPPORTUNITIES, LOST PROFITS, OR RELIANCE ON ANY INFORMATION PROVIDED, EVEN IF
-            SCOOPD HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES. IN NO EVENT SHALL SCOOPD'S TOTAL CUMULATIVE
+            SCOOPD HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES. IN NO EVENT SHALL SCOOPD&apos;S TOTAL CUMULATIVE
             LIABILITY TO YOU FOR ALL CLAIMS EXCEED THE GREATER OF (A) THE TOTAL AMOUNT YOU PAID TO SCOOPD IN THE TWELVE
             MONTHS IMMEDIATELY PRECEDING THE EVENT GIVING RISE TO THE CLAIM OR (B) ONE HUNDRED DOLLARS ($100.00). SOME
             JURISDICTIONS DO NOT ALLOW THE LIMITATION OR EXCLUSION OF CERTAIN DAMAGES SO SOME OF THE ABOVE LIMITATIONS MAY
@@ -293,7 +293,7 @@ export default function TermsPage() {
             resolved through good faith negotiation within 30 days shall be finally settled by binding individual
             arbitration administered by JAMS in New York County, New York, in accordance with JAMS Streamlined Arbitration
             Rules and Procedures then in effect. The arbitration shall be conducted by one arbitrator with substantial
-            experience in commercial disputes. The arbitrator's award shall be final and binding and may be entered as a
+            experience in commercial disputes. The arbitrator&apos;s award shall be final and binding and may be entered as a
             judgment in any court of competent jurisdiction.
           </p>
           <p className="lg-p">

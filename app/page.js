@@ -53,7 +53,7 @@ export default async function Home() {
       <div className="hero">
         <div className="eyebrow">NYC Reservation Intelligence</div>
         <h1 className="headline">Know when<br />tables drop.</h1>
-        <p className="sub">The exact moment reservations open at NYC's hardest tables. No bots. No brokers. Just intelligence.*</p>
+        <p className="sub">The exact moment reservations open at NYC&apos;s hardest tables. No bots. No brokers. Just intelligence.*</p>
       </div>
       <RestaurantList restaurants={restaurants} />
       <ScoopFooter />

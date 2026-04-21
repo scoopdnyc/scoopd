@@ -74,7 +74,7 @@ export default function FoundingClient({ isLoggedIn }) {
       </section>
 
       <section className="fm-includes">
-        <div className="fm-includes-label">What's included</div>
+        <div className="fm-includes-label">What&apos;s included</div>
         <ul className="fm-includes-list">
           <li className="fm-includes-item">
             <span className="fm-check">→</span>
@@ -82,7 +82,7 @@ export default function FoundingClient({ isLoggedIn }) {
           </li>
           <li className="fm-includes-item">
             <span className="fm-check">→</span>
-            Daily drop schedule. Every restaurant's next release, sorted by what's coming up first
+            Daily drop schedule. Every restaurant&apos;s next release, sorted by what&apos;s coming up first
           </li>
           <li className="fm-includes-item">
             <span className="fm-check">→</span>
@@ -90,7 +90,7 @@ export default function FoundingClient({ isLoggedIn }) {
           </li>
           <li className="fm-includes-item">
             <span className="fm-check">→</span>
-            Drop alerts when built. Get notified the moment a restaurant you're watching opens its next window
+            Drop alerts when built. Get notified the moment a restaurant you&apos;re watching opens its next window
           </li>
         </ul>
       </section>

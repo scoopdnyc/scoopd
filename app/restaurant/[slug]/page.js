@@ -53,6 +53,15 @@ export async function generateMetadata({ params }) {
   }
 }
 
+function shuffleArray(input) {
+  const arr = [...input]
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]]
+  }
+  return arr
+}
+
 export default async function RestaurantPage({ params }) {
   const { slug } = await params
   const serverSupabase = await createSupabaseServer()
@@ -65,15 +74,7 @@ export default async function RestaurantPage({ params }) {
     .select('restaurant, slug, difficulty, cuisine')
     .eq('neighborhood', r.neighborhood)
     .neq('slug', slug)
-  // Fisher-Yates shuffle, take 4
-  const neighborhoodRestaurants = (() => {
-    const arr = [...(neighborhoodRaw || [])]
-    for (let i = arr.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [arr[i], arr[j]] = [arr[j], arr[i]]
-    }
-    return arr.slice(0, 4)
-  })()
+  const neighborhoodRestaurants = shuffleArray(neighborhoodRaw || []).slice(0, 4)
 
   const { data: { user } } = await serverSupabase.auth.getUser()
   let isPremium = false

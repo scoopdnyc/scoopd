@@ -2,8 +2,6 @@
 import { useState } from 'react'
 import './admin.css'
 
-const ADMIN_PASSWORD = 'scoopd2026'
-
 function generateSlug(name) {
   return name
     .toLowerCase()
@@ -39,12 +37,22 @@ export default function AdminPage() {
   const [status, setStatus] = useState(null)
   const [loading, setLoading] = useState(false)
 
-  function handlePasswordSubmit(e) {
+  async function handlePasswordSubmit(e) {
     e.preventDefault()
-    if (password === ADMIN_PASSWORD) {
-      setAuthed(true)
-      setPasswordError(false)
-    } else {
+    try {
+      const res = await fetch('/api/admin/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password }),
+        credentials: 'include',
+      })
+      if (res.ok) {
+        setAuthed(true)
+        setPasswordError(false)
+      } else {
+        setPasswordError(true)
+      }
+    } catch {
       setPasswordError(true)
     }
   }
@@ -73,6 +81,7 @@ export default function AdminPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
+        credentials: 'include',
       })
       const data = await res.json()
       if (res.ok) {
@@ -81,7 +90,7 @@ export default function AdminPage() {
       } else {
         setStatus({ type: 'error', message: data.error || 'Something went wrong.' })
       }
-    } catch (err) {
+    } catch {
       setStatus({ type: 'error', message: 'Network error. Try again.' })
     }
     setLoading(false)
