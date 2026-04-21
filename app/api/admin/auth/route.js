@@ -13,7 +13,7 @@ export async function POST(request) {
     const response = Response.json({ ok: true })
     response.headers.set(
       'Set-Cookie',
-      'admin_auth=1; HttpOnly; SameSite=Strict; Path=/api/admin; Max-Age=28800'
+      'admin_auth=1; HttpOnly; Secure; SameSite=Strict; Path=/api/admin; Max-Age=28800'
     )
     return response
   } catch {
