@@ -32,10 +32,16 @@ export default async function sitemap() {
       priority: 0.6,
     },
     {
-      url: 'https://scoopd.nyc/signup',
+      url: 'https://scoopd.nyc/drops',
       lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.5,
+      changeFrequency: 'daily',
+      priority: 0.8,
+    },
+    {
+      url: 'https://scoopd.nyc/plan',
+      lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 0.8,
     },
     ...restaurantPages,
   ]

@@ -16,10 +16,11 @@ export const metadata = {
     type: 'website',
   },
   twitter: {
-    card: 'summary',
+    card: 'summary_large_image',
     title: 'Scoopd — NYC Restaurant Reservation Intelligence',
     description: 'Know exactly when NYC\'s hardest restaurant reservations drop. Drop times, release schedules, and booking intelligence for Carbone, Lilia, Via Carota, and 190+ more.',
   },
+  alternates: { canonical: 'https://scoopd.nyc/' },
 }
 
 const DIFFICULTY_ORDER = { 'Extremely Hard': 0, 'Very Hard': 1, 'Hard': 2, 'Medium': 3, 'Easy': 4 }
@@ -47,8 +48,34 @@ export default async function Home() {
   const serverSupabase = await createSupabaseServer()
   const restaurants = await getRestaurants(serverSupabase)
 
+  const websiteLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'Scoopd',
+    url: 'https://scoopd.nyc',
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: 'https://scoopd.nyc/?search={search_term_string}',
+      'query-input': 'required name=search_term_string',
+    },
+  }
+
+  const orgLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'Scoopd',
+    url: 'https://scoopd.nyc',
+    contactPoint: {
+      '@type': 'ContactPoint',
+      email: 'support@scoopd.nyc',
+      contactType: 'customer support',
+    },
+  }
+
   return (
     <main style={{background:'#0f0f0d',minHeight:'100vh',color:'#e8e4dc',fontFamily:"'DM Sans', sans-serif",padding:'0'}}>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgLd) }} />
       <ScoopNav />
       <div className="hero">
         <div className="eyebrow">NYC Reservation Intelligence</div>

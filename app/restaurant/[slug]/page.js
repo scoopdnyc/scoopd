@@ -1,10 +1,14 @@
-import { createSupabaseServer } from '../../../lib/supabase-server'
+import { createSupabaseStatic } from '../../../lib/supabase-static'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import ScoopNav from '../../components/ScoopNav'
 import ScoopFooter from '../../components/ScoopFooter'
 import ShareButton from '../../components/ShareButton'
+import NsiField from '../../components/NsiField'
+import PremiumReveal from './PremiumReveal'
 import './restaurant.css'
+
+export const revalidate = 3600
 
 async function getRestaurant(slug, client) {
   const { data, error } = await client
@@ -18,11 +22,11 @@ async function getRestaurant(slug, client) {
 
 export async function generateMetadata({ params }) {
   const { slug } = await params
-  const serverSupabase = await createSupabaseServer()
-  const r = await getRestaurant(slug, serverSupabase)
+  const db = createSupabaseStatic()
+  const r = await getRestaurant(slug, db)
   if (!r) return { title: 'Not Found' }
 
-  const title = `${r.restaurant} Reservations — Drop Time & Booking Intelligence | Scoopd`
+  const title = `${r.restaurant} Reservations — Drop Time & Booking Intelligence`
 
   let description
   if (r.notes) {
@@ -38,6 +42,7 @@ export async function generateMetadata({ params }) {
   return {
     title,
     description,
+    alternates: { canonical: url },
     openGraph: {
       title,
       description,
@@ -46,7 +51,7 @@ export async function generateMetadata({ params }) {
       type: 'website',
     },
     twitter: {
-      card: 'summary',
+      card: 'summary_large_image',
       title,
       description,
     },
@@ -64,32 +69,30 @@ function shuffleArray(input) {
 
 export default async function RestaurantPage({ params }) {
   const { slug } = await params
-  const serverSupabase = await createSupabaseServer()
-  const r = await getRestaurant(slug, serverSupabase)
+  const db = createSupabaseStatic()
+  const r = await getRestaurant(slug, db)
   if (!r) notFound()
 
+  // Fetch non_standard_inventory separately so a missing column never 404s the page
+  const { data: nsiRow } = await db
+    .from('restaurants')
+    .select('non_standard_inventory')
+    .eq('slug', slug)
+    .single()
+  const isNonStandardInventory = nsiRow?.non_standard_inventory === true
+
   // Fetch other restaurants in the same neighborhood
-  const { data: neighborhoodRaw } = await serverSupabase
+  const { data: neighborhoodRaw } = await db
     .from('restaurants')
     .select('restaurant, slug, difficulty, cuisine')
     .eq('neighborhood', r.neighborhood)
     .neq('slug', slug)
   const neighborhoodRestaurants = shuffleArray(neighborhoodRaw || []).slice(0, 4)
 
-  const { data: { user } } = await serverSupabase.auth.getUser()
-  let isPremium = false
-  if (user) {
-    const { data: sub } = await serverSupabase
-      .from('subscriptions')
-      .select('status')
-      .eq('user_id', user.id)
-      .single()
-    isPremium = sub?.status === 'active'
-  }
-
-  // Calculate next drop date for premium users with rolling window restaurants
+  // Calculate next drop date server-side — always computed regardless of auth.
+  // PremiumReveal decides client-side whether to show it based on subscription status.
   let dropDateDisplay = null
-  if (isPremium && r.observed_days) {
+  if (r.observed_days) {
     const now = new Date()
 
     // Current ET time as 0-23 hour and minute
@@ -99,7 +102,7 @@ export default async function RestaurantPage({ params }) {
       minute: '2-digit',
       hourCycle: 'h23',
     }).formatToParts(now)
-    const etHour = parseInt(etTimeParts.find(p => p.type === 'hour').value, 10)
+    const etHour   = parseInt(etTimeParts.find(p => p.type === 'hour').value, 10)
     const etMinute = parseInt(etTimeParts.find(p => p.type === 'minute').value, 10)
 
     // Parse release_time string e.g. "9:00 AM", "12:00 AM", "11:59 PM"
@@ -145,11 +148,13 @@ export default async function RestaurantPage({ params }) {
       day: 'numeric',
     })
     dropDateDisplay = r.release_time ? `${formatted} at ${r.release_time} ET` : formatted
+  } else if (r.release_schedule) {
+    dropDateDisplay = r.release_schedule
   }
 
   const isClosed = r.platform === 'CLOSED'
   const isWalkin = r.platform === 'Walk-in'
-  const isPhone = r.platform === 'Phone' || r.platform === 'Phone/Relationships'
+  const isPhone  = r.platform === 'Phone' || r.platform === 'Phone/Relationships'
 
   const diffColor =
     r.difficulty === 'Extremely Hard' ? '#a855f7'
@@ -159,14 +164,14 @@ export default async function RestaurantPage({ params }) {
     : r.difficulty === 'Easy' ? '#6ec9a0'
     : '#8a8a80'
 
-  // Days out display logic
+  // Days out display logic — asterisk suppressed for non-standard inventory restaurants
   const daysOutValue = r.observed_days
-    ? `${r.observed_days} days*`
+    ? `${r.observed_days} days${isNonStandardInventory ? '' : '*'}`
     : r.release_schedule
     ? r.release_schedule
-    : isWalkin
-    ? '—'
     : '—'
+
+  const nsiCardStyle = isNonStandardInventory ? { background: 'rgba(80, 110, 140, 0.15)' } : {}
 
   const daysOutClass = r.observed_days
     ? 'rp-info-value mono'
@@ -191,7 +196,7 @@ export default async function RestaurantPage({ params }) {
   }
 
   const streetAddress = r.address ? r.address.split(',')[0].trim() : undefined
-  const postalCode = r.address ? (r.address.match(/\b\d{5}\b/) || [])[0] : undefined
+  const postalCode    = r.address ? (r.address.match(/\b\d{5}\b/) || [])[0] : undefined
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Restaurant',
@@ -209,11 +214,33 @@ export default async function RestaurantPage({ params }) {
     }),
     url: `https://scoopd.nyc/restaurant/${slug}`,
     ...(r.notes && { description: r.notes }),
+    ...(r.price_tier && { priceRange: r.price_tier }),
+    acceptsReservations: r.platform !== 'Walk-in' && r.platform !== 'CLOSED',
+  }
+
+  const breadcrumbLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: 'https://scoopd.nyc',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: r.restaurant,
+        item: `https://scoopd.nyc/restaurant/${slug}`,
+      },
+    ],
   }
 
   return (
     <main style={{background:'#0f0f0d',minHeight:'100vh',color:'#e8e4dc',fontFamily:"var(--font-dm-sans), sans-serif"}}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
       <ScoopNav />
       <Link href="/" className="rp-back">← Back to directory</Link>
       <div className="rp-hero">
@@ -228,44 +255,29 @@ export default async function RestaurantPage({ params }) {
       {isWalkin && <div className="rp-walkin-notice">Walk-in only — no reservations accepted. Arrive early.</div>}
       {!isClosed && <>
         <div className="rp-content">
-          <div className="rp-info-card"><div className="rp-info-label">Release Time</div><div className={`rp-info-value ${r.release_time ? 'mono' : 'na'}`}>{r.release_time || (isWalkin ? 'Walk-in only' : isPhone ? 'Phone only' : '—')}</div></div>
-          <div className="rp-info-card"><div className="rp-info-label">Days Out</div><div className={daysOutClass}>{daysOutValue}</div></div>
+          <div className="rp-info-card" style={nsiCardStyle}>
+            <div className="rp-info-label">Release Time</div>
+            {isNonStandardInventory
+              ? <NsiField value={r.release_time || '—'} valueClassName={`rp-info-value ${r.release_time ? 'mono' : 'na'}`} />
+              : <div className={`rp-info-value ${r.release_time ? 'mono' : 'na'}`}>{r.release_time || (isWalkin ? 'Walk-in only' : isPhone ? 'Phone only' : '—')}</div>
+            }
+          </div>
+          <div className="rp-info-card" style={nsiCardStyle}>
+            <div className="rp-info-label">Days Out</div>
+            {isNonStandardInventory
+              ? <NsiField value={daysOutValue} valueClassName={daysOutClass} />
+              : <div className={daysOutClass}>{daysOutValue}</div>
+            }
+          </div>
           <div className="rp-info-card"><div className="rp-info-label">Platform</div><div className="rp-info-value">{r.platform || '—'}</div></div>
           <div className="rp-info-card"><div className="rp-info-label">Difficulty</div><div className="rp-info-value" style={{color:diffColor}}>{r.difficulty || '—'}</div></div>
           <div className="rp-info-card"><div className="rp-info-label">Seats</div><div className={`rp-info-value ${r.seat_count ? '' : 'na'}`}>{r.seat_count || '—'}</div></div>
         </div>
-                {!isWalkin && (
-          isPremium && r.observed_days ? (
-            <div className="rp-drop-card">
-              <div className="rp-drop-label">Next Drop Date</div>
-              <div style={{fontFamily:"'DM Mono',monospace",color:'#c9a96e',fontSize:'18px',fontWeight:400,letterSpacing:'0.5px',marginTop:'0.5rem'}}>
-                {dropDateDisplay}
-              </div>
-            </div>
-          ) : isPremium && r.release_schedule ? (
-            <div className="rp-drop-card">
-              <div className="rp-drop-label">Next Drop Date</div>
-              <div style={{fontFamily:"'DM Mono',monospace",color:'#c9a96e',fontSize:'15px',fontWeight:400,letterSpacing:'0.5px',marginTop:'0.5rem'}}>
-                {r.release_schedule}
-              </div>
-            </div>
-          ) : (
-            <div className="rp-drop-card">
-              <div className="rp-drop-label">Next Drop Date</div>
-              <div className="rp-drop-blurred">Tuesday, April 15 at 10:00 AM ET</div>
-              <div className="rp-drop-overlay">
-                <span className="rp-drop-lock">🔒</span>
-                <span className="rp-drop-overlay-text">Sign up to unlock exact drop dates</span>
-                <Link href="/signup" className="rp-drop-cta">Get access →</Link>
-              </div>
-            </div>
-          )
-        )}
+        <PremiumReveal dropDate={dropDateDisplay} isPlatformWalkIn={isWalkin} />
         {r.notes
           ? <div className="rp-description">{r.notes}</div>
           : autoSentence && <div className="rp-description">{autoSentence}</div>
         }
-
       </>}
       {neighborhoodRestaurants.length > 0 && (
         <div className="nb-section">

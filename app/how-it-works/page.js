@@ -4,6 +4,8 @@ import ScoopNav from '../components/ScoopNav'
 import ScoopFooter from '../components/ScoopFooter'
 import './how-it-works.css'
 
+export const dynamic = 'force-static'
+
 export const metadata = {
   title: 'How Scoopd Works — Restaurant Reservation Drop Times Explained',
   description: 'Scoopd tracks when NYC restaurants release reservations — the exact platform, time, and date. Here\'s how we do it and how to use it.',
@@ -15,18 +17,67 @@ export const metadata = {
     type: 'website',
   },
   twitter: {
-    card: 'summary',
+    card: 'summary_large_image',
     title: 'How Scoopd Works — Restaurant Reservation Drop Times Explained',
     description: 'Scoopd tracks when NYC restaurants release reservations — the exact platform, time, and date. Here\'s how we do it and how to use it.',
   },
+  alternates: { canonical: 'https://scoopd.nyc/how-it-works' },
 }
 
 export default async function HowItWorks() {
   const serverSupabase = await createSupabaseServer()
   const { data: { user } } = await serverSupabase.auth.getUser()
 
+  const faqLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: 'Why is it so hard to get a reservation at top NYC restaurants?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'NYC dining has split into two worlds: restaurants you can book whenever, and restaurants where hundreds of people compete the second a booking window opens. Resy and OpenTable made reservations more accessible, which means the best tables at the hardest restaurants are gone in seconds — often before most people have had their first coffee.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'What is a restaurant reservation drop time?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Most reservation-based restaurants release availability on a rolling schedule — instead of opening every future date at once, they release a fixed window that moves forward one day at a time. A restaurant with a 30-day window opens a new date every morning at a specific time. That moment is the drop time. Being at the restaurant page at 10:00:01 instead of 10:00:00 is often the difference between getting a table and watching it disappear.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'How do Resy, OpenTable, and DoorDash differ for booking NYC restaurants?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Each platform handles reservations differently. Resy hosts most high-demand NYC restaurants, with each controlling its own release schedule. OpenTable has a larger network with more consistent conventions around booking windows. DoorDash has become the exclusive platform for a growing group of NYC restaurants but has the weakest UI and less consistent release patterns. Knowing which platform a restaurant uses matters as much as knowing the drop time.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'How do I prepare to book a hard-to-get NYC restaurant reservation?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Have your account logged in and payment method saved before the drop time. Know your party size and preferred time slots in advance. Get to the restaurant page before the drop — searching at the exact drop time is already too late at the hardest places. Know whether desktop or mobile works better for that specific platform. And remember: missing the initial drop is not the end — cancellations happen throughout the day.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'What does Scoopd do?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Scoopd tracks when NYC restaurants release reservations — the exact platform, time, and days out — and calculates the specific date premium subscribers need to be online to book. The free directory shows release times and booking windows for 190+ restaurants. Premium subscribers get the exact calculated drop date for any future dinner date, across every restaurant Scoopd tracks.',
+        },
+      },
+    ],
+  }
+
   return (
     <main style={{background:'#0f0f0d',minHeight:'100vh',color:'#e8e4dc',fontFamily:"var(--font-dm-sans), sans-serif"}}>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }} />
       <ScoopNav />
 
       <div style={{padding:'0 2rem'}}>
