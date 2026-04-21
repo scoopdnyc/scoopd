@@ -5,7 +5,16 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 )
 
+function isAdminAuthed(request) {
+  const cookieHeader = request.headers.get('cookie') || ''
+  return cookieHeader.split(';').some(c => c.trim() === 'admin_auth=1')
+}
+
 export async function POST(request) {
+  if (!isAdminAuthed(request)) {
+    return Response.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
   try {
     const body = await request.json()
 
@@ -13,7 +22,6 @@ export async function POST(request) {
       return Response.json({ error: 'Restaurant name is required' }, { status: 400 })
     }
 
-    // Clean up empty strings to null
     const cleaned = Object.fromEntries(
       Object.entries(body).map(([k, v]) => [k, v === '' ? null : v])
     )
@@ -28,7 +36,7 @@ export async function POST(request) {
     }
 
     return Response.json({ success: true, data })
-  } catch (err) {
+  } catch {
     return Response.json({ error: 'Server error' }, { status: 500 })
   }
 }
