@@ -7,6 +7,7 @@ import ScoopFooter from '../components/ScoopFooter'
 
 export const metadata = {
   title: 'My Account | Scoopd',
+  alternates: { canonical: 'https://scoopd.nyc/account' },
 }
 
 export default async function AccountPage() {

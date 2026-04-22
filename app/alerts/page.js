@@ -6,6 +6,7 @@ import ScoopFooter from '../components/ScoopFooter'
 export const metadata = {
   title: 'The Dish — Drop Alerts | Scoopd',
   description: 'Get notified 5 minutes before a restaurant you\'re watching opens its reservation window. Coming soon to Scoopd.',
+  alternates: { canonical: 'https://scoopd.nyc/alerts' },
 }
 
 export default async function AlertsPage() {

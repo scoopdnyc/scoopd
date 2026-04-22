@@ -11,10 +11,11 @@ export const metadata = {
     type: 'website',
   },
   twitter: {
-    card: 'summary',
+    card: 'summary_large_image',
     title: 'Get Premium Access — Scoopd NYC Reservation Intelligence',
     description: 'Know the exact date every NYC reservation drops. $9.99/month or $60/year. Cancel anytime.',
   },
+  alternates: { canonical: 'https://scoopd.nyc/signup' },
 }
 
 export default function SignupPage() {

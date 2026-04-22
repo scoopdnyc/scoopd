@@ -29,6 +29,10 @@ export const metadata = {
   verification: {
     google: "nC1PVw6rF_tediEZTf6m8N9aQQf6yiw-usiNBbSYbcc",
   },
+  twitter: {
+    card: 'summary_large_image',
+    images: ['/opengraph-image'],
+  },
 };
 
 export const viewport = {

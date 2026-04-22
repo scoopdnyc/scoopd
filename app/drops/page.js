@@ -5,8 +5,9 @@ import ScoopFooter from '../components/ScoopFooter'
 import './drops.css'
 
 export const metadata = {
-  title: 'What Drops Today | Scoopd',
+  title: 'What Drops Today',
   description: 'Every NYC restaurant reservation drop, sorted by release time. Know exactly what becomes bookable today.',
+  alternates: { canonical: 'https://scoopd.nyc/drops' },
 }
 
 function parseReleaseMinutes(release_time) {

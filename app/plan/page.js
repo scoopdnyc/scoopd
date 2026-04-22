@@ -8,6 +8,7 @@ import './plan.css'
 export const metadata = {
   title: 'Plan by Date | Scoopd',
   description: 'Enter a target dinner date and see every NYC restaurant whose reservation window hasn\'t opened yet — and exactly when it will.',
+  alternates: { canonical: 'https://scoopd.nyc/plan' },
 }
 
 function toDateStr(d) {
