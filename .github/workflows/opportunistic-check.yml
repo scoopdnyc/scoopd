@@ -1,0 +1,12 @@
+name: NSI Opportunistic Check
+on:
+  schedule:
+    - cron: '*/5 16-22 * * *'
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call opportunistic check
+        run: |
+          curl -s -X GET https://scoopd.nyc/api/opportunistic-check \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}"
