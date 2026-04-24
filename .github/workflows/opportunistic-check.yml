@@ -2,6 +2,7 @@ name: NSI Opportunistic Check
 on:
   schedule:
     - cron: '*/5 16-22 * * *'
+  workflow_dispatch:
 jobs:
   check:
     runs-on: ubuntu-latest
