@@ -2,8 +2,9 @@ import { serve } from 'inngest/next'
 import { inngest } from '../../../lib/inngest'
 import { resyDailyCheck } from '../../../lib/inngest/resyDailyCheck'
 import { sevenroomsDailyCheck } from '../../../lib/inngest/sevenroomsDailyCheck'
+import { sevenroomsLongCalMonthlyCheck } from '../../../lib/inngest/sevenroomsLongCalMonthlyCheck'
 
 export const { GET, POST, PUT } = serve({
   client: inngest,
-  functions: [resyDailyCheck, sevenroomsDailyCheck],
+  functions: [resyDailyCheck, sevenroomsDailyCheck, sevenroomsLongCalMonthlyCheck],
 })
