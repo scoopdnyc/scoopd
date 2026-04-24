@@ -113,6 +113,58 @@ Note: ADMIN_PASSWORD will be added as a server-only environment variable.
 - Availability probability data — not started
 - Corner Store observed_days unconfirmed
 
+### Availability Monitor — In Progress
+
+**Infrastructure:**
+- Inngest (free tier) handles scheduling for daily checks and monthly Sushi Noz check
+- GitHub Actions handles NSI opportunistic check every 5 minutes noon-6 PM ET
+- Resend sends digest emails to support@scoopd.nyc
+- All monitor state written to monitor_log table (separate from restaurants table)
+
+**monitor_log schema:** id, restaurant_id (integer), platform, checked_at, api_verified_days, expected_days, flagged, flag_reason, raw_value
+
+**Database columns added to restaurants table:** resy_venue_id (numeric Resy ID), resy_slug (override for Resy slug mismatches), sevenrooms_slug, sevenrooms_type (rolling, long_calendar, null for monthly/NSI)
+
+**Resy monitor** (lib/monitors/resy.js):
+- Hits /4/venue/calendar endpoint with venue_id
+- Parses last_calendar_day using backwards walk on inventory.reservation
+- Strips event-only trailing dates (reservation: not available)
+- Tolerates closed days within window
+- 119 restaurants monitored, fires daily at 12:30 PM ET
+- Known false positives: Lilia (closed day compression), Cafe Spaghetti (temporary closure)
+
+**SevenRooms rolling monitor** (lib/monitors/sevenrooms.js checkRolling):
+- 2-probe range endpoint approach
+- Probe 1: today + (observed_days - 1) — flags if zero slots
+- Probe 2: today + (observed_days + 3) — flags only on type:"book" with non-null access_persistent_id
+- Covers: Adda, Dhamaka, Semma, Masalawala & Sons, Noz 17
+- NSI restaurants (Corner Store, Or'Esh, The 86) return HTTP 400 — handled by opportunistic monitor instead
+
+**SevenRooms long calendar monitor** (lib/monitors/sevenrooms.js checkLongCalendar):
+- Binary search ±7 days around observed_days
+- Looks for last date with type:"book" and non-null access_persistent_id
+- Covers: Marea, Rezdora
+- Runs daily at 12:30 PM ET via sevenroomsDailyCheck
+
+**SevenRooms monthly monitor** (lib/inngest/sevenroomsLongCalMonthlyCheck.js):
+- Covers Sushi Noz only
+- Runs on 1st and 15th of each month at 2 PM UTC
+- Expected boundary calculated dynamically — last day of month 2 months ahead
+- observed_days left null for Sushi Noz — not used
+- Binary search ±30 days around expected boundary
+- Flags if detected boundary differs from expected by more than 3 days
+
+**NSI opportunistic monitor** (lib/monitors/sevenrooms-opportunistic.js):
+- Covers Corner Store, Or'Esh, The 86 (non_standard_inventory = true)
+- Fires every 5 minutes noon-6 PM ET via GitHub Actions (.github/workflows/opportunistic-check.yml)
+- Endpoint: /api/opportunistic-check secured with CRON_SECRET bearer token
+- Alerts immediately on any type:"book" slot with non-null access_persistent_id
+- Has never detected a bookable slot — slots are extremely rare
+
+**Known slug mismatches** (resy_slug column): cote → cote-nyc, saga → saga-ny, saga-lounge → saga-the-lounge-and-terraces, sartriano → sartianos
+
+**OpenTable monitor:** not built — requires GraphQL query body captured from network tab first
+
 ### Phase 4 — Editorial + SEO (in progress)
 
 **SEO — Complete:**
