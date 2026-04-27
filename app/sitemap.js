@@ -6,33 +6,51 @@ export default async function sitemap() {
     return []
   }
 
-  const [{ data: restaurants }, { data: neighborhoodRows }, { data: platformRows }] = await Promise.all([
-    supabase.from('restaurants').select('slug, last_updated_at'),
-    supabase.from('restaurants').select('neighborhood'),
-    supabase.from('restaurants').select('platform'),
-  ])
+  const { data: restaurants } = await supabase
+    .from('restaurants')
+    .select('slug, neighborhood, platform, last_updated_at')
 
-  const restaurantPages = (restaurants || [])
+  const rows = restaurants || []
+
+  const restaurantPages = rows
     .filter(r => r.slug)
     .map(r => ({
       url: `https://scoopd.nyc/restaurant/${r.slug}`,
-      lastModified: r.last_updated_at ? new Date(r.last_updated_at) : new Date(),
+      lastModified: r.last_updated_at ? new Date(r.last_updated_at) : new Date('2026-04-21'),
       changeFrequency: 'weekly',
       priority: 0.8,
     }))
 
-  const neighborhoods = [...new Set((neighborhoodRows || []).map(r => r.neighborhood).filter(Boolean))]
-  const neighborhoodPages = neighborhoods.map(n => ({
-    url: `https://scoopd.nyc/neighborhood/${slugify(n)}`,
-    lastModified: new Date(),
+  // Neighborhood pages — lastmod = most recent restaurant update in that neighborhood
+  const neighborhoodMap = new Map()
+  for (const r of rows) {
+    if (!r.neighborhood) continue
+    const key = slugify(r.neighborhood)
+    const ts = r.last_updated_at ? new Date(r.last_updated_at) : new Date('2026-04-21')
+    if (!neighborhoodMap.has(key) || ts > neighborhoodMap.get(key).lastmod) {
+      neighborhoodMap.set(key, { name: r.neighborhood, lastmod: ts })
+    }
+  }
+  const neighborhoodPages = [...neighborhoodMap.entries()].map(([slug, { lastmod }]) => ({
+    url: `https://scoopd.nyc/neighborhood/${slug}`,
+    lastModified: lastmod,
     changeFrequency: 'weekly',
     priority: 0.7,
   }))
 
-  const platforms = [...new Set((platformRows || []).map(r => r.platform).filter(Boolean))]
-  const platformPages = platforms.map(p => ({
-    url: `https://scoopd.nyc/platform/${slugify(p)}`,
-    lastModified: new Date(),
+  // Platform pages — lastmod = most recent restaurant update on that platform
+  const platformMap = new Map()
+  for (const r of rows) {
+    if (!r.platform) continue
+    const key = slugify(r.platform)
+    const ts = r.last_updated_at ? new Date(r.last_updated_at) : new Date('2026-04-21')
+    if (!platformMap.has(key) || ts > platformMap.get(key).lastmod) {
+      platformMap.set(key, { platform: r.platform, lastmod: ts })
+    }
+  }
+  const platformPages = [...platformMap.entries()].map(([slug, { lastmod }]) => ({
+    url: `https://scoopd.nyc/platform/${slug}`,
+    lastModified: lastmod,
     changeFrequency: 'weekly',
     priority: 0.7,
   }))
@@ -40,25 +58,25 @@ export default async function sitemap() {
   return [
     {
       url: 'https://scoopd.nyc',
-      lastModified: new Date(),
+      lastModified: new Date('2026-04-27'),
       changeFrequency: 'daily',
       priority: 1,
     },
     {
       url: 'https://scoopd.nyc/how-it-works',
-      lastModified: new Date(),
+      lastModified: new Date('2026-04-21'),
       changeFrequency: 'monthly',
       priority: 0.6,
     },
     {
       url: 'https://scoopd.nyc/drops',
-      lastModified: new Date(),
+      lastModified: new Date('2026-04-27'),
       changeFrequency: 'daily',
       priority: 0.8,
     },
     {
       url: 'https://scoopd.nyc/plan',
-      lastModified: new Date(),
+      lastModified: new Date('2026-04-27'),
       changeFrequency: 'daily',
       priority: 0.8,
     },
