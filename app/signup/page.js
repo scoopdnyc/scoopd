@@ -16,6 +16,7 @@ export const metadata = {
     description: 'Know the exact date every NYC reservation drops. $9.99/month or $60/year. Cancel anytime.',
   },
   alternates: { canonical: 'https://scoopd.nyc/signup' },
+  robots: { index: false, follow: false },
 }
 
 export default function SignupPage() {
