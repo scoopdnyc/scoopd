@@ -11,6 +11,14 @@ import './restaurant.css'
 
 export const revalidate = 3600
 
+// Pre-generate all restaurant slugs at build time so Next.js treats these
+// routes as ISR pages (not dynamic). Revalidate = 3600 gives hourly refresh.
+export async function generateStaticParams() {
+  const db = createSupabaseStatic()
+  const { data } = await db.from('restaurants').select('slug')
+  return (data ?? []).filter(r => r.slug).map(r => ({ slug: r.slug }))
+}
+
 // Cached restaurant fetch — keyed by slug, revalidates every hour.
 // Includes non_standard_inventory so the NSI query is eliminated.
 const getRestaurantCached = unstable_cache(
