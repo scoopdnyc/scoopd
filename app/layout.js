@@ -29,6 +29,7 @@ export const metadata = {
   alternates: { canonical: '/' },
   verification: {
     google: "nC1PVw6rF_tediEZTf6m8N9aQQf6yiw-usiNBbSYbcc",
+    other: { 'msvalidate.01': 'E30F42C2DEC316D33109A49FF18858B6' },
   },
   twitter: {
     card: 'summary_large_image',
