@@ -26,6 +26,7 @@ export const metadata = {
   },
   description: "NYC restaurant reservation intelligence. Know when tables drop.",
   metadataBase: new URL("https://scoopd.nyc"),
+  alternates: { canonical: '/' },
   verification: {
     google: "nC1PVw6rF_tediEZTf6m8N9aQQf6yiw-usiNBbSYbcc",
   },

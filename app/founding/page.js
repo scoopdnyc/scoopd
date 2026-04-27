@@ -5,6 +5,7 @@ import './founding.css'
 export const metadata = {
   title: 'Founding Member',
   robots: { index: false, follow: false },
+  alternates: { canonical: 'https://scoopd.nyc/founding' },
 }
 
 export default async function FoundingPage() {

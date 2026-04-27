@@ -4,6 +4,7 @@ import ScoopFooter from '../../components/ScoopFooter'
 export const metadata = {
   title: 'How Reservations Actually Work at Corner Store, The Eighty Six, and Or\'Esh',
   robots: { index: false },
+  alternates: { canonical: 'https://scoopd.nyc/blog/how-catch-hospitality-reservations-work' },
 }
 
 export default function HowCatchHospitalityReservationsWork() {
