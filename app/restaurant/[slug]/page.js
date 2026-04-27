@@ -1,3 +1,4 @@
+import { unstable_cache } from 'next/cache'
 import { createSupabaseStatic } from '../../../lib/supabase-static'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
@@ -10,6 +11,46 @@ import './restaurant.css'
 
 export const revalidate = 3600
 
+// Cached restaurant fetch — keyed by slug, revalidates every hour.
+// Includes non_standard_inventory so the NSI query is eliminated.
+const getRestaurantCached = unstable_cache(
+  async (slug) => {
+    const db = createSupabaseStatic()
+    const { data, error } = await db
+      .from('restaurants')
+      .select('restaurant, neighborhood, platform, cuisine, release_time, observed_days, release_schedule, seat_count, michelin_stars, price_tier, difficulty, notes, slug, address, non_standard_inventory')
+      .eq('slug', slug)
+      .single()
+    if (error || !data) return null
+    return data
+  },
+  ['restaurant-data'],
+  { revalidate: 3600, tags: ['restaurant'] }
+)
+
+// Cached cross-link fetch — keyed by slug + filters.
+const getCrossLinksCached = unstable_cache(
+  async (slug, neighborhood, difficulty, platform) => {
+    const db = createSupabaseStatic()
+    const [
+      { data: neighborhoodRaw },
+      { data: difficultyRaw },
+      { data: platformRaw },
+    ] = await Promise.all([
+      db.from('restaurants').select('restaurant, slug, difficulty, cuisine').eq('neighborhood', neighborhood).neq('slug', slug),
+      difficulty ? db.from('restaurants').select('restaurant, slug, difficulty').eq('difficulty', difficulty).neq('slug', slug) : Promise.resolve({ data: [] }),
+      platform   ? db.from('restaurants').select('restaurant, slug, difficulty').eq('platform', platform).neq('slug', slug)   : Promise.resolve({ data: [] }),
+    ])
+    return {
+      neighborhoodRaw: neighborhoodRaw ?? [],
+      difficultyRaw:   difficultyRaw   ?? [],
+      platformRaw:     platformRaw     ?? [],
+    }
+  },
+  ['restaurant-crosslinks'],
+  { revalidate: 3600 }
+)
+
 function shuffleTake4(arr) {
   const a = [...(arr || [])]
   for (let i = a.length - 1; i > 0; i--) {
@@ -19,20 +60,9 @@ function shuffleTake4(arr) {
   return a.slice(0, 4)
 }
 
-async function getRestaurant(slug, client) {
-  const { data, error } = await client
-    .from('restaurants')
-    .select('restaurant, neighborhood, platform, cuisine, release_time, observed_days, release_schedule, seat_count, michelin_stars, price_tier, difficulty, notes, slug, address')
-    .eq('slug', slug)
-    .single()
-  if (error || !data) return null
-  return data
-}
-
 export async function generateMetadata({ params }) {
   const { slug } = await params
-  const db = createSupabaseStatic()
-  const r = await getRestaurant(slug, db)
+  const r = await getRestaurantCached(slug)
   if (!r) return { title: 'Not Found' }
 
   const title = `${r.restaurant} Reservations — Drop Time & Booking Intelligence`
@@ -69,28 +99,15 @@ export async function generateMetadata({ params }) {
 
 export default async function RestaurantPage({ params }) {
   const { slug } = await params
-  const db = createSupabaseStatic()
-  const r = await getRestaurant(slug, db)
+
+  const r = await getRestaurantCached(slug)
   if (!r) notFound()
 
-  // Fetch non_standard_inventory separately so a missing column never 404s the page
-  const { data: nsiRow } = await db
-    .from('restaurants')
-    .select('non_standard_inventory')
-    .eq('slug', slug)
-    .single()
-  const isNonStandardInventory = nsiRow?.non_standard_inventory === true
+  const isNonStandardInventory = r.non_standard_inventory === true
 
-  // Fetch cross-linking sections in parallel
-  const [
-    { data: neighborhoodRaw },
-    { data: difficultyRaw },
-    { data: platformRaw },
-  ] = await Promise.all([
-    db.from('restaurants').select('restaurant, slug, difficulty, cuisine').eq('neighborhood', r.neighborhood).neq('slug', slug),
-    r.difficulty ? db.from('restaurants').select('restaurant, slug, difficulty').eq('difficulty', r.difficulty).neq('slug', slug) : { data: [] },
-    r.platform   ? db.from('restaurants').select('restaurant, slug, difficulty').eq('platform', r.platform).neq('slug', slug)   : { data: [] },
-  ])
+  const { neighborhoodRaw, difficultyRaw, platformRaw } = await getCrossLinksCached(
+    slug, r.neighborhood, r.difficulty, r.platform
+  )
 
   const neighborhoodRestaurants = shuffleTake4(neighborhoodRaw)
   const difficultyRestaurants   = shuffleTake4(difficultyRaw)
