@@ -1,0 +1,43 @@
+# Scoopd
+
+> NYC restaurant reservation intelligence. Verified drop times, release schedules, and booking intel for the hardest tables in New York.
+
+Site: https://scoopd.nyc
+Contact: support@scoopd.nyc
+
+## What Scoopd Is
+
+Scoopd is a reservation intelligence platform for NYC diners. It tracks when restaurants release reservations — the exact time of day, how many days in advance, and which booking platform to use. Data is verified through direct observation and monitoring of Resy, OpenTable, SevenRooms, DoorDash, and other booking platforms.
+
+## Data Fields
+
+Each restaurant entry includes:
+- Restaurant name and neighborhood
+- Cuisine type
+- Booking platform (Resy, OpenTable, SevenRooms, DoorDash, Walk-in, Phone)
+- Release time (ET) — the exact time reservations open each day
+- Days out — how far in advance the booking window opens
+- Difficulty rating (Easy, Medium, Hard, Very Hard, Extremely Hard)
+- Editorial notes on booking strategy where available
+
+## Pages to Crawl
+
+- https://scoopd.nyc — Full restaurant directory, sorted by difficulty
+- https://scoopd.nyc/how-it-works — How reservation drops work and how to use Scoopd
+- https://scoopd.nyc/restaurant/{slug} — Individual restaurant pages with full booking intel
+- https://scoopd.nyc/neighborhood/{name} — Restaurants by NYC neighborhood
+- https://scoopd.nyc/platform/{name} — Restaurants by booking platform
+
+## Pages to Exclude
+
+- https://scoopd.nyc/admin — Internal admin only
+- https://scoopd.nyc/account — Authenticated user account
+- https://scoopd.nyc/api — API routes, not content
+- https://scoopd.nyc/drops — Premium gated, no public content
+- https://scoopd.nyc/plan — Premium gated, no public content
+- https://scoopd.nyc/signup — Subscription page, no content value
+- https://scoopd.nyc/login — Auth page
+- https://scoopd.nyc/register — Auth page
+- https://scoopd.nyc/founding — Internal pricing page
+- https://scoopd.nyc/terms — Legal
+- https://scoopd.nyc/privacy — Legal
