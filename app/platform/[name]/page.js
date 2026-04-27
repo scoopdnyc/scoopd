@@ -15,7 +15,7 @@ export async function generateMetadata({ params }) {
   const platform = PLATFORM_MAP[name]
   if (!platform) return {}
   return {
-    title: `${platform} NYC Restaurants — Reservation Drop Times | Scoopd`,
+    title: `${platform} NYC Restaurants — Reservation Drop Times`,
     description: `Drop times and booking intel for NYC restaurants on ${platform}. Know exactly when reservations open.`,
     alternates: { canonical: `https://scoopd.nyc/platform/${name}` },
     openGraph: {

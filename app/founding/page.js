@@ -3,7 +3,7 @@ import FoundingClient from './FoundingClient'
 import './founding.css'
 
 export const metadata = {
-  title: 'Founding Member | Scoopd',
+  title: 'Founding Member',
   robots: { index: false, follow: false },
 }
 

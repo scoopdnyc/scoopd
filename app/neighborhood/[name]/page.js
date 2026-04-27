@@ -14,7 +14,7 @@ export async function generateMetadata({ params }) {
   const { name } = await params
   const neighborhood = unslugify(name)
   return {
-    title: `${neighborhood} Restaurant Reservations — Scoopd`,
+    title: `${neighborhood} Restaurant Reservations`,
     description: `Reservation drop times and booking intel for ${neighborhood} restaurants. Know exactly when tables open at the hardest spots in ${neighborhood}.`,
     alternates: { canonical: `https://scoopd.nyc/neighborhood/${name}` },
     openGraph: {

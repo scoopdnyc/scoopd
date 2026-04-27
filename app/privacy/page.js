@@ -3,7 +3,7 @@ import ScoopFooter from '../components/ScoopFooter'
 import Link from 'next/link'
 
 export const metadata = {
-  title: 'Privacy Policy | Scoopd',
+  title: 'Privacy Policy',
   robots: { index: false, follow: false },
 }
 

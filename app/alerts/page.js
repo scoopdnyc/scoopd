@@ -4,7 +4,7 @@ import ScoopNav from '../components/ScoopNav'
 import ScoopFooter from '../components/ScoopFooter'
 
 export const metadata = {
-  title: 'The Dish — Drop Alerts | Scoopd',
+  title: 'The Dish — Drop Alerts',
   description: 'Get notified 5 minutes before a restaurant you\'re watching opens its reservation window. Coming soon to Scoopd.',
   alternates: { canonical: 'https://scoopd.nyc/alerts' },
 }

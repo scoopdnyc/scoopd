@@ -2,7 +2,7 @@ import ScoopNav from '../../components/ScoopNav'
 import ScoopFooter from '../../components/ScoopFooter'
 
 export const metadata = {
-  title: 'How Reservations Actually Work at Corner Store, The Eighty Six, and Or\'Esh | Scoopd',
+  title: 'How Reservations Actually Work at Corner Store, The Eighty Six, and Or\'Esh',
   robots: { index: false },
 }
 

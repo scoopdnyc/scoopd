@@ -6,7 +6,7 @@ import ScoopNav from '../components/ScoopNav'
 import ScoopFooter from '../components/ScoopFooter'
 
 export const metadata = {
-  title: 'My Account | Scoopd',
+  title: 'My Account',
   alternates: { canonical: 'https://scoopd.nyc/account' },
 }
 
