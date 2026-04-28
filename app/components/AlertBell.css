@@ -1,0 +1,21 @@
+.ab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: transparent;
+  border: 0.5px solid #c9a96e;
+  color: #c9a96e;
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 13px;
+  padding: 0.5rem 0.85rem;
+  border-radius: 999px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: opacity 0.15s, background 0.15s, color 0.15s;
+  flex-shrink: 0;
+}
+.ab-btn:hover { opacity: 0.8; }
+.ab-btn:disabled { opacity: 0.4; cursor: default; }
+.ab-btn.ab-active { background: #c9a96e; color: #0f0f0d; border-color: #c9a96e; }
+.ab-btn.ab-active:hover { opacity: 0.9; }
+.ab-label { letter-spacing: 0.5px; }

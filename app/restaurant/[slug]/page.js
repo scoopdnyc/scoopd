@@ -1,10 +1,12 @@
 import { unstable_cache } from 'next/cache'
 import { createSupabaseStatic } from '../../../lib/supabase-static'
+import { computeNextDropDate } from '../../../lib/dropDate'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import ScoopNav from '../../components/ScoopNav'
 import ScoopFooter from '../../components/ScoopFooter'
 import ShareButton from '../../components/ShareButton'
+import AlertBell from '../../components/AlertBell'
 import NsiField from '../../components/NsiField'
 import PremiumReveal from './PremiumReveal'
 import './restaurant.css'
@@ -121,68 +123,7 @@ export default async function RestaurantPage({ params }) {
   const difficultyRestaurants   = shuffleTake4(difficultyRaw)
   const platformRestaurants     = shuffleTake4(platformRaw)
 
-  // Calculate next drop date server-side — always computed regardless of auth.
-  // PremiumReveal decides client-side whether to show it based on subscription status.
-  let dropDateDisplay = null
-  if (r.observed_days) {
-    const now = new Date()
-
-    // Current ET time as 0-23 hour and minute
-    const etTimeParts = new Intl.DateTimeFormat('en-US', {
-      timeZone: 'America/New_York',
-      hour: 'numeric',
-      minute: '2-digit',
-      hourCycle: 'h23',
-    }).formatToParts(now)
-    const etHour   = parseInt(etTimeParts.find(p => p.type === 'hour').value, 10)
-    const etMinute = parseInt(etTimeParts.find(p => p.type === 'minute').value, 10)
-
-    // Parse release_time string e.g. "9:00 AM", "12:00 AM", "11:59 PM"
-    let releaseHour = 0
-    let releaseMinute = 0
-    if (r.release_time) {
-      const match = r.release_time.match(/^(\d+):(\d+)\s*(AM|PM)$/i)
-      if (match) {
-        let h = parseInt(match[1], 10)
-        const m = parseInt(match[2], 10)
-        const meridiem = match[3].toUpperCase()
-        if (meridiem === 'AM' && h === 12) h = 0
-        else if (meridiem === 'PM' && h !== 12) h += 12
-        releaseHour = h
-        releaseMinute = m
-      }
-    }
-
-    // Build ET calendar date as a local midnight Date (no timezone shift on output)
-    const etDateParts = new Intl.DateTimeFormat('en-US', {
-      timeZone: 'America/New_York',
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-    }).formatToParts(now)
-    const etYear  = parseInt(etDateParts.find(p => p.type === 'year').value, 10)
-    const etMonth = parseInt(etDateParts.find(p => p.type === 'month').value, 10) - 1
-    const etDay   = parseInt(etDateParts.find(p => p.type === 'day').value, 10)
-
-    // If current ET time is before release time, the window hasn't advanced yet —
-    // treat yesterday as the restaurant's current date
-    const restaurantDate = new Date(etYear, etMonth, etDay)
-    if (etHour * 60 + etMinute < releaseHour * 60 + releaseMinute) {
-      restaurantDate.setDate(restaurantDate.getDate() - 1)
-    }
-
-    // Next bookable date = restaurant current date + observed_days - 1
-    restaurantDate.setDate(restaurantDate.getDate() + r.observed_days - 1)
-
-    const formatted = restaurantDate.toLocaleDateString('en-US', {
-      weekday: 'long',
-      month: 'long',
-      day: 'numeric',
-    })
-    dropDateDisplay = r.release_time ? `${formatted} at ${r.release_time} ET` : formatted
-  } else if (r.release_schedule) {
-    dropDateDisplay = r.release_schedule
-  }
+  const { display: dropDateDisplay } = computeNextDropDate(r)
 
   const isClosed = r.platform === 'CLOSED'
   const isWalkin = r.platform === 'Walk-in'
@@ -286,7 +227,10 @@ export default async function RestaurantPage({ params }) {
       {isClosed && <div className="rp-closed-notice">This restaurant is permanently closed.</div>}
       {isWalkin && <div className="rp-walkin-notice">Walk-in only — no reservations accepted. Arrive early.</div>}
       {!isClosed && <>
-        <h2 className="rp-section-heading">Booking Intelligence</h2>
+        <div className="rp-section-heading-row">
+          <h2 className="rp-section-heading" style={{padding:0,margin:0}}>Booking Intelligence</h2>
+          {!isWalkin && <AlertBell slug={slug} />}
+        </div>
         <div className="rp-content">
           <div className="rp-info-card" style={nsiCardStyle}>
             <div className="rp-info-label">Release Time</div>

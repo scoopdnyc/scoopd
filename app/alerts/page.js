@@ -1,19 +1,26 @@
-import { createSupabaseServer } from '../../lib/supabase-server'
+import { createSupabaseServer } from '@/lib/supabase-server'
+import { createSupabaseStatic } from '@/lib/supabase-static'
+import { computeNextDropDate } from '@/lib/dropDate'
 import Link from 'next/link'
 import ScoopNav from '../components/ScoopNav'
 import ScoopFooter from '../components/ScoopFooter'
+import AlertsList from './AlertsList'
 
 export const metadata = {
-  title: 'The Dish — Drop Alerts',
-  description: 'Get notified 5 minutes before a restaurant you\'re watching opens its reservation window. Coming soon to Scoopd.',
+  title: 'The Dish: Drop Alerts',
+  description: 'Get notified 5 minutes before a restaurant you are watching opens its reservation window.',
   alternates: { canonical: 'https://scoopd.nyc/alerts' },
 }
+
+export const dynamic = 'force-dynamic'
 
 export default async function AlertsPage() {
   const serverSupabase = await createSupabaseServer()
   const { data: { user } } = await serverSupabase.auth.getUser()
 
   let isPremium = false
+  let alertRows = []
+
   if (user) {
     const { data: sub } = await serverSupabase
       .from('subscriptions')
@@ -21,93 +28,93 @@ export default async function AlertsPage() {
       .eq('user_id', user.id)
       .single()
     isPremium = sub?.status === 'active'
+
+    if (isPremium) {
+      const { data: alerts } = await serverSupabase
+        .from('alerts')
+        .select('restaurant_slug, created_at')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+
+      const slugs = (alerts || []).map(a => a.restaurant_slug)
+      if (slugs.length) {
+        const stat = createSupabaseStatic()
+        const { data: restaurants } = await stat
+          .from('restaurants')
+          .select('slug, restaurant, neighborhood, platform, release_time, observed_days, release_schedule')
+          .in('slug', slugs)
+        const byslug = new Map((restaurants || []).map(r => [r.slug, r]))
+        alertRows = slugs
+          .map(slug => byslug.get(slug))
+          .filter(Boolean)
+          .map(r => {
+            const { display: dropDate } = computeNextDropDate(r)
+            return { ...r, dropDate }
+          })
+      }
+    }
   }
 
   return (
     <main style={{ background: '#0f0f0d', minHeight: '100vh', color: '#e8e4dc', fontFamily: "var(--font-dm-sans), sans-serif" }}>
       <style>{`
-        .td-wrap { max-width: 560px; margin: 0 auto; padding: 5rem 2rem; }
+        .td-wrap { max-width: 720px; margin: 0 auto; padding: 4rem 2rem; }
         .td-eyebrow { font-family: var(--font-dm-mono), monospace; font-size: 11px; letter-spacing: 2.5px; color: #c9a96e; text-transform: uppercase; margin-bottom: 1.25rem; }
-        .td-headline { font-family: var(--font-playfair), serif; font-size: 48px; line-height: 1.05; color: #e8e4dc; margin: 0 0 1.5rem; }
-        .td-sub { font-size: 16px; color: #8a8a80; line-height: 1.8; margin: 0 0 3rem; max-width: 480px; }
+        .td-headline { font-family: var(--font-playfair), serif; font-size: 40px; line-height: 1.1; color: #e8e4dc; margin: 0 0 1.25rem; }
+        .td-sub { font-size: 15px; color: #8a8a80; line-height: 1.7; margin: 0 0 2.5rem; max-width: 520px; }
         .td-card { background: #1a1a16; border: 0.5px solid #2a2a26; border-radius: 12px; padding: 2rem; }
-        .td-card-label { font-family: var(--font-dm-mono), monospace; font-size: 10px; letter-spacing: 2px; color: #6b6b60; text-transform: uppercase; margin-bottom: 1rem; }
-        .td-lock { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem; }
-        .td-lock-icon { font-size: 20px; line-height: 1; flex-shrink: 0; margin-top: 2px; opacity: 0.5; }
-        .td-lock-text { font-size: 14px; color: #8a8a80; line-height: 1.65; }
-        .td-lock-text strong { color: #e8e4dc; font-weight: 600; }
-        .td-divider { border: none; border-top: 0.5px solid #2a2a26; margin: 1.5rem 0; }
-        .td-feature-list { list-style: none; padding: 0; margin: 0 0 1.5rem; display: flex; flex-direction: column; gap: 0.75rem; }
-        .td-feature { display: flex; gap: 0.75rem; font-size: 13px; color: #6b6b60; line-height: 1.5; align-items: flex-start; }
-        .td-feature-arrow { color: #2a2a26; font-family: var(--font-dm-mono), monospace; font-size: 11px; flex-shrink: 0; margin-top: 1px; }
-        .td-cta { display: inline-block; background: #c9a96e; color: #0f0f0d; border-radius: 8px; padding: 0.85rem 1.5rem; font-size: 14px; font-weight: 600; text-decoration: none; font-family: var(--font-dm-sans), sans-serif; transition: opacity 0.15s; }
+        .td-list { padding: 0.5rem 1.5rem; }
+        .td-empty { font-size: 15px; color: #8a8a80; line-height: 1.7; }
+        .td-empty strong { color: #e8e4dc; font-weight: 600; }
+        .td-cta { display: inline-block; background: #c9a96e; color: #0f0f0d; border-radius: 8px; padding: 0.85rem 1.5rem; font-size: 14px; font-weight: 600; text-decoration: none; margin-top: 1rem; transition: opacity 0.15s; }
         .td-cta:hover { opacity: 0.9; }
-        .td-premium-note { font-size: 13px; color: #6b6b60; line-height: 1.6; }
-        .td-premium-note strong { color: #c9a96e; }
+        .td-row { display: grid; grid-template-columns: 1fr auto; gap: 1rem; align-items: center; padding: 1.25rem 0; border-bottom: 0.5px solid #2a2a26; }
+        .td-row:last-child { border-bottom: none; }
+        .td-row-main { min-width: 0; }
+        .td-row-meta { font-family: var(--font-dm-mono), monospace; font-size: 11px; color: #6b6b60; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 0.4rem; }
+        .td-row-name { font-family: var(--font-playfair), serif; font-size: 20px; color: #e8e4dc; text-decoration: none; }
+        .td-row-name:hover { color: #c9a96e; }
+        .td-row-date { font-family: var(--font-dm-mono), monospace; font-size: 12px; color: #c9a96e; margin-top: 0.45rem; letter-spacing: 0.5px; }
+        .td-row-date.muted { color: #6b6b60; }
+        .td-remove { background: transparent; border: 0.5px solid #c9a96e; color: #c9a96e; padding: 0.5rem 0.85rem; border-radius: 999px; cursor: pointer; font-family: var(--font-dm-sans), sans-serif; font-size: 12px; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 0.4rem; transition: opacity 0.15s; }
+        .td-remove:hover { opacity: 0.85; }
+        .td-lock-card { text-align: center; padding: 2.5rem 2rem; }
+        .td-lock-icon { font-size: 24px; margin-bottom: 1rem; opacity: 0.6; }
       `}</style>
 
       <ScoopNav />
 
       <div className="td-wrap">
         <div className="td-eyebrow">The Dish</div>
-        <h1 className="td-headline">Know before<br />the window opens.</h1>
+        <h1 className="td-headline">Drop alerts.</h1>
         <p className="td-sub">
-          Drop alerts fire 5 minutes before a restaurant you are watching opens its reservation window.
-          No more setting alarms, refreshing at the wrong time, or missing a table by seconds.
+          Five minutes before a restaurant you are watching opens its reservation window, you get a digest email. One per release time. All your watched restaurants grouped together.
         </p>
 
-        <div className="td-card">
-          <div className="td-card-label">Coming soon</div>
-
-          <div className="td-lock">
-            <span className="td-lock-icon">🔔</span>
-            <div className="td-lock-text">
-              <strong>Alerts are in development.</strong> When this launches, you will be able to watch any restaurant in the directory and get a notification the moment its next reservation window is about to open.
-            </div>
+        {!user && (
+          <div className="td-card td-lock-card">
+            <div className="td-lock-icon">🔒</div>
+            <p className="td-empty"><strong>Drop alerts are a premium feature.</strong></p>
+            <Link href="/signup" className="td-cta">Get access</Link>
           </div>
+        )}
 
-          <ul className="td-feature-list">
-            <li className="td-feature">
-              <span className="td-feature-arrow">→</span>
-              Fires 5 minutes before the drop — enough time to be ready, not so early you forget
-            </li>
-            <li className="td-feature">
-              <span className="td-feature-arrow">→</span>
-              Watch any restaurant in the directory, unlimited alerts
-            </li>
-            <li className="td-feature">
-              <span className="td-feature-arrow">→</span>
-              Digest format — one email per release time, all your watched restaurants grouped together
-            </li>
-            <li className="td-feature">
-              <span className="td-feature-arrow">→</span>
-              Manage your watches from your account page
-            </li>
-          </ul>
+        {user && !isPremium && (
+          <div className="td-card td-lock-card">
+            <div className="td-lock-icon">🔒</div>
+            <p className="td-empty"><strong>Subscribe to set drop alerts.</strong></p>
+            <Link href="/account" className="td-cta">View subscription</Link>
+          </div>
+        )}
 
-          <hr className="td-divider" />
+        {isPremium && alertRows.length === 0 && (
+          <div className="td-card">
+            <p className="td-empty">No alerts yet. Find a restaurant and hit the bell.</p>
+            <Link href="/" className="td-cta">Browse restaurants</Link>
+          </div>
+        )}
 
-          {isPremium ? (
-            <p className="td-premium-note">
-              <strong>You will have access.</strong> Alerts are a premium feature and your subscription covers it.
-              When this goes live you will be able to set up watches directly from any restaurant page.
-            </p>
-          ) : user ? (
-            <>
-              <p className="td-premium-note" style={{ marginBottom: '1.25rem' }}>
-                Alerts are a premium feature. Subscribe now and you will have access the day this launches.
-              </p>
-              <Link href="/account" className="td-cta">View subscription options</Link>
-            </>
-          ) : (
-            <>
-              <p className="td-premium-note" style={{ marginBottom: '1.25rem' }}>
-                Alerts are a premium feature. Create an account and subscribe to get access when this launches.
-              </p>
-              <Link href="/register" className="td-cta">Create an account</Link>
-            </>
-          )}
-        </div>
+        {isPremium && alertRows.length > 0 && <AlertsList rows={alertRows} />}
       </div>
       <ScoopFooter />
     </main>

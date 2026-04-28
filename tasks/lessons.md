@@ -23,6 +23,19 @@ and return 401 before processing if auth fails.
 **Skill:** scoopd:security-audit Check 4 catches this.
 **Status:** Fixed — app/api/admin/add-restaurant/route.js
 
+## L004 — Drop date calc partially extracted (2026-04-27)
+
+**Pattern:** Drop date logic extracted from `app/restaurant/[slug]/page.js` into
+`lib/dropDate.js` for the alerts system build, but `app/drops/page.js` and
+`app/plan/PlanClient.js` still contain inline copies.
+**Impact:** Three implementations of the same logic. CLAUDE.md "single source of truth"
+rule now refers to `lib/dropDate.js` for new code, not the restaurant page.
+**Rule:** When next touching `app/drops/page.js` or `app/plan/PlanClient.js`, migrate
+them to import `computeNextDropDate` from `lib/dropDate.js`. Do not re-derive the
+calc anywhere.
+**Skill:** None.
+**Status:** Active
+
 ## L003 — Pre-existing lint errors missed by previous audits (2026-04-20)
 
 **Pattern:** Unescaped entities in JSX (`'`, `"`) and `Math.random()` called inside

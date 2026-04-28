@@ -84,6 +84,7 @@ export default async function AccountPage() {
             <form action="/api/stripe/portal" method="POST">
               <button type="submit" className="ac-btn-gold">Manage billing</button>
             </form>
+            <Link href="/alerts" className="ac-btn-outline">Manage your drop alerts →</Link>
           </div>
         ) : (
           <div className="ac-card">
