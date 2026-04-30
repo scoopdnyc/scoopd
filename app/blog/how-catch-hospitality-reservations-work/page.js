@@ -13,7 +13,7 @@ export default function HowCatchHospitalityReservationsWork() {
       <ScoopNav />
       <div style={{ maxWidth: '680px', margin: '0 auto', padding: '3rem 2rem' }}>
         <h1 style={{ fontFamily: "var(--font-playfair), serif", fontSize: '36px', lineHeight: 1.15, color: '#e8e4dc', marginBottom: '1.5rem' }}>
-          How Reservations Actually Work at Corner Store, The Eighty Six, and Or'Esh
+          How Reservations Actually Work at Corner Store, The Eighty Six, and Or&apos;Esh
         </h1>
         <p style={{ fontSize: '16px', color: '#ababa3', lineHeight: 1.85 }}>
           This guide is coming soon. Check back shortly.
