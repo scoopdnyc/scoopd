@@ -1,5 +1,20 @@
+import fs from 'fs'
+import path from 'path'
+import matter from 'gray-matter'
 import { supabase } from '../lib/supabase'
 import { slugify } from '../lib/slugify'
+
+function getBlogPosts() {
+  const dir = path.join(process.cwd(), 'content/blog')
+  if (!fs.existsSync(dir)) return []
+  return fs.readdirSync(dir)
+    .filter(f => f.endsWith('.mdx'))
+    .map(f => {
+      const raw = fs.readFileSync(path.join(dir, f), 'utf-8')
+      const { data } = matter(raw)
+      return data
+    })
+}
 
 export default async function sitemap() {
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
@@ -21,7 +36,7 @@ export default async function sitemap() {
       priority: 0.8,
     }))
 
-  // Neighborhood pages — lastmod = most recent restaurant update in that neighborhood
+  // Neighborhood pages: lastmod = most recent restaurant update in that neighborhood
   const neighborhoodMap = new Map()
   for (const r of rows) {
     if (!r.neighborhood) continue
@@ -38,7 +53,7 @@ export default async function sitemap() {
     priority: 0.7,
   }))
 
-  // Platform pages — lastmod = most recent restaurant update on that platform
+  // Platform pages: lastmod = most recent restaurant update on that platform
   const platformMap = new Map()
   for (const r of rows) {
     if (!r.platform) continue
@@ -52,6 +67,13 @@ export default async function sitemap() {
     url: `https://scoopd.nyc/platform/${slug}`,
     lastModified: lastmod,
     changeFrequency: 'weekly',
+    priority: 0.7,
+  }))
+
+  const blogPosts = getBlogPosts().map(post => ({
+    url: `https://scoopd.nyc/blog/${post.slug}`,
+    lastModified: new Date(post.updatedAt),
+    changeFrequency: 'monthly',
     priority: 0.7,
   }))
 
@@ -83,5 +105,6 @@ export default async function sitemap() {
     ...restaurantPages,
     ...neighborhoodPages,
     ...platformPages,
+    ...blogPosts,
   ]
 }
