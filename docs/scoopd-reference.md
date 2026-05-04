@@ -1,8 +1,6 @@
 # Scoopd Reference
 
-Full reference material for the Scoopd platform. Extracted from CLAUDE.md so the
-operating rules file stays scannable. Read this when you need schema details,
-phase history, design system values, or environment variable reference.
+Full reference material for the Scoopd platform. Extracted from scoopd.md so the operating rules file stays scannable. Read this when you need schema details, phase history, design system values, monitor algorithms, or environment variable reference.
 
 ## Stack
 - Next.js 16.2.1 (App Router, Turbopack)
@@ -27,12 +25,12 @@ Required in .env.local and Vercel:
 - NEXT_PUBLIC_SITE_URL
 - RESEND_API_KEY
 - GOOGLE_PLACES_API_KEY
-
-Note: ADMIN_PASSWORD will be added as a server-only environment variable.
+- ADMIN_PASSWORD (server-only)
+- CRON_SECRET (GitHub Actions opportunistic monitor auth)
 
 ## Database Schema
 
-### restaurants table (key fields)
+### restaurants table
 - restaurant — display name
 - slug — URL slug (e.g. carbone). Note: Sartiano's DB slug is sartriano (legacy typo, Resy slug is sartianos — already reconciled in DB, do not change)
 - neighborhood — NYC neighborhood
@@ -45,10 +43,19 @@ Note: ADMIN_PASSWORD will be added as a server-only environment variable.
 - michelin_stars — text
 - price_tier — $, $$, $$$, $$$$
 - difficulty — Easy, Medium, Hard, Very Hard, Extremely Hard
-- notes — editorial description. ~140 restaurants have hand-written copy. If null, auto-sentence is generated. Do not overwrite existing notes with scripts without explicit instruction. Do-not-touch list: 4 Charles Prime Rib, Bemelmans Bar, Bistrot Ha, Carbone, Cote, Double Chicken Please, Eleven Madison Park, Ha's Snack Bar, Jeju Noodle Bar, Joo Ok, Lilia, Minetta Tavern, Tatiana, Theodora, Torrisi, Via Carota.
+- notes — editorial description. All 192 restaurants have hand-written copy as of May 2026. If null, auto-sentence is generated. Do not overwrite existing notes with scripts without explicit instruction. Do-not-touch list: 4 Charles Prime Rib, Bemelmans Bar, Bistrot Ha, Carbone, Cote, Double Chicken Please, Eleven Madison Park, Ha's Snack Bar, Jeju Noodle Bar, Joo Ok, Lilia, Minetta Tavern, Tatiana, Theodora, Torrisi, Via Carota.
 - address — full street address, populated via Google Places API
 - beli_score — numeric
-- non_standard_inventory — boolean, set true for restaurants with non-standard inventory patterns
+- non_standard_inventory — boolean, set true for restaurants with non-standard inventory patterns (Corner Store, The Eighty Six, Or'Esh)
+- google_place_id — text, populated for all 192 restaurants
+- photo_override_url — text, optional manual photo URL override
+- photo_position — text, focal point for photo crop
+- photo_height — integer, display height control
+- last_updated_at — timestamp, used by sitemap for real lastmod values
+- resy_venue_id — numeric Resy venue ID, used by availability monitor
+- resy_slug — override for known Resy slug mismatches (cote→cote-nyc, saga→saga-ny, saga-lounge→saga-the-lounge-and-terraces, sartriano→sartianos)
+- sevenrooms_slug — SevenRooms venue slug
+- sevenrooms_type — rolling, long_calendar, or null (for monthly/NSI restaurants)
 
 ### subscriptions table
 - user_id — references auth.users
@@ -57,6 +64,17 @@ Note: ADMIN_PASSWORD will be added as a server-only environment variable.
 - status — active or inactive
 - current_period_end
 - founding_member — boolean, true if user subscribed via /founding at founding rate
+
+### monitor_log table
+- id
+- restaurant_id — integer, foreign key to restaurants
+- platform
+- checked_at
+- api_verified_days
+- expected_days
+- flagged
+- flag_reason
+- raw_value
 
 ## Design System
 
@@ -88,8 +106,7 @@ Note: ADMIN_PASSWORD will be added as a server-only environment variable.
 - Auto-generated booking sentences
 - Notes field surfaced as styled description card with gold accent bar
 - Days-out display using observed_days with release_schedule fallback
-- ~192 active restaurant rows in DB
-- Editorial notes complete for all non-walk-in restaurants; walk-ins in progress
+- 192 active restaurant rows in DB
 
 ### Phase 2 — Complete
 - Stripe module-level initialization fixed in checkout, portal, and webhook routes
@@ -98,105 +115,59 @@ Note: ADMIN_PASSWORD will be added as a server-only environment variable.
 - ScoopNav two-bar system: The Scoop pill top bar + ScoopSubBar with auth links and open/close animation
 - /signup rebuilt as subscription pricing page (monthly $9.99, yearly $60)
 - /alerts placeholder page built as The Dish coming soon page
-- ScoopFooter added to all 15 pages (Terms + Privacy links)
+- ScoopFooter added to all pages (Terms + Privacy links)
 - /terms and /privacy pages built with full legal copy, noindex
 - Stripe live mode fully configured, customer portal configured with Terms and Privacy URLs
 - Resend domain verified, RESEND_API_KEY in Vercel
 - Zoho Mail configured, support@scoopd.nyc inbox live
 
 ### Phase 3 — Drop Intelligence (Complete)
-- /drops page — live, premium gated. Shows every restaurant dropping today sorted by drop time ET. Free users see restaurant name, neighborhood, platform, drop time, and difficulty. The "Opens For" date column is blurred with lock icon for free users. Banner copy prompts conversion.
+- /drops page — live, premium gated. Shows every restaurant dropping today sorted by drop time ET. Free users see restaurant name, neighborhood, platform, drop time, and difficulty. The "Opens For" date column is blurred with lock icon for free users.
 - /plan page — live, premium gated. User enters a target dinner date; page returns every restaurant whose reservation window hasn't opened for that date yet, with exact drop date and time. Free users see restaurant name, neighborhood, platform, drop time, and difficulty unblurred; drop date column is blurred with lock icon.
-- Alerts system — DEFERRED to Phase 4 until user base grows
-  - Design spec preserved in Alerts System Design section below
-  - Will revisit when there is sufficient subscriber volume to justify the infrastructure
-- Availability probability data — not started
-- Corner Store observed_days unconfirmed
+- Alerts system — Complete. Inngest scheduling, Resend email digest, bell icon UI on restaurant pages (premium only), /account page alert management.
+- Availability monitor — Complete. See Availability Monitor section below.
 
-### Availability Monitor — In Progress
-
-**Infrastructure:**
-- Inngest (free tier) handles scheduling for daily checks and monthly Sushi Noz check
-- GitHub Actions handles NSI opportunistic check every 5 minutes noon-6 PM ET
-- Resend sends digest emails to support@scoopd.nyc
-- All monitor state written to monitor_log table (separate from restaurants table)
-
-**monitor_log schema:** id, restaurant_id (integer), platform, checked_at, api_verified_days, expected_days, flagged, flag_reason, raw_value
-
-**Database columns added to restaurants table:** resy_venue_id (numeric Resy ID), resy_slug (override for Resy slug mismatches), sevenrooms_slug, sevenrooms_type (rolling, long_calendar, null for monthly/NSI)
-
-**Resy monitor** (lib/monitors/resy.js):
-- Hits /4/venue/calendar endpoint with venue_id
-- Parses last_calendar_day using backwards walk on inventory.reservation
-- Strips event-only trailing dates (reservation: not available)
-- Tolerates closed days within window
-- 119 restaurants monitored, fires daily at 12:30 PM ET
-- Known false positives: Lilia (closed day compression), Cafe Spaghetti (temporary closure)
-
-**SevenRooms rolling monitor** (lib/monitors/sevenrooms.js checkRolling):
-- 2-probe range endpoint approach
-- Probe 1: today + (observed_days - 1) — flags if zero slots
-- Probe 2: today + (observed_days + 3) — flags only on type:"book" with non-null access_persistent_id
-- Covers: Adda, Dhamaka, Semma, Masalawala & Sons, Noz 17
-- NSI restaurants (Corner Store, Or'Esh, The 86) return HTTP 400 — handled by opportunistic monitor instead
-
-**SevenRooms long calendar monitor** (lib/monitors/sevenrooms.js checkLongCalendar):
-- Binary search ±7 days around observed_days
-- Looks for last date with type:"book" and non-null access_persistent_id
-- Covers: Marea, Rezdora
-- Runs daily at 12:30 PM ET via sevenroomsDailyCheck
-
-**SevenRooms monthly monitor** (lib/inngest/sevenroomsLongCalMonthlyCheck.js):
-- Covers Sushi Noz only
-- Runs on 1st and 15th of each month at 2 PM UTC
-- Expected boundary calculated dynamically — last day of month 2 months ahead
-- observed_days left null for Sushi Noz — not used
-- Binary search ±30 days around expected boundary
-- Flags if detected boundary differs from expected by more than 3 days
-
-**NSI opportunistic monitor** (lib/monitors/sevenrooms-opportunistic.js):
-- Covers Corner Store, Or'Esh, The 86 (non_standard_inventory = true)
-- Fires every 5 minutes noon-6 PM ET via GitHub Actions (.github/workflows/opportunistic-check.yml)
-- Endpoint: /api/opportunistic-check secured with CRON_SECRET bearer token
-- Alerts immediately on any type:"book" slot with non-null access_persistent_id
-- Has never detected a bookable slot — slots are extremely rare
-
-**Known slug mismatches** (resy_slug column): cote → cote-nyc, saga → saga-ny, saga-lounge → saga-the-lounge-and-terraces, sartriano → sartianos
-
-**OpenTable monitor:** not built — requires GraphQL query body captured from network tab first
-
-### Phase 4 — Editorial + SEO (in progress)
+### Phase 4 — Editorial + SEO (Complete)
 
 **SEO — Complete:**
 - Dynamic meta titles and descriptions on all public pages
-- Open Graph and Twitter card tags on all public pages
-- Default metadata in layout.js with metadataBase set to https://scoopd.nyc
-- Sitemap correct and live at /sitemap.xml
-- Google Analytics connected via Next.js Script component
+- Title deduplication: no trailing | Scoopd on any page
+- Canonical URLs on all pages
+- Open Graph and Twitter card tags sitewide; twitter:card summary_large_image
+- OG images: sitewide default + per-restaurant with difficulty badge color (Next.js ImageResponse)
+- ISR caching: revalidate=3600 on restaurant pages; force-static on /how-it-works; supabase-static.js for cookie-free fetches
+- Homepage JSON-LD: WebSite (SearchAction) + Organization
+- Restaurant JSON-LD: name, servesCuisine, address, priceRange, acceptsReservations, BreadcrumbList
+- FAQPage schema on /how-it-works
+- H1/H2 semantic headings on restaurant pages; H1 = "[Name] Reservations"
+- /signup noindexed and removed from sitemap
+- Sitemap with real lastmod timestamps via last_updated_at column
+- Neighborhood category pages at /neighborhood/[name] with ItemList + BreadcrumbList JSON-LD
+- Platform category pages at /platform/[name] with ItemList + BreadcrumbList JSON-LD
+- Blog system: /blog index + /blog/[slug] MDX with Article schema, ISR, canonical
+- First blog post: /blog/the-reservation-economy (links to Torrisi and Don Angie)
+- /how-it-works Further Reading section linking to blog
+- public/llms.txt for AI crawler signal
+- IndexNow key file created, verified with Bing, bulk URL submission completed
+- Google Search Console: top 25 pages manually submitted
+- Bing Webmaster Tools: sitemap submitted
+- Restaurant photos live on all pages: google_place_id, photo_override_url, photo_position, photo_height columns; /admin/photos picker with lazy load, focal point cropper, height slider
+- robots.txt blocking /_next/static/ and /api/
+- Google Analytics via Next.js Script component
 - Google site verification TXT record in DNS
-- JSON-LD structured data (schema.org Restaurant) live on all restaurant pages
-- Street addresses added to all 192 restaurants via Google Places API, stored in address column
-- robots.txt added blocking /_next/static/ and /api/
-- Key pages manually submitted for indexing in Google Search Console
-- Neighborhood internal linking live on all restaurant pages (random, up to 4 per page)
-- Share button live on all restaurant pages
+- Neighborhood internal linking on all restaurant pages (random, up to 4 per page)
+- Share button on all restaurant pages
 
-**SEO — Still to build:**
-- Search-optimized content — pages or blog posts targeting high-intent queries like "how to get a Carbone reservation" or "Lilia reservation tips"
-- Backlink strategy — outreach to Eater NY, Grub Street, The Infatuation, and NYC food newsletters to generate domain authority
-- Restaurant photos — images on restaurant pages improve click-through from search results
-
-**Editorial — Not started:**
-- Blog layer behind paywall
-- Topics identified: secondary market economics, reservation scalping, platform risk, execution guide (how to actually win a reservation once you know when it drops)
-- Restaurant photos
+**SEO — Ongoing backlog:**
+- Blog content layer — high ROI; each post targets high-intent queries and links to 5-10 restaurant pages
+- Backlink outreach — Eater NY, Grub Street, The Infatuation, NYC food newsletters
 
 ### Phase 5 — Scale (not started)
 - AdSense and sponsorships
 - scoopd.com domain
 - Expansion beyond NYC
 - Monitor Snag Reservations for SEO competition
-- Amex Platinum and Chase Sapphire Reserve affiliate links launch with Phase 2 freemium
+- Amex Platinum and Chase Sapphire Reserve affiliate links
 - Native iOS/Android app
   - Dual pricing: $12.99/month in-app, $9.99/month web
   - Token/reward system tied to data contributions (verified drop times, schedule changes, referrals, reviews, birthday, restaurant suggestions)
@@ -205,6 +176,77 @@ Note: ADMIN_PASSWORD will be added as a server-only environment variable.
   - Crowdsourced data model: users earn by improving platform intelligence, keeping drop times current
   - Push notifications for token earnings, reward milestones, and drop alerts
   - Token/reward system is native app only, not built on web
+
+## Availability Monitor
+
+### Infrastructure
+- Inngest (free tier) handles scheduling for daily checks and monthly Sushi Noz check
+- GitHub Actions handles NSI opportunistic check every 5 minutes noon-6 PM ET
+- Resend sends digest emails to support@scoopd.nyc
+- All monitor state written to monitor_log table (separate from restaurants table)
+
+### Resy monitor (lib/monitors/resy.js)
+- Hits /4/venue/calendar endpoint with venue_id
+- Parses last_calendar_day using backwards walk on inventory.reservation
+- Strips event-only trailing dates (reservation: not available)
+- Tolerates closed days within window
+- 119 restaurants monitored, fires daily at 12:30 PM ET
+- Known false positives: Lilia (closed day compression), Cafe Spaghetti (temporary closure)
+
+### SevenRooms rolling monitor (lib/monitors/sevenrooms.js checkRolling)
+- 2-probe range endpoint approach
+- Probe 1: today + (observed_days - 1) — flags if zero slots
+- Probe 2: today + (observed_days + 3) — flags only on type:"book" with non-null access_persistent_id
+- Covers: Adda, Dhamaka, Semma, Masalawala & Sons, Noz 17
+- NSI restaurants (Corner Store, Or'Esh, The 86) return HTTP 400 — handled by opportunistic monitor instead
+
+### SevenRooms long calendar monitor (lib/monitors/sevenrooms.js checkLongCalendar)
+- Binary search ±7 days around observed_days
+- Looks for last date with type:"book" and non-null access_persistent_id
+- Covers: Marea, Rezdora
+- Runs daily at 12:30 PM ET via sevenroomsDailyCheck
+
+### SevenRooms monthly monitor (lib/inngest/sevenroomsLongCalMonthlyCheck.js)
+- Covers Sushi Noz only
+- Runs on 1st and 15th of each month at 2 PM UTC
+- Expected boundary calculated dynamically — last day of month 2 months ahead
+- observed_days left null for Sushi Noz — not used
+- Binary search ±30 days around expected boundary
+- Flags if detected boundary differs from expected by more than 3 days
+
+### NSI opportunistic monitor (lib/monitors/sevenrooms-opportunistic.js)
+- Covers Corner Store, Or'Esh, The 86 (non_standard_inventory = true)
+- Fires every 5 minutes noon-6 PM ET via GitHub Actions (.github/workflows/opportunistic-check.yml)
+- Endpoint: /api/opportunistic-check secured with CRON_SECRET bearer token
+- Alerts immediately on any type:"book" slot with non-null access_persistent_id
+- Has never detected a bookable slot — slots are extremely rare
+
+### OpenTable monitor
+Not built — requires GraphQL query body captured from network tab before implementation can begin.
+
+## Alerts System
+
+Status: Complete as of May 2026.
+
+- Inngest for scheduling
+- Resend for email (3,000/month free tier)
+- Digest format: one email per release time group, all restaurants alerting at that time
+- Fires 5 minutes before drop time ET
+- Bell icon UI on restaurant page, premium only
+- Free users see bell but get prompted to subscribe
+- /account page manages active alerts
+
+## Non-Standard Inventory (NSI)
+
+The `non_standard_inventory` boolean column flags restaurants whose booking window opens on a set schedule but without an observable general availability pattern.
+
+Restaurants currently flagged: `corner-store`, `the-86`, `oresh`
+
+Component: `app/components/NsiField.js` renders the release time and days-out fields with a blue-gray tint and an info callout when this flag is true.
+
+Callout text: "This restaurant opens its booking window on a set schedule but has not released general availability inventory with an observable pattern. Read how booking actually works here."
+
+Blog stub: `app/blog/how-catch-hospitality-reservations-work/page.js` (content TBD)
 
 ## Founding Member System
 
@@ -216,15 +258,11 @@ Note: ADMIN_PASSWORD will be added as a server-only environment variable.
 - Re-entry gate in checkout route: if founding=true but founding_member=true and status=inactive, founding is overridden to false so canceled founding members cannot reclaim the rate
 - All four Stripe live price IDs (standard month, standard year, founding month, founding year) are in Vercel env vars
 
-## Alerts System Design (Deferred to Phase 4)
+## Content Status
 
-- Inngest for scheduling (free tier, easy to migrate to Vercel Pro cron later)
-- Resend for email (3,000/month free tier)
-- Digest format: one email per release time group, all restaurants alerting at that time
-- Fires 5 minutes before drop time ET
-- Bell icon UI on restaurant page, premium only
-- Free users see bell but get prompted to subscribe
-- /account page manages active alerts
+- 192 restaurants in DB; editorial notes complete for all restaurants as of May 2026
+- Notes sourcing method: minimum 3 sources required (Michelin, restaurant website, press coverage). Never fabricate. Never plagiarize. Rewrite from scratch using sources as reference only.
+- Do-not-touch list (notes must never be overwritten by scripts): 4 Charles Prime Rib, Bemelmans Bar, Bistrot Ha, Carbone, Cote, Double Chicken Please, Eleven Madison Park, Ha's Snack Bar, Jeju Noodle Bar, Joo Ok, Lilia, Minetta Tavern, Tatiana, Theodora, Torrisi, Via Carota
 
 ## Competitive Context
 
@@ -232,9 +270,6 @@ Note: ADMIN_PASSWORD will be added as a server-only environment variable.
 - Authorization header required: ResyAPI api_key="VbWk7s3L4KiK5fzlO7JD3Q5EYolJI7n5"
 - Main competitors: Resx (reservation exchange, TOS violations), Quenelle.ai (content farm), Snag Reservations (SEO competitor, monitor)
 - Scoopd's defensible position: verified intelligence, diner's side, no restaurant advertising, crowdsourced data moat at scale
-- Stripe live mode active, customer portal configured with Terms and Privacy policy URLs
-- Zoho Mail: support@scoopd.nyc inbox live
-- Resend: sending from noreply@scoopd.nyc, domain verified
 
 ## Legal
 
@@ -247,47 +282,3 @@ Note: ADMIN_PASSWORD will be added as a server-only environment variable.
 - Arbitration clause: binding individual arbitration via JAMS, New York County; class action waiver
 - GDPR, CCPA, Nevada resident rights included
 - support@scoopd.nyc is the official contact address for all legal, support, and data requests
-
-## Non-Standard Inventory (NSI)
-
-The `non_standard_inventory` boolean column flags restaurants whose booking window
-opens on a set schedule but without an observable general availability pattern.
-
-Restaurants currently flagged: `corner-store`, `the-86`, `oresh`
-
-Component: `app/components/NsiField.js` renders the release time and days-out fields
-with a blue-gray tint and an info callout when this flag is true.
-
-Blog stub: `app/blog/how-catch-hospitality-reservations-work/page.js` (content TBD)
-
-## Content Status
-
-- ~192 restaurants total in DB; editorial notes complete for all Tock, Resy, OpenTable, DoorDash, Phone, and Own Site restaurants as of April 2026
-- Walk-in restaurants: notes in progress
-- Notes sourcing method: minimum 3 sources required (Michelin, restaurant website, press coverage). Never fabricate. Never plagiarize. Rewrite from scratch using sources as reference only.
-- Saga added as a separate restaurant entry (two Michelin stars, Chef Charlie Mitchell, 63rd floor 70 Pine Street, Resy)
-- Cote 550 added as a separate restaurant entry (550 Madison Avenue, Resy, 14 days out, 10 AM)
-
-## Session Updates — April 18-19, 2026
-
-### New Restaurants Added
-- Saga (slug: saga) — two Michelin stars, Chef Charlie Mitchell, 63rd floor 70 Pine Street Financial District, Resy, 10 AM, 1st of month 2 absolute months, Medium difficulty, $$$$
-- Cote 550 (slug: cote-550) — Simon Kim's second Manhattan location, 550 Madison Avenue Midtown, Resy, 10 AM, 14 days out, Very Hard difficulty, $$$
-
-### Notes Completed This Session
-- Corner Store, The Eighty Six, Or'Esh — full rewrites in Scoopd voice
-- Jean-Georges — written and pushed
-- Saga — written and pushed with note
-- Cote 550 — written and pushed with note
-- All Tock, DoorDash, and previously incomplete OpenTable restaurants written and pushed earlier in extended session
-
-### Booking Line Corrections
-- 18 booking line errors corrected across existing notes via targeted replace script
-- Critical rule: booking intel must always come from observed_days and release_time in Supabase DB, never from third-party sources
-
-### Deferred Tasks
-- Need to Know box system — deferred to later update, needs full policy data sourced across 190+ restaurants before building
-- Catch Hospitality blog post — deferred, mechanic needs to be properly understood before writing
-- Walk-in notes (14 remaining) — not started
-- OpenTable notes (13 remaining) — not started
-- Others: Crown Shy, Hillstone, Sushi Ginza Onodera, Don Peppe, Din Tai Fung — not started
