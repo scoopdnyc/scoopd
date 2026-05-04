@@ -24,4 +24,6 @@
 .hiw-cta-title{font-family:var(--font-playfair),serif;font-size:24px;color:#e8e4dc;margin-bottom:0.75rem}
 .hiw-cta-sub{font-size:14px;color:#8a8a80;margin-bottom:1.5rem;line-height:1.6}
 .hiw-cta-btn{display:inline-block;background:#c9a96e;color:#0f0f0d;padding:0.75rem 2rem;border-radius:6px;font-size:14px;font-weight:500;text-decoration:none;font-family:var(--font-dm-sans),sans-serif}
+.hiw-further-link{color:#c9a96e;text-decoration:underline;text-underline-offset:3px}
+.hiw-further-link:hover{color:#e8e4dc}
 @media(max-width:600px){.hiw-platform-grid{grid-template-columns:1fr}}

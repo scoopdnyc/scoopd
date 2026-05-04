@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import matter from 'gray-matter'
 import { supabase } from '../lib/supabase'
-import { slugify } from '../lib/slugify'
+import { slugify, EXCLUDED_PLATFORM_VALUES } from '../lib/slugify'
 
 function getBlogPosts() {
   const dir = path.join(process.cwd(), 'content/blog')
@@ -36,36 +36,24 @@ export default async function sitemap() {
       priority: 0.8,
     }))
 
-  // Neighborhood pages: lastmod = most recent restaurant update in that neighborhood
-  const neighborhoodMap = new Map()
-  for (const r of rows) {
-    if (!r.neighborhood) continue
-    const key = slugify(r.neighborhood)
-    const ts = r.last_updated_at ? new Date(r.last_updated_at) : new Date('2026-04-21')
-    if (!neighborhoodMap.has(key) || ts > neighborhoodMap.get(key).lastmod) {
-      neighborhoodMap.set(key, { name: r.neighborhood, lastmod: ts })
-    }
-  }
-  const neighborhoodPages = [...neighborhoodMap.entries()].map(([slug, { lastmod }]) => ({
+  // Neighborhood pages
+  const neighborhoodSlugs = [...new Set(rows.filter(r => r.neighborhood).map(r => slugify(r.neighborhood)))]
+  const neighborhoodPages = neighborhoodSlugs.map(slug => ({
     url: `https://scoopd.nyc/neighborhood/${slug}`,
-    lastModified: lastmod,
+    lastModified: new Date('2026-05-02'),
     changeFrequency: 'weekly',
     priority: 0.7,
   }))
 
-  // Platform pages: lastmod = most recent restaurant update on that platform
-  const platformMap = new Map()
-  for (const r of rows) {
-    if (!r.platform) continue
-    const key = slugify(r.platform)
-    const ts = r.last_updated_at ? new Date(r.last_updated_at) : new Date('2026-04-21')
-    if (!platformMap.has(key) || ts > platformMap.get(key).lastmod) {
-      platformMap.set(key, { platform: r.platform, lastmod: ts })
-    }
-  }
-  const platformPages = [...platformMap.entries()].map(([slug, { lastmod }]) => ({
+  // Platform pages — exclusion list shared with app/platform/[name]/page.js
+  const platformSlugs = [...new Set(
+    rows
+      .filter(r => r.platform && !EXCLUDED_PLATFORM_VALUES.has(r.platform))
+      .map(r => slugify(r.platform))
+  )]
+  const platformPages = platformSlugs.map(slug => ({
     url: `https://scoopd.nyc/platform/${slug}`,
-    lastModified: lastmod,
+    lastModified: new Date('2026-05-02'),
     changeFrequency: 'weekly',
     priority: 0.7,
   }))
@@ -87,6 +75,12 @@ export default async function sitemap() {
     {
       url: 'https://scoopd.nyc/how-it-works',
       lastModified: new Date('2026-04-21'),
+      changeFrequency: 'monthly',
+      priority: 0.6,
+    },
+    {
+      url: 'https://scoopd.nyc/blog',
+      lastModified: new Date('2026-05-02'),
       changeFrequency: 'monthly',
       priority: 0.6,
     },

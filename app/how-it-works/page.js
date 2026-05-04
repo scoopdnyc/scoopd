@@ -161,6 +161,13 @@ export default async function HowItWorks() {
             </div>
           </div>
 
+          <div className="hiw-section">
+            <h2 className="hiw-section-title">Further Reading</h2>
+            <div className="hiw-section-body">
+              <p><Link href="/blog/the-reservation-economy" className="hiw-further-link">The Reservation Economy</Link>: how the NYC reservation system became what it is, and what it means for diners who don&apos;t have the right credit card or the right bot.</p>
+            </div>
+          </div>
+
           <div className="hiw-cta-block">
             <div className="hiw-cta-title">Be first to know.</div>
             {user ? (

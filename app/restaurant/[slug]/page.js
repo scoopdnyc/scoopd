@@ -1,6 +1,7 @@
 import { unstable_cache } from 'next/cache'
 import { createSupabaseStatic } from '../../../lib/supabase-static'
 import { computeNextDropDate } from '../../../lib/dropDate'
+import { slugify } from '../../../lib/slugify'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import ScoopNav from '../../components/ScoopNav'
@@ -228,7 +229,7 @@ export default async function RestaurantPage({ params }) {
       {isWalkin && <div className="rp-walkin-notice">Walk-in only — no reservations accepted. Arrive early.</div>}
       {!isClosed && <>
         <div className="rp-section-heading-row">
-          <h2 className="rp-section-heading" style={{padding:0,margin:0}}>Booking Intelligence</h2>
+          <h2 className="rp-section-label">Booking Intelligence</h2>
           {!isWalkin && <AlertBell slug={slug} />}
         </div>
         <div className="rp-content">
@@ -251,7 +252,11 @@ export default async function RestaurantPage({ params }) {
           <div className="rp-info-card"><div className="rp-info-label">Seats</div><div className={`rp-info-value ${r.seat_count ? '' : 'na'}`}>{r.seat_count || '—'}</div></div>
         </div>
         <PremiumReveal dropDate={dropDateDisplay} isPlatformWalkIn={isWalkin} />
-        {(r.notes || autoSentence) && <h2 className="rp-section-heading">About</h2>}
+        {(r.notes || autoSentence) && (
+          <div className="rp-section-heading-row">
+            <h2 className="rp-section-label">About</h2>
+          </div>
+        )}
         {r.notes
           ? <div className="rp-description">{r.notes}</div>
           : autoSentence && <div className="rp-description">{autoSentence}</div>
@@ -259,7 +264,7 @@ export default async function RestaurantPage({ params }) {
       </>}
       {neighborhoodRestaurants.length > 0 && (
         <div className="nb-section">
-          <h2 className="nb-heading">More in {r.neighborhood}</h2>
+          <h2 className="rp-section-label">More in {r.neighborhood}</h2>
           <div className="nb-row">
             {neighborhoodRestaurants.map(nr => {
               const badgeColor =
@@ -277,6 +282,13 @@ export default async function RestaurantPage({ params }) {
               )
             })}
           </div>
+        </div>
+      )}
+      {r.neighborhood && (
+        <div className="nb-cat-row">
+          <Link href={`/neighborhood/${slugify(r.neighborhood)}`} className="nb-cat-link">
+            View all {r.neighborhood} restaurants →
+          </Link>
         </div>
       )}
       {difficultyRestaurants.length > 0 && r.difficulty && (
@@ -321,6 +333,13 @@ export default async function RestaurantPage({ params }) {
               )
             })}
           </div>
+        </div>
+      )}
+      {r.platform && !['Walk-in', 'Phone', 'Phone/Relationships', 'CLOSED'].includes(r.platform) && (
+        <div className="nb-cat-row">
+          <Link href={`/platform/${slugify(r.platform)}`} className="nb-cat-link">
+            View all {r.platform} restaurants on Scoopd →
+          </Link>
         </div>
       )}
       <ScoopFooter />
