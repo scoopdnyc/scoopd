@@ -8,7 +8,7 @@ const supabase = createClient(
 
 export async function POST(request) {
   const auth = request.headers.get('authorization') || ''
-  if (!process.env.CRON_SECRET || auth !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (!process.env.ADMIN_PASSWORD || auth !== `Bearer ${process.env.ADMIN_PASSWORD}`) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
