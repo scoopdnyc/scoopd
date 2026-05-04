@@ -233,13 +233,9 @@ export default async function RestaurantPage({ params }) {
           <ShareButton restaurantName={r.restaurant} platform={r.platform} releaseTime={r.release_time} observedDays={r.observed_days} slug={slug} />
         </div>
       </div>
-      {photoUrl ? (
+      {photoUrl && (
         <div className="rp-photo-banner" style={{ height: `${r.photo_height ?? 420}px` }}>
           <Image src={photoUrl} alt={r.restaurant} fill className="rp-photo-img" sizes="100vw" style={{ objectPosition: r.photo_position || 'center' }} />
-        </div>
-      ) : (
-        <div style={{background:'#1a0000',color:'#ff6b6b',fontFamily:'monospace',fontSize:'12px',padding:'0.5rem 1rem',margin:'0.5rem 0'}}>
-          DEBUG: photo null — override: {r.photo_override_url ?? 'none'} — place_id: {r.google_place_id ?? 'none'} — fetched: {String(fetchedPhotoUrl)}
         </div>
       )}
       {isClosed && <div className="rp-closed-notice">This restaurant is permanently closed.</div>}
