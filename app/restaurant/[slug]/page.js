@@ -3,6 +3,7 @@ import { createSupabaseStatic } from '../../../lib/supabase-static'
 import { computeNextDropDate } from '../../../lib/dropDate'
 import { slugify } from '../../../lib/slugify'
 import Link from 'next/link'
+import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import ScoopNav from '../../components/ScoopNav'
 import ScoopFooter from '../../components/ScoopFooter'
@@ -10,6 +11,7 @@ import ShareButton from '../../components/ShareButton'
 import AlertBell from '../../components/AlertBell'
 import NsiField from '../../components/NsiField'
 import PremiumReveal from './PremiumReveal'
+import { getPlacePhoto } from '../../../lib/places'
 import './restaurant.css'
 
 export const revalidate = 3600
@@ -29,7 +31,7 @@ const getRestaurantCached = unstable_cache(
     const db = createSupabaseStatic()
     const { data, error } = await db
       .from('restaurants')
-      .select('restaurant, neighborhood, platform, cuisine, release_time, observed_days, release_schedule, seat_count, michelin_stars, price_tier, difficulty, notes, slug, address, non_standard_inventory')
+      .select('restaurant, neighborhood, platform, cuisine, release_time, observed_days, release_schedule, seat_count, michelin_stars, price_tier, difficulty, notes, slug, address, non_standard_inventory, google_place_id, photo_override_url, photo_position, photo_height')
       .eq('slug', slug)
       .single()
     if (error || !data) return null
@@ -116,9 +118,15 @@ export default async function RestaurantPage({ params }) {
 
   const isNonStandardInventory = r.non_standard_inventory === true
 
-  const { neighborhoodRaw, difficultyRaw, platformRaw } = await getCrossLinksCached(
-    slug, r.neighborhood, r.difficulty, r.platform
-  )
+  const [
+    { neighborhoodRaw, difficultyRaw, platformRaw },
+    fetchedPhotoUrl,
+  ] = await Promise.all([
+    getCrossLinksCached(slug, r.neighborhood, r.difficulty, r.platform),
+    r.photo_override_url ? Promise.resolve(null) : (r.google_place_id ? getPlacePhoto(r.google_place_id) : Promise.resolve(null)),
+  ])
+
+  const photoUrl = r.photo_override_url ?? fetchedPhotoUrl
 
   const neighborhoodRestaurants = shuffleTake4(neighborhoodRaw)
   const difficultyRestaurants   = shuffleTake4(difficultyRaw)
@@ -225,11 +233,20 @@ export default async function RestaurantPage({ params }) {
           <ShareButton restaurantName={r.restaurant} platform={r.platform} releaseTime={r.release_time} observedDays={r.observed_days} slug={slug} />
         </div>
       </div>
+      {photoUrl ? (
+        <div className="rp-photo-banner" style={{ height: `${r.photo_height ?? 420}px` }}>
+          <Image src={photoUrl} alt={r.restaurant} fill className="rp-photo-img" sizes="100vw" style={{ objectPosition: r.photo_position || 'center' }} />
+        </div>
+      ) : (
+        <div style={{background:'#1a0000',color:'#ff6b6b',fontFamily:'monospace',fontSize:'12px',padding:'0.5rem 1rem',margin:'0.5rem 0'}}>
+          DEBUG: photo null — override: {r.photo_override_url ?? 'none'} — place_id: {r.google_place_id ?? 'none'} — fetched: {String(fetchedPhotoUrl)}
+        </div>
+      )}
       {isClosed && <div className="rp-closed-notice">This restaurant is permanently closed.</div>}
       {isWalkin && <div className="rp-walkin-notice">Walk-in only — no reservations accepted. Arrive early.</div>}
       {!isClosed && <>
         <div className="rp-section-heading-row">
-          <h2 className="rp-section-label">Booking Intelligence</h2>
+          <h2 className="rp-section-heading">Booking Intelligence</h2>
           {!isWalkin && <AlertBell slug={slug} />}
         </div>
         <div className="rp-content">
