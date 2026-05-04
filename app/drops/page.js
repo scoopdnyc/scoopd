@@ -1,4 +1,5 @@
 import { createSupabaseServer } from '../../lib/supabase-server'
+import { computeNextDropDate } from '../../lib/dropDate'
 import Link from 'next/link'
 import ScoopNav from '../components/ScoopNav'
 import ScoopFooter from '../components/ScoopFooter'
@@ -22,17 +23,6 @@ function parseReleaseMinutes(release_time) {
   return h * 60 + m
 }
 
-function computeDropDate(r, etYear, etMonth, etDay, currentETMinutes) {
-  const releaseMinutes = parseReleaseMinutes(r.release_time)
-  const base = new Date(etYear, etMonth, etDay)
-  // If today's drop has already fired, the next one is tomorrow
-  if (releaseMinutes !== null && currentETMinutes >= releaseMinutes) {
-    base.setDate(base.getDate() + 1)
-  }
-  // Opens for = base date + observed_days - 1
-  base.setDate(base.getDate() + r.observed_days - 1)
-  return base.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
-}
 
 const DIFF_COLOR = {
   'Extremely Hard': '#a855f7',
@@ -80,17 +70,6 @@ export default async function DropsPage() {
   const etHour = parseInt(etTimeParts.find(p => p.type === 'hour').value, 10)
   const etMinute = parseInt(etTimeParts.find(p => p.type === 'minute').value, 10)
   const currentETMinutes = etHour * 60 + etMinute
-
-  // Current ET calendar date (for drop date calculation)
-  const etDateParts = new Intl.DateTimeFormat('en-US', {
-    timeZone: 'America/New_York',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  }).formatToParts(now)
-  const etYear  = parseInt(etDateParts.find(p => p.type === 'year').value, 10)
-  const etMonth = parseInt(etDateParts.find(p => p.type === 'month').value, 10) - 1
-  const etDay   = parseInt(etDateParts.find(p => p.type === 'day').value, 10)
 
   // Today's display date for the header
   const todayDisplay = new Intl.DateTimeFormat('en-US', {
@@ -161,7 +140,10 @@ export default async function DropsPage() {
           </thead>
           <tbody>
             {sorted.map((r, i) => {
-              const dropDate = computeDropDate(r, etYear, etMonth, etDay, currentETMinutes)
+              const { dateET } = computeNextDropDate(r)
+              const opensForDate = new Date(dateET)
+              opensForDate.setDate(opensForDate.getDate() + 1)
+              const dropDate = opensForDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
               const diffColor = DIFF_COLOR[r.difficulty] ?? '#8a8a80'
               const bucket = timeBucket[r.release_time ?? ''] ?? 4
 

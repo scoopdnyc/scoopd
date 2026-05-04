@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react'
 import Link from 'next/link'
+import { computeNextDropDate } from '../../lib/dropDate'
 
 function parseReleaseMinutes(release_time) {
   if (!release_time) return null
@@ -165,17 +166,8 @@ export default function PlanClient({
 
     const list = []
     for (const r of restaurants) {
-      const releaseMin = parseReleaseMinutes(r.release_time)
-
-      // Restaurant current date: advances at its release time in ET
-      const restaurantCurrentDate = new Date(etYear, etMonth, etDay)
-      if (releaseMin !== null && currentETMinutes < releaseMin) {
-        restaurantCurrentDate.setDate(restaurantCurrentDate.getDate() - 1)
-      }
-
-      // How far the current booking window reaches
-      const windowReaches = new Date(restaurantCurrentDate)
-      windowReaches.setDate(windowReaches.getDate() + r.observed_days - 1)
+      const { dateET: windowReaches } = computeNextDropDate(r)
+      if (!windowReaches) continue
 
       // Already bookable for target date — exclude
       if (windowReaches >= targetDate) continue
