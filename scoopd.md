@@ -18,7 +18,6 @@ Working document. Updated every session. Tracks what was built, what's pending, 
 
 ## Open Tasks
 
-- **L004** — `app/drops/page.js` and `app/plan/PlanClient.js` still have inline drop date calculation copies. Neither imports from `lib/dropDate.js`. Migrate next time those files are touched.
 - **OpenTable monitor** — not built. Requires GraphQL query body captured from network tab before implementation can begin.
 - **Blog content** — only one post live (`/blog/the-reservation-economy`). High ROI backlog item.
 - **Need to Know box system** — deferred. Needs full policy data sourced across 192 restaurants before building.
@@ -253,3 +252,4 @@ Full schema including monitor columns in scoopd-reference.md. Fields actively us
 - Google Search Console top 25 pages submitted; Bing Webmaster sitemap submitted
 - Restaurant photos live: google_place_id populated for all 192, photo_override_url/photo_position/photo_height columns added, /admin/photos picker built
 - All 192 restaurant notes complete
+- L004 closed: /drops and /plan migrated to computeNextDropDate from lib/dropDate.js
