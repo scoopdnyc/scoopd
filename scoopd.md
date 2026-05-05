@@ -23,7 +23,6 @@ Working document. Updated every session. Tracks what was built, what's pending, 
 - **Need to Know box system** — deferred. Needs full policy data sourced across 192 restaurants before building.
 - **Catch Hospitality blog post** — deferred. Mechanic needs to be properly understood before writing.
 - **Backlink outreach** — Eater NY, Grub Street, The Infatuation, NYC food newsletters. Not started.
-- **NSI SevenRooms slugs** — corner-store, oresh, and the-86 have incorrect sevenrooms_slug values (currently set to Scoopd slugs, not real SevenRooms venue identifiers). Monitor returns HTTP 400 on every cycle. Fix: visit each restaurant's booking page, find the real SevenRooms slug in the widget URL, update sevenrooms_slug column in DB. Has never worked since April 27 first run.
 
 ---
 
@@ -254,3 +253,4 @@ Full schema including monitor columns in scoopd-reference.md. Fields actively us
 - Restaurant photos live: google_place_id populated for all 192, photo_override_url/photo_position/photo_height columns added, /admin/photos picker built
 - All 192 restaurant notes complete
 - L004 closed: /drops and /plan migrated to computeNextDropDate from lib/dropDate.js
+- NSI SevenRooms slugs corrected: thecornerstore, theeightysix, 450wbroadway — opportunistic monitor now has valid venue identifiers
