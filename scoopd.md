@@ -1,6 +1,8 @@
 # Scoopd — Session Log
 
-Working document. Updated every session. Tracks what was built, what's pending, current phase status, and file structure. For deep technical reference (schema, monitor algorithms, design system, founding system, legal) see scoopd-reference.md.
+This is the working session log. Update this file every session.
+Contains: session log, open tasks, current phase status, file structure map, database schema (app-facing fields only), supabase client rules, editorial rules, monitor status summary.
+Does not contain: monitor algorithms, design system values, founding system spec, legal, competitive context, environment variables, permanent operational rules. Those live in scoopd-reference.md.
 
 ---
 

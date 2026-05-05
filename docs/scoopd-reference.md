@@ -1,6 +1,8 @@
 # Scoopd Reference
 
-Full reference material for the Scoopd platform. Extracted from scoopd.md so the operating rules file stays scannable. Read this when you need schema details, phase history, design system values, monitor algorithms, or environment variable reference.
+This is the permanent technical reference. Change this file rarely and deliberately.
+Contains: full database schema including monitor columns, design system (colors, fonts, badge hex values), environment variables, monitor algorithms and operational rules, founding member system spec, alerts system spec, legal summary, competitive context, phase history.
+Does not contain: session logs, open tasks, file structure map, current build status. Those live in scoopd.md.
 
 ## Stack
 - Next.js 16.2.1 (App Router, Turbopack)
