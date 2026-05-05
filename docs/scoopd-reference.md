@@ -179,6 +179,9 @@ Required in .env.local and Vercel:
 
 ## Availability Monitor
 
+### Operational Rules
+- Monitor flags trigger manual investigation only. Never update observed_days or any DB field based solely on a monitor alert. Verify directly before making any change.
+
 ### Infrastructure
 - Inngest (free tier) handles scheduling for daily checks and monthly Sushi Noz check
 - GitHub Actions handles NSI opportunistic check every 5 minutes noon-6 PM ET
