@@ -1,3 +1,9 @@
+---
+PURPOSE: Permanent technical reference. Change rarely and deliberately.
+CONTAINS: Full database schema including monitor columns, design system (colors, fonts, badge hex values), environment variables, monitor algorithms and operational rules, founding member system spec, alerts system spec, legal summary, competitive context, phase history.
+DOES NOT CONTAIN: Session logs, open tasks, file structure map, current build status. Those live in scoopd.md.
+---
+
 # Scoopd Reference
 
 This is the permanent technical reference. Change this file rarely and deliberately.

@@ -1,3 +1,9 @@
+---
+PURPOSE: Working session log. Updated every session.
+CONTAINS: Session log, open tasks, current phase status, file structure map, database schema (app-facing fields only), Supabase client rules, editorial rules, monitor status summary.
+DOES NOT CONTAIN: Monitor algorithms, design system values, founding system spec, legal, competitive context, environment variables, permanent operational rules. Those live in scoopd-reference.md.
+---
+
 # Scoopd — Session Log
 
 This is the working session log. Update this file every session.
