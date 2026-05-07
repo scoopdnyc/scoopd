@@ -28,19 +28,34 @@ export default function ScoopSubBar({ open, pillWidth, pillRightOffset, dropdown
 
   const hiw = pathname === '/how-it-works'
 
-  // Right edge flush with pill left edge when closed, dropdown left edge when open.
-  // pillRightOffset = distance from pill container's right edge to viewport right.
-  // closed: marginRight = pillRightOffset + pillWidth  (= distance from viewport right to pill's left edge)
-  // open:   marginRight = pillRightOffset + dropdownWidth (dropdown is anchored right:0, so its left edge = viewport right - pillRightOffset - dropdownWidth)
   const marginRight = open
     ? `${pillRightOffset + dropdownWidth}px`
     : `${pillRightOffset + pillWidth}px`
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+    <div className="sb-outer" style={{ '--sb-mr': marginRight }}>
       <style>{`
+        .sb-outer {
+          display: flex;
+          justify-content: flex-end;
+        }
         .sb-box {
           position: relative;
+          margin-right: var(--sb-mr, 0px);
+          border: none;
+          clip-path: ellipse(50% 100% at 50% 0%);
+          box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+          background: linear-gradient(to right, transparent 0%, rgba(28,28,24,0.92) 15%, rgba(28,28,24,0.92) 85%, transparent 100%);
+          backdrop-filter: blur(6px);
+          -webkit-backdrop-filter: blur(6px);
+          padding: 0.75rem 3.5rem;
+          display: inline-flex;
+          align-items: center;
+          gap: 1.5rem;
+          font-size: 13px;
+          font-family: 'DM Sans', sans-serif;
+          transition: margin-right 200ms ease;
+          white-space: nowrap;
         }
         .sb-box::before {
           content: '';
@@ -52,24 +67,19 @@ export default function ScoopSubBar({ open, pillWidth, pillRightOffset, dropdown
           background: linear-gradient(to right, transparent 0%, #c9a96e 20%, #c9a96e 80%, transparent 100%);
           pointer-events: none;
         }
+        @media (max-width: 640px) {
+          .sb-outer {
+            justify-content: center;
+          }
+          .sb-box {
+            margin-right: 0 !important;
+            padding: 0.6rem 1.5rem;
+            gap: 1rem;
+            clip-path: none;
+          }
+        }
       `}</style>
-      <div className="sb-box" style={{
-        marginRight,
-        border: 'none',
-        clipPath: 'ellipse(50% 100% at 50% 0%)',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.5)',
-        background: 'linear-gradient(to right, transparent 0%, rgba(28,28,24,0.92) 15%, rgba(28,28,24,0.92) 85%, transparent 100%)',
-        backdropFilter: 'blur(6px)',
-        WebkitBackdropFilter: 'blur(6px)',
-        padding: '0.75rem 3.5rem',
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '1.5rem',
-        fontSize: '13px',
-        fontFamily: "'DM Sans', sans-serif",
-        transition: 'margin-right 200ms ease',
-        whiteSpace: 'nowrap',
-      }}>
+      <div className="sb-box">
         <Link
           href="/how-it-works"
           style={{ color: hiw ? '#c9a96e' : '#8a8a80', textDecoration: 'none' }}
