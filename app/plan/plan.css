@@ -383,6 +383,4 @@
   .pb-date-long { display: none; }
   .pb-date-short { display: inline; }
   .pb-table-wrap { overflow-x: hidden; }
-  .pb-td-restaurant { overflow: hidden; max-width: 0; }
-  .pb-restaurant-link { display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 }
