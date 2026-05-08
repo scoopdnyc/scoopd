@@ -374,3 +374,9 @@
     font-size: 13px;
   }
 }
+
+@media (max-width: 640px) {
+  html {
+    zoom: 0.8;
+  }
+}
