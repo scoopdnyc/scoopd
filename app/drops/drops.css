@@ -186,6 +186,7 @@
   color: #e8e4dc;
   white-space: nowrap;
 }
+.dr-date-short { display: none; }
 
 /* Blurred / locked state */
 .dr-opens-locked {
@@ -290,4 +291,6 @@
   html {
     zoom: 0.75;
   }
+  .dr-date-long { display: none; }
+  .dr-date-short { display: inline; }
 }

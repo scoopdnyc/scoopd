@@ -144,6 +144,7 @@ export default async function DropsPage() {
               const opensForDate = new Date(dateET)
               opensForDate.setDate(opensForDate.getDate() + 1)
               const dropDate = opensForDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
+              const dropDateShort = opensForDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
               const diffColor = DIFF_COLOR[r.difficulty] ?? '#8a8a80'
               const bucket = timeBucket[r.release_time ?? ''] ?? 4
 
@@ -166,7 +167,10 @@ export default async function DropsPage() {
                   </td>
                   <td className="dr-td dr-td-opens">
                     {isPremium ? (
-                      <span className="dr-opens-date">{dropDate}</span>
+                      <span className="dr-opens-date">
+                        <span className="dr-date-long">{dropDate}</span>
+                        <span className="dr-date-short">{dropDateShort}</span>
+                      </span>
                     ) : (
                       <span className="dr-opens-locked">
                         <span className="dr-opens-blurred" aria-hidden="true">Wednesday, April 16</span>

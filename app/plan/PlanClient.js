@@ -133,7 +133,10 @@ function RestaurantRow({ r }) {
       </td>
       <td className="pb-td pb-td-drop">
         {r.dropDateStr ? (
-          <span className="pb-drop-date">{r.dropDateStr}</span>
+          <span className="pb-drop-date">
+            <span className="pb-date-long">{r.dropDateStr}</span>
+            <span className="pb-date-short">{r.dropDateStrShort}</span>
+          </span>
         ) : (
           <span className="pb-drop-locked">
             <span className="pb-drop-blurred" aria-hidden="true">Wednesday, April 16</span>
@@ -179,8 +182,11 @@ export default function PlanClient({
       const dropDateStr = dropFiresOn.toLocaleDateString('en-US', {
         weekday: 'long', month: 'long', day: 'numeric',
       })
+      const dropDateStrShort = dropFiresOn.toLocaleDateString('en-US', {
+        weekday: 'short', month: 'short', day: 'numeric',
+      })
 
-      list.push({ ...r, dropFiresOn, dropDateStr })
+      list.push({ ...r, dropFiresOn, dropDateStr, dropDateStrShort })
     }
 
     // Premium: sort by drop date ascending, then by release_time ascending within same date.

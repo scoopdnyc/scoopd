@@ -253,6 +253,7 @@
   color: #e8e4dc;
   white-space: nowrap;
 }
+.pb-date-short { display: none; }
 
 /* Ghost / placeholder rows */
 .pb-ghost-row {
@@ -379,4 +380,6 @@
   html {
     zoom: 0.75;
   }
+  .pb-date-long { display: none; }
+  .pb-date-short { display: inline; }
 }
