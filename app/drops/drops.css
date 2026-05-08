@@ -289,8 +289,11 @@
 
 @media (max-width: 640px) {
   html {
-    zoom: 0.75;
+    zoom: 0.70;
   }
   .dr-date-long { display: none; }
   .dr-date-short { display: inline; }
+  .dr-table-wrap { overflow-x: hidden; }
+  .dr-td-restaurant { overflow: hidden; max-width: 0; }
+  .dr-restaurant-link { display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 }
