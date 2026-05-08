@@ -377,6 +377,6 @@
 
 @media (max-width: 640px) {
   html {
-    zoom: 0.8;
+    zoom: 0.75;
   }
 }
