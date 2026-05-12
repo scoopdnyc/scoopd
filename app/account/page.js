@@ -1,7 +1,9 @@
 import { redirect } from 'next/navigation'
+import { Suspense } from 'react'
 import Link from 'next/link'
 import { createSupabaseServer } from '@/lib/supabase-server'
 import SignOutButton from './SignOutButton'
+import StripeSuccessEvent from './StripeSuccessEvent'
 import ScoopNav from '../components/ScoopNav'
 import ScoopFooter from '../components/ScoopFooter'
 
@@ -32,6 +34,7 @@ export default async function AccountPage() {
 
   return (
     <main style={{ background: '#0f0f0d', minHeight: '100vh', color: '#e8e4dc', fontFamily: "'DM Sans', sans-serif" }}>
+      <Suspense><StripeSuccessEvent /></Suspense>
       <style>{`
         .ac-nav{display:flex;justify-content:space-between;align-items:center;padding:1.25rem 2rem;border-bottom:0.5px solid #2a2a26}
         .ac-logo{font-family:'Playfair Display',serif;font-size:22px;color:#e8e4dc;text-decoration:none}

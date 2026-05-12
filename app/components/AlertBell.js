@@ -52,6 +52,7 @@ export default function AlertBell({ slug }) {
         setStatus(next === 'active' ? 'inactive' : 'active')
       } else {
         const json = await res.json()
+        if (json.active) window.gtag?.('event', 'alert_set')
         setStatus(json.active ? 'active' : 'inactive')
       }
     } catch {

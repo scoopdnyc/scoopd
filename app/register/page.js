@@ -48,6 +48,7 @@ function RegisterForm() {
           body: JSON.stringify({ email }),
         }).catch(() => {})
       }
+      window.gtag?.('event', 'signup')
       setStatus('success')
     }
   }
