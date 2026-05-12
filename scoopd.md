@@ -79,6 +79,47 @@ Supabase Auth, Stripe subscriptions (monthly + yearly), premium blur/unlock patt
 - lib/dropDate.js created as single source of truth for drop date calculation (L004: /drops and /plan still have inline copies — pending migration)
 - Non-standard inventory system: NsiField.js component, blue-gray tint + info callout on release time and days-out fields for NSI restaurants
 
+### Phase 4A — Traffic + Marketing (Active)
+
+**Track 1: Blog Content**
+- Ecosystem-level editorial pieces where Scoopd has genuine knowledge and original voice. Not per-restaurant repetitive content.
+- Priority topics: platform explainers, reservation economy pieces, data journalism when difficulty scoring is defensible, timely pieces around Restaurant Week and new openings
+- SEO strategy: embed high-search restaurant names naturally within editorial content
+- All content bylined as Scoopd, drafted by Claude
+- Posts live: /blog/the-reservation-economy, /blog/rolling-windows-and-monthly-drops
+- Each post submitted to GSC and IndexNow on publish
+
+**Track 2: Social (slow burn)**
+- X and Reddit accounts: personal aged accounts (10 year history) rebranded
+- Voice: personal persona, not brand voice. Organic recommendations, not promotion.
+- Claude drafts all content, manual post only
+- Reddit targets: r/FoodNYC, r/AskNYC, r/finedining
+- Activate after accounts are rebranded
+
+**Track 3: Press + Backlinks**
+- Targets: Eater NY, Grub Street, The Infatuation, NYC food newsletters
+- Pitch angle: original data and reservation intelligence nobody else publishes
+- Claude drafts all outreach
+- Activate after 3-4 blog posts are live
+
+**Track 4: New Restaurant Openings**
+- Monitor new NYC restaurant openings and publish drop time intelligence fast
+- Source: NYC food Instagram influencers — automation needed to avoid manual daily monitoring
+- Build: automated pipeline to detect new openings and alert for DB addition
+- Status: approach TBD, automation not yet built
+
+**Track 5: Community**
+- Product Hunt launch
+- Hacker News Show HN
+- EA and corporate assistant communities
+- Hotel concierge outreach
+- Timing: after 4-5 blog posts live and social accounts active
+
+**Track 6: Data Journalism (deferred)**
+- "The NYC Reservation Report" — hardest restaurants, platform breakdown, release time patterns
+- Blocked on: difficulty score methodology needs to be defensible first
+- Revisit when crowdsourced booking outcome data available in Phase 5
+
 ### Phase 5 — Growth (Not Started)
 - AdSense and sponsorships
 - scoopd.com domain acquisition
