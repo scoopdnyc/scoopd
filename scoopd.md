@@ -19,14 +19,13 @@ Does not contain: monitor algorithms, design system values, founding system spec
 - Phase 3: Complete (including alerts)
 - Phase 4: Complete (SEO + editorial)
 - Phase 5: Not started
-- Availability monitor: Live (Resy + SevenRooms). OpenTable not built.
+- Availability monitor: Live (Resy + SevenRooms + OpenTable).
 - 192 restaurants in DB. All notes complete as of May 2026.
 
 ---
 
 ## Open Tasks
 
-- **OpenTable monitor IDs** — 11 restaurants still missing opentable_restaurant_id: bad-roman, bar-contra, bondst, casa-mono, gage-tollner, jean-georges, le-veau-dor, roscioli-nyc, yingtao, zou-zous, aska (null observed_days). Find each via browser network tab on their OpenTable page (look for restaurantIds in the RestaurantsAvailability request body), then UPDATE restaurants SET opentable_restaurant_id = N WHERE slug = '...'.
 - **Blog content** — only one post live (`/blog/the-reservation-economy`). High ROI backlog item.
 - **Need to Know box system** — deferred. Needs full policy data sourced across 192 restaurants before building.
 - **Catch Hospitality blog post** — deferred. Mechanic needs to be properly understood before writing.
@@ -145,7 +144,7 @@ Supabase Auth, Stripe subscriptions (monthly + yearly), premium blur/unlock patt
 - SevenRooms long calendar: Live. Marea, Rezdora. Daily at 12:30 PM ET.
 - SevenRooms monthly: Live. Sushi Noz only. Runs 1st and 15th of month at 2 PM UTC.
 - NSI opportunistic: Live. Corner Store, Or'Esh, The 86. Every 5 minutes noon–6 PM ET via GitHub Actions.
-- OpenTable: Live. Persisted GraphQL RestaurantsAvailability query. Daily 5 PM UTC via Inngest. 18 restaurants with IDs populated; 11 restaurants still missing opentable_restaurant_id (see Open Tasks).
+- OpenTable: Live. Persisted GraphQL RestaurantsAvailability query. Daily 5 PM UTC via Inngest. All 28 active restaurants covered (Aska and Yingtao excluded pending experience-slot strategy). Handles BlockedAvailability, NoTimesExist (fully booked), and experience-only response patterns.
 
 ### Infrastructure
 - Inngest (free tier): resy-daily-check, sevenrooms-daily-check, sevenrooms-longcal-monthly-check, alert-digest, opentable-daily-check (5 functions total)
@@ -309,7 +308,9 @@ Full schema including monitor columns in scoopd-reference.md. Fields actively us
 - Inngest now serves 5 functions: added opentable-daily-check, daily 5 PM UTC
 - opentable_restaurant_id INTEGER column added to restaurants table
 - 18 restaurant IDs populated via website scraping (restref parameter from OT widget embeds)
-- 11 restaurants still missing IDs (see Open Tasks) — monitor skips restaurants with null opentable_restaurant_id
+- 10 additional IDs populated: bad-roman, bar-contra, bondst, casa-mono, gage-tollner, le-veau-dor, roscioli-nyc, yingtao, zou-zous, aska (28/29 total; jean-georges still null)
+- Monitor handles BlockedAvailability, NoTimesExist, and experience-only (Aska/Yingtao) response patterns
+- Jean-Georges opentable_restaurant_id set to 3154 — OpenTable monitor now covers all 28 restaurants (excluding Aska and Yingtao pending experience-slot strategy)
 - Mobile layout: /drops and /plan tables scaled 70% on mobile with abbreviated date format
 - Blog post published: /blog/rolling-windows-and-monthly-drops
 - GA4 key events added: signup, subscribe, alert_set
