@@ -233,7 +233,24 @@ Required in .env.local and Vercel:
 - Has never detected a bookable slot — slots are extremely rare
 
 ### OpenTable monitor
-Not built — requires GraphQL query body captured from network tab before implementation can begin.
+
+**Status:** Live. `lib/monitors/opentable.js`, `lib/inngest/opentableDailyCheck.js`. Daily at 5 PM UTC.
+
+**API:** `POST https://www.opentable.com/dapi/fe/gql?optype=query&opname=RestaurantsAvailability`
+Persisted GraphQL query hash: `cbcf4838a9b399f742e3741785df64560a826d8d3cc2828aa01ab09a8455e29e`
+
+**DB column:** `opentable_restaurant_id INTEGER` on restaurants table. Find via browser network tab — look for `restaurantIds` in the RestaurantsAvailability request body on an OpenTable restaurant page.
+
+**Probe logic:**
+- `beyondDate` = today_ET + observed_days: flag if ANY Standard slots available (window wider than expected)
+- `beforeDate` = today_ET + observed_days - 2: flag if completely empty (window shorter than expected)
+- Restaurants with null `opentable_restaurant_id` or null `observed_days` are skipped
+
+**Known limitation:** OpenTable's dapi/fe/gql endpoint has Akamai bot protection. If blocked from Vercel IPs, monitor logs `http_403` as flag_reason and skips flagging. Check monitor_log for patterns.
+
+**IDs populated (18 restaurants):** antons, bar-miller, bm, di-an-di, don-angie, estela, frenchette, kochi, mari, muku, nami-nori, odo, red-hook-tavern, san-sabino, tempura-matsui, una-pizza-napoletana, wild-cherry, win-son
+
+**IDs missing (11 restaurants):** bad-roman, bar-contra, bondst, casa-mono, gage-tollner, jean-georges, le-veau-dor, roscioli-nyc, yingtao, zou-zous, aska
 
 ## Alerts System
 

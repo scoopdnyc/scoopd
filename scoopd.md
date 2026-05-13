@@ -26,7 +26,7 @@ Does not contain: monitor algorithms, design system values, founding system spec
 
 ## Open Tasks
 
-- **OpenTable monitor** — not built. Requires GraphQL query body captured from network tab before implementation can begin.
+- **OpenTable monitor IDs** — 11 restaurants still missing opentable_restaurant_id: bad-roman, bar-contra, bondst, casa-mono, gage-tollner, jean-georges, le-veau-dor, roscioli-nyc, yingtao, zou-zous, aska (null observed_days). Find each via browser network tab on their OpenTable page (look for restaurantIds in the RestaurantsAvailability request body), then UPDATE restaurants SET opentable_restaurant_id = N WHERE slug = '...'.
 - **Blog content** — only one post live (`/blog/the-reservation-economy`). High ROI backlog item.
 - **Need to Know box system** — deferred. Needs full policy data sourced across 192 restaurants before building.
 - **Catch Hospitality blog post** — deferred. Mechanic needs to be properly understood before writing.
@@ -145,10 +145,10 @@ Supabase Auth, Stripe subscriptions (monthly + yearly), premium blur/unlock patt
 - SevenRooms long calendar: Live. Marea, Rezdora. Daily at 12:30 PM ET.
 - SevenRooms monthly: Live. Sushi Noz only. Runs 1st and 15th of month at 2 PM UTC.
 - NSI opportunistic: Live. Corner Store, Or'Esh, The 86. Every 5 minutes noon–6 PM ET via GitHub Actions.
-- OpenTable: Not built. Requires GraphQL query body from network tab first.
+- OpenTable: Live. Persisted GraphQL RestaurantsAvailability query. Daily 5 PM UTC via Inngest. 18 restaurants with IDs populated; 11 restaurants still missing opentable_restaurant_id (see Open Tasks).
 
 ### Infrastructure
-- Inngest (free tier): resy-daily-check, sevenrooms-daily-check, sevenrooms-longcal-monthly-check, alert-digest (4 functions total, confirmed in dashboard)
+- Inngest (free tier): resy-daily-check, sevenrooms-daily-check, sevenrooms-longcal-monthly-check, alert-digest, opentable-daily-check (5 functions total)
 - GitHub Actions: `.github/workflows/opportunistic-check.yml` — NSI check every 5 minutes noon–6 PM ET, secured via CRON_SECRET bearer token
 - Resend: digest emails to support@scoopd.nyc
 - All monitor state written to `monitor_log` table
@@ -303,3 +303,14 @@ Full schema including monitor columns in scoopd-reference.md. Fields actively us
 - All 192 restaurant notes complete
 - L004 closed: /drops and /plan migrated to computeNextDropDate from lib/dropDate.js
 - NSI SevenRooms slugs corrected: thecornerstore, theeightysix, 450wbroadway — opportunistic monitor now has valid venue identifiers
+
+### Session — May 13, 2026
+- OpenTable availability monitor built: lib/monitors/opentable.js, lib/inngest/opentableDailyCheck.js
+- Inngest now serves 5 functions: added opentable-daily-check, daily 5 PM UTC
+- opentable_restaurant_id INTEGER column added to restaurants table
+- 18 restaurant IDs populated via website scraping (restref parameter from OT widget embeds)
+- 11 restaurants still missing IDs (see Open Tasks) — monitor skips restaurants with null opentable_restaurant_id
+- Mobile layout: /drops and /plan tables scaled 70% on mobile with abbreviated date format
+- Blog post published: /blog/rolling-windows-and-monthly-drops
+- GA4 key events added: signup, subscribe, alert_set
+- Phase 4A Traffic + Marketing strategy documented in scoopd.md
