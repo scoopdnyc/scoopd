@@ -192,7 +192,8 @@ Required in .env.local and Vercel:
 
 ### Infrastructure
 - Inngest (free tier) handles scheduling for daily checks and monthly Sushi Noz check
-- GitHub Actions handles NSI opportunistic check every 5 minutes noon-6 PM ET
+- GitHub Actions: `.github/workflows/opportunistic-check.yml` — NSI opportunistic check every 5 minutes noon-6 PM ET, secured with CRON_SECRET bearer token
+- GitHub Actions: `.github/workflows/opentable-daily-check.yml` — OpenTable daily check at 5 PM UTC, hits /api/opentable-check secured with CRON_SECRET. Separate from Inngest due to Akamai bot protection blocking Vercel IPs.
 - Resend sends digest emails to support@scoopd.nyc
 - All monitor state written to monitor_log table (separate from restaurants table)
 
@@ -234,7 +235,7 @@ Required in .env.local and Vercel:
 
 ### OpenTable monitor
 
-**Status:** Live. `lib/monitors/opentable.js`, `lib/inngest/opentableDailyCheck.js`. Daily at 5 PM UTC.
+**Status:** Live. `lib/monitors/opentable.js`, `/api/opentable-check`. Runs via GitHub Actions, not Inngest, due to Akamai bot protection blocking Vercel IPs. Daily at 5 PM UTC via `.github/workflows/opentable-daily-check.yml`.
 
 **API:** `POST https://www.opentable.com/dapi/fe/gql?optype=query&opname=RestaurantsAvailability`
 Persisted GraphQL query hash: `cbcf4838a9b399f742e3741785df64560a826d8d3cc2828aa01ab09a8455e29e`
@@ -246,11 +247,11 @@ Persisted GraphQL query hash: `cbcf4838a9b399f742e3741785df64560a826d8d3cc2828aa
 - `beforeDate` = today_ET + observed_days - 2: flag if completely empty (window shorter than expected)
 - Restaurants with null `opentable_restaurant_id` or null `observed_days` are skipped
 
-**Known limitation:** OpenTable's dapi/fe/gql endpoint has Akamai bot protection. If blocked from Vercel IPs, monitor logs `http_403` as flag_reason and skips flagging. Check monitor_log for patterns.
+**Known limitation:** OpenTable's dapi/fe/gql endpoint has Akamai bot protection that blocks Vercel server IPs. Resolved by moving to GitHub Actions (ubuntu-latest runners use different IP ranges not blocked by Akamai).
 
-**IDs populated (18 restaurants):** antons, bar-miller, bm, di-an-di, don-angie, estela, frenchette, kochi, mari, muku, nami-nori, odo, red-hook-tavern, san-sabino, tempura-matsui, una-pizza-napoletana, wild-cherry, win-son
+**IDs populated (29 restaurants):** antons, bar-miller, bm, di-an-di, don-angie, estela, frenchette, kochi, mari, muku, nami-nori, odo, red-hook-tavern, san-sabino, tempura-matsui, una-pizza-napoletana, wild-cherry, win-son, bad-roman, bar-contra, bondst, casa-mono, gage-tollner, jean-georges, le-veau-dor, roscioli-nyc, zou-zous, aska, yingtao
 
-**IDs missing (11 restaurants):** bad-roman, bar-contra, bondst, casa-mono, gage-tollner, jean-georges, le-veau-dor, roscioli-nyc, yingtao, zou-zous, aska
+**Excluded from active monitoring:** aska (334675), yingtao (1295479) — experience-only slots only, no Standard reservations. Monitor detects and logs `skip:experience_only`.
 
 ## Alerts System
 

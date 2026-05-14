@@ -144,7 +144,7 @@ Supabase Auth, Stripe subscriptions (monthly + yearly), premium blur/unlock patt
 - SevenRooms long calendar: Live. Marea, Rezdora. Daily at 12:30 PM ET.
 - SevenRooms monthly: Live. Sushi Noz only. Runs 1st and 15th of month at 2 PM UTC.
 - NSI opportunistic: Live. Corner Store, Or'Esh, The 86. Every 5 minutes noon–6 PM ET via GitHub Actions.
-- OpenTable: Live. Persisted GraphQL RestaurantsAvailability query. Daily 5 PM UTC via Inngest. All 28 active restaurants covered (Aska and Yingtao excluded pending experience-slot strategy). Handles BlockedAvailability, NoTimesExist (fully booked), and experience-only response patterns.
+- OpenTable: Live. GitHub Actions cron daily at 5 PM UTC. Moved from Inngest — Akamai blocks Vercel IPs. First run tomorrow.
 
 ### Infrastructure
 - Inngest (free tier): resy-daily-check, sevenrooms-daily-check, sevenrooms-longcal-monthly-check, alert-digest, opentable-daily-check (5 functions total)
