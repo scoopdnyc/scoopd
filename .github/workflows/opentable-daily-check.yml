@@ -17,6 +17,5 @@ jobs:
         run: npx playwright install chromium --with-deps
       - name: Run Playwright POC
         env:
-          OT_EMAIL: ${{ secrets.OT_EMAIL }}
-          OT_PASSWORD: ${{ secrets.OT_PASSWORD }}
+          OT_COOKIES: ${{ secrets.OT_COOKIES }}
         run: node scripts/opentable-playwright-test.mjs
