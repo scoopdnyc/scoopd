@@ -13,9 +13,7 @@ jobs:
           node-version: '20'
           cache: 'npm'
       - run: npm ci
-      - name: Run OpenTable check
-        env:
-          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
-        run: node scripts/opentable-check.mjs
+      - name: Install Playwright Chromium
+        run: npx playwright install chromium --with-deps
+      - name: Run Playwright POC
+        run: node scripts/opentable-playwright-test.mjs
