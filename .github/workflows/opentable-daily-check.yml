@@ -1,0 +1,13 @@
+name: OpenTable Daily Check
+on:
+  schedule:
+    - cron: '0 17 * * *'
+  workflow_dispatch:
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call OpenTable check
+        run: |
+          curl -s -X GET https://scoopd.nyc/api/opentable-check \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}"
