@@ -43,19 +43,62 @@ Paste the full contents of this file at the start of a new chat session to onboa
 
 ## Session
 
-**Last updated:** [DATE]
+**Last updated:** May 14, 2026
 
 **What was done:**
-[FILLED BY CLAUDE CODE]
+- Built OpenTable availability monitor: `lib/monitors/opentable.js` with full response pattern handling (BlockedAvailability, NoTimesExist/fully-booked, experience-only/Aska+Yingtao)
+- Populated all 29 opentable_restaurant_ids in DB including jean-georges (3154)
+- Monitor went through three infrastructure pivots trying to bypass Akamai:
+  1. Inngest → http_403 (Akamai blocks Vercel IPs)
+  2. GitHub Actions curl → /api/opentable-check → still Vercel's IP making the actual OT request
+  3. GitHub Actions running `scripts/opentable-check.mjs` directly → still 403 (direct fetch, not browser)
+- Pivoted to Playwright-based approach to use a real browser session
+- Playwright POC iterated: plain headless → stealth plugin → OT login form → cookie injection
+- Current test: `scripts/opentable-playwright-test.mjs` with stealth plugin + pre-authenticated cookie injection via `OT_COOKIES` env var
+- Workflow `.github/workflows/opentable-daily-check.yml` now runs the Playwright test (not the production monitor)
+- `scripts/opentable-check.mjs` exists as the production-ready direct-fetch script (shelved pending Playwright outcome)
+- scoopd.md, scoopd-reference.md, handoff.md updated throughout
+
+**Files actively edited this session:**
+- `lib/monitors/opentable.js` — created and rewritten
+- `lib/inngest/opentableDailyCheck.js` — created then deleted
+- `app/api/inngest/route.js` — updated (back to 4 functions)
+- `app/api/opentable-check/route.js` — created then deleted
+- `.github/workflows/opentable-daily-check.yml` — multiple rewrites
+- `scripts/opentable-check.mjs` — created (production script, shelved)
+- `scripts/opentable-playwright-test.mjs` — created, 4 iterations
+- `scoopd.md`, `docs/scoopd-reference.md`, `handoff.md`
+
+**Everything that failed:**
+- Direct `fetch` to `dapi/fe/gql` from any server context (Inngest/Vercel, GitHub Actions) → Akamai returns http_403
+- Routing through Vercel API route from GitHub Actions → doesn't help, Vercel's IP is still the one calling OT
+- Playwright headless Chromium without stealth → Akamai detects via TLS fingerprinting / navigator.webdriver
+- Playwright with stealth plugin but no session cookies → still blocked
+- Playwright with login form automation → replaced with cookie injection (form automation is fragile, OT login flow may have CAPTCHA)
 
 **In progress:**
-[FILLED BY CLAUDE CODE]
+- Playwright + pre-authenticated cookie injection test. Waiting on: (1) OT_COOKIES GitHub secret to be set, (2) workflow trigger, (3) result
 
 **Open tasks (priority order):**
-[FILLED BY CLAUDE CODE]
+1. **Set OT_COOKIES secret and run Playwright test** — export cookies from logged-in opentable.com session via DevTools console, paste as GitHub secret OT_COOKIES, trigger workflow manually
+2. **If Playwright+cookies works:** rewrite `scripts/opentable-playwright-test.mjs` into full production monitor that checks all 28 restaurants, writes to monitor_log, sends Resend digest on flags. Update workflow to run production script, restore cron schedule + production env secrets.
+3. **If Playwright+cookies fails:** accept OpenTable monitoring is not viable without a paid residential proxy. Document the decision in scoopd-reference.md and close the investigation.
+4. **Blog post #3** — high ROI for organic traffic. Target: "How to Get a Reservation at [specific hard restaurant]" with exact drop time intel. Activate press outreach after 3-4 posts.
+5. **Social accounts** — X and Reddit rebranding. Not yet activated.
+6. **Backlink outreach** — Eater NY, Grub Street, The Infatuation. After 3-4 posts.
 
 **Live issues:**
-[FILLED BY CLAUDE CODE]
+- OpenTable monitor non-functional. `lib/monitors/opentable.js` exists and works correctly in isolation — the problem is purely network-level Akamai blocking. All monitor_log entries for `source = 'opentable'` are either empty or old http_403 rows (cleared).
+- OT_COOKIES will expire (typically 30-90 days). If Playwright approach succeeds, a cookie refresh strategy is needed — either a separate login workflow that re-exports cookies, or periodic manual refresh.
+- Inngest back to 4 functions. Dashboard may show stale 5-function count until it re-syncs.
 
 **Next step:**
-[FILLED BY CLAUDE CODE]
+Export OT cookies from a logged-in browser session and set as `OT_COOKIES` GitHub secret:
+```js
+// Run in DevTools console on opentable.com while logged in:
+JSON.stringify(document.cookie.split('; ').map(c => {
+  const [name, ...rest] = c.split('=')
+  return { name, value: rest.join('='), domain: '.opentable.com', path: '/' }
+}))
+```
+Then: Actions tab → "OpenTable Daily Check" → "Run workflow". Check logs for `[ot-playwright] SUCCESS`.
