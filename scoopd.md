@@ -272,6 +272,23 @@ Full schema including monitor columns in scoopd-reference.md. Fields actively us
 
 ---
 
+## Session Handoff
+
+To generate a handoff.md at the end of any session, paste this prompt into Claude Code:
+
+"Before we end this session, write a handoff.md file that captures:
+- the goal we're working toward
+- current state of the code
+- files you actively edited this session
+- everything you tried that failed
+- open tasks in priority order
+- any live issues to watch
+- the single next step to take
+
+Write it to the repo root as handoff.md and commit with "docs: update handoff.md""
+
+---
+
 ## Session Log
 
 ### Session — April 18-19, 2026
