@@ -5,7 +5,10 @@
  * Run: node scripts/opentable-playwright-test.mjs
  */
 
-import { chromium } from 'playwright'
+import { chromium } from 'playwright-extra'
+import StealthPlugin from 'puppeteer-extra-plugin-stealth'
+
+chromium.use(StealthPlugin())
 
 const TARGET_URL = 'https://www.opentable.com/r/don-angie-new-york'
 const TARGET_OP = 'RestaurantsAvailability'
