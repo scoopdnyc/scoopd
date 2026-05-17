@@ -76,11 +76,10 @@ export default async function BlogPost({ params }) {
     image: `https://scoopd.nyc/blog/${slug}/opengraph-image`,
     datePublished: data.publishedAt,
     dateModified: data.updatedAt ?? data.publishedAt,
-    author: {
-      '@type': 'Organization',
-      name: 'Scoopd',
-      url: 'https://scoopd.nyc',
-    },
+    author: [
+      { '@type': 'Organization', name: 'Scoopd', url: 'https://scoopd.nyc' },
+      { '@type': 'Person', name: 'Scoopd Editorial Team' },
+    ],
     publisher: {
       '@type': 'Organization',
       name: 'Scoopd',
@@ -129,6 +128,7 @@ export default async function BlogPost({ params }) {
           <h1 className="bl-title">{data.title}</h1>
           <div className="bl-meta">
             <time dateTime={data.publishedAt}>{publishDate}</time>
+            <span className="bl-byline">By the Scoopd Editorial Team</span>
           </div>
         </header>
         <div className="bl-body">

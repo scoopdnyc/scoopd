@@ -109,8 +109,23 @@ export default async function DropsPage() {
     timeBucket[t] = i === 0 ? 1 : i <= 2 ? 2 : i <= 4 ? 3 : i <= 6 ? 4 : 5
   })
 
+  const itemListLd = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'NYC Restaurant Reservation Drops Today',
+    url: 'https://scoopd.nyc/drops',
+    numberOfItems: sorted.length,
+    itemListElement: sorted.map((r, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: r.restaurant,
+      url: `https://scoopd.nyc/restaurant/${r.slug}`,
+    })),
+  }
+
   return (
     <main style={{ background: '#0f0f0d', minHeight: '100vh', color: '#e8e4dc', fontFamily: "var(--font-dm-sans), sans-serif" }}>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListLd) }} />
       <ScoopNav />
 
       <div className="dr-header">
