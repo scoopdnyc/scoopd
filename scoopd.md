@@ -26,10 +26,12 @@ Does not contain: monitor algorithms, design system values, founding system spec
 
 ## Open Tasks
 
-- **Blog content** — only one post live (`/blog/the-reservation-economy`). High ROI backlog item.
-- **Need to Know box system** — deferred. Needs full policy data sourced across 192 restaurants before building.
-- **Catch Hospitality blog post** — deferred. Mechanic needs to be properly understood before writing.
-- **Backlink outreach** — Eater NY, Grub Street, The Infatuation, NYC food newsletters. Not started.
+- **Blog content** — four posts live: `/blog/the-reservation-economy`, `/blog/rolling-windows-and-monthly-drops`, `/blog/reservation-shadow-market`, `/blog/who-gets-the-table`. High ROI backlog continues.
+- **SEO action plan** — audit run May 17 2026 at 67/100. Criticals and XS items shipped. Remaining open: M1 (neighborhood editorial), M6 (how-to-book sections on top 6 restaurants), M7 (expand rolling-windows post), L2 (/about page), L3 (blog author byline), L6 (static homepage restaurant list), L8 (ItemList schema on /drops).
+- **Need to Know box system** — deferred.
+- **Catch Hospitality blog post** — deferred.
+- **Backlink outreach** — not started.
+- **Social account rebrand** — not started.
 
 ---
 
@@ -85,7 +87,7 @@ Supabase Auth, Stripe subscriptions (monthly + yearly), premium blur/unlock patt
 - Priority topics: platform explainers, reservation economy pieces, data journalism when difficulty scoring is defensible, timely pieces around Restaurant Week and new openings
 - SEO strategy: embed high-search restaurant names naturally within editorial content
 - All content bylined as Scoopd, drafted by Claude
-- Posts live: /blog/the-reservation-economy, /blog/rolling-windows-and-monthly-drops
+- Posts live: /blog/the-reservation-economy, /blog/rolling-windows-and-monthly-drops, /blog/reservation-shadow-market, /blog/who-gets-the-table
 - Each post submitted to GSC and IndexNow on publish
 
 **Track 2: Social (slow burn)**
@@ -269,6 +271,7 @@ Full schema including monitor columns in scoopd-reference.md. Fields actively us
 - observed_days is the only public-facing days-out field; release_schedule is internal only
 - Booking intel must always come from observed_days and release_time in Supabase DB, never from third-party sources
 - Do-not-touch list (notes must never be overwritten by scripts): 4 Charles Prime Rib, Bemelmans Bar, Bistrot Ha, Carbone, Cote, Double Chicken Please, Eleven Madison Park, Ha's Snack Bar, Jeju Noodle Bar, Joo Ok, Lilia, Minetta Tavern, Tatiana, Theodora, Torrisi, Via Carota
+- The do-not-touch restriction applies to editorial voice, sourcing, and rewriting. Factual corrections such as day counts that conflict with observed_days are permitted and should be made directly in the DB with last_updated_at updated.
 
 ---
 
@@ -319,6 +322,16 @@ Write it to the repo root as handoff.md and commit with "docs: update handoff.md
 - All 192 restaurant notes complete
 - L004 closed: /drops and /plan migrated to computeNextDropDate from lib/dropDate.js
 - NSI SevenRooms slugs corrected: thecornerstore, theeightysix, 450wbroadway — opportunistic monitor now has valid venue identifiers
+
+### Session — May 17, 2026
+- SEO audit run via Claude Code: score 67/100 (up from 58/100 pre-Phase 4). Full report saved as FULL-AUDIT-REPORT.md, action plan as ACTION-PLAN.md in repo root.
+- Shipped audit items C1, C2, C3, C4, H1, H2, H3, H4 in one Claude Code pass: fixed stale /how-it-works CTA, added per-post OG images via Next.js ImageResponse, added image to restaurant JSON-LD, removed deprecated sitemap tags, fixed restaurant schema description fallback and mainEntityOfPage, fixed Article schema mainEntityOfPage and publisher.logo, collapsed neighborhood/platform breadcrumbs to 2 levels, fixed PremiumReveal stale placeholder date.
+- Shipped audit items M2, M3, M4, M5, L1 (skipped, no telephone column), L4, L5, L7 in second Claude Code pass: homepage hero CTA, restaurant count in hero, Organization schema logo/sameAs/@id, blog CTA destinations fixed to /signup, lock emoji replaced with gold SVG, price added to /drops upsell, last verified signal added to restaurant pages.
+- H5 resolved: Carbone and Via Carota notes corrected from "30 days out" to "31 days out" directly in DB via Supabase MCP. observed_days was correct at 31; notes were stale.
+- Do-not-touch list clarified: restriction is editorial, not factual. Day count corrections are permitted.
+- Two new blog posts published: /blog/reservation-shadow-market and /blog/who-gets-the-table (cultural history piece).
+- OpenTable Inngest function failing with "No function ID found in request" — GitHub Actions version is the active monitor. Inngest cron for OpenTable should be investigated and disabled if redundant.
+- Corima and Lilia monitor flags resolved.
 
 ### Session — May 13, 2026
 - OpenTable availability monitor built: lib/monitors/opentable.js, lib/inngest/opentableDailyCheck.js

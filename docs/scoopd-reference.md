@@ -153,7 +153,8 @@ Required in .env.local and Vercel:
 - Neighborhood category pages at /neighborhood/[name] with ItemList + BreadcrumbList JSON-LD
 - Platform category pages at /platform/[name] with ItemList + BreadcrumbList JSON-LD
 - Blog system: /blog index + /blog/[slug] MDX with Article schema, ISR, canonical
-- First blog post: /blog/the-reservation-economy (links to Torrisi and Don Angie)
+- Blog posts live: /blog/the-reservation-economy, /blog/rolling-windows-and-monthly-drops, /blog/reservation-shadow-market, /blog/who-gets-the-table
+- Per-post OG images via Next.js ImageResponse at app/blog/[slug]/opengraph-image.js — gold bar, Playfair title, DM Sans subtitle, scoopd.nyc footer. All blog posts automatically covered.
 - /how-it-works Further Reading section linking to blog
 - public/llms.txt for AI crawler signal
 - IndexNow key file created, verified with Bing, bulk URL submission completed
@@ -165,6 +166,8 @@ Required in .env.local and Vercel:
 - Google site verification TXT record in DNS
 - Neighborhood internal linking on all restaurant pages (random, up to 4 per page)
 - Share button on all restaurant pages
+
+- SEO audit score: 67/100 as of May 17 2026. Previous score: 58/100 pre-Phase 4. Action plan in ACTION-PLAN.md.
 
 **SEO — Ongoing backlog:**
 - Blog content layer — high ROI; each post targets high-intent queries and links to 5-10 restaurant pages
@@ -292,6 +295,7 @@ Blog stub: `app/blog/how-catch-hospitality-reservations-work/page.js` (content T
 - 192 restaurants in DB; editorial notes complete for all restaurants as of May 2026
 - Notes sourcing method: minimum 3 sources required (Michelin, restaurant website, press coverage). Never fabricate. Never plagiarize. Rewrite from scratch using sources as reference only.
 - Do-not-touch list (notes must never be overwritten by scripts): 4 Charles Prime Rib, Bemelmans Bar, Bistrot Ha, Carbone, Cote, Double Chicken Please, Eleven Madison Park, Ha's Snack Bar, Jeju Noodle Bar, Joo Ok, Lilia, Minetta Tavern, Tatiana, Theodora, Torrisi, Via Carota
+- The do-not-touch restriction applies to editorial voice, sourcing, and rewriting. Factual corrections such as day counts that conflict with observed_days are permitted and should be made directly in the DB with last_updated_at updated.
 
 ## Competitive Context
 
