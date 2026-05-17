@@ -31,7 +31,7 @@ const getRestaurantCached = unstable_cache(
     const db = createSupabaseStatic()
     const { data, error } = await db
       .from('restaurants')
-      .select('restaurant, neighborhood, platform, cuisine, release_time, observed_days, release_schedule, seat_count, michelin_stars, price_tier, difficulty, notes, slug, address, non_standard_inventory, google_place_id, photo_override_url, photo_position, photo_height')
+      .select('restaurant, neighborhood, platform, cuisine, release_time, observed_days, release_schedule, seat_count, michelin_stars, price_tier, difficulty, notes, slug, address, non_standard_inventory, google_place_id, photo_override_url, photo_position, photo_height, last_updated_at')
       .eq('slug', slug)
       .single()
     if (error || !data) return null
@@ -176,6 +176,10 @@ export default async function RestaurantPage({ params }) {
       autoSentence = `${r.restaurant} accepts reservations on ${r.platform}.`
     }
   }
+
+  const lastVerified = r.last_updated_at
+    ? new Date(r.last_updated_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' })
+    : null
 
   const streetAddress = r.address ? r.address.split(',')[0].trim() : undefined
   const postalCode    = r.address ? (r.address.match(/\b\d{5}\b/) || [])[0] : undefined
@@ -359,6 +363,9 @@ export default async function RestaurantPage({ params }) {
             View all {r.platform} restaurants on Scoopd →
           </Link>
         </div>
+      )}
+      {lastVerified && (
+        <div className="rp-last-verified">Last verified: {lastVerified}</div>
       )}
       <ScoopFooter />
     </main>

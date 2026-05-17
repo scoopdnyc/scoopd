@@ -50,3 +50,4 @@
 .nb-cat-link{font-size:13px;color:#c9a96e;text-decoration:none}
 .nb-cat-link:hover{color:#e8e4dc}
 .rp-section-label{font-family:var(--font-dm-mono),monospace;font-size:10px;letter-spacing:1.5px;color:#8a8a80;text-transform:uppercase;margin:0 0 0.75rem}
+.rp-last-verified{padding:0 2rem 1.5rem;font-size:12px;color:#8a8a80;text-align:right}

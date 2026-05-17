@@ -4,6 +4,8 @@
 .eyebrow{font-family:var(--font-dm-mono),monospace;font-size:11px;letter-spacing:2px;color:#c9a96e;text-transform:uppercase;margin-bottom:0.75rem}
 .headline{font-family:var(--font-playfair),serif;font-size:48px;line-height:1.1;color:#e8e4dc;margin-bottom:1rem}
 .sub{font-size:15px;color:#8a8a80;line-height:1.6;max-width:500px}
+.hero-cta{display:inline-block;margin-top:1.5rem;background:#c9a96e;color:#0f0f0d;font-size:14px;font-weight:600;padding:0.6rem 1.5rem;border-radius:6px;text-decoration:none}
+.hero-cta:hover{background:#e8c98e}
 .search-wrap{padding:1.5rem 2rem}
 .search-box{background:#1a1a16;border:0.5px solid #2a2a26;border-radius:8px;padding:0.75rem 1rem;display:flex;gap:1rem;align-items:center;max-width:700px}
 .search-box input{background:none;border:none;color:#e8e4dc;font-family:var(--font-dm-sans),sans-serif;font-size:14px;outline:none;flex:1}

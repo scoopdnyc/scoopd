@@ -63,8 +63,11 @@ export default async function Home() {
   const orgLd = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
+    '@id': 'https://scoopd.nyc/#organization',
     name: 'Scoopd',
     url: 'https://scoopd.nyc',
+    logo: { '@type': 'ImageObject', url: 'https://scoopd.nyc/opengraph-image' },
+    sameAs: [],
     contactPoint: {
       '@type': 'ContactPoint',
       email: 'support@scoopd.nyc',
@@ -80,7 +83,8 @@ export default async function Home() {
       <div className="hero">
         <div className="eyebrow">NYC Reservation Intelligence</div>
         <h1 className="headline">Know when<br />tables drop.</h1>
-        <p className="sub">The exact moment reservations open at NYC&apos;s hardest tables. No bots. No brokers. Just intelligence.*</p>
+        <p className="sub">The exact moment reservations open at NYC&apos;s hardest tables. No bots. No brokers. 192 restaurants tracked.</p>
+        <Link href="/drops" className="hero-cta">See tonight&apos;s drops</Link>
       </div>
       <RestaurantList restaurants={restaurants} />
       <ScoopFooter />

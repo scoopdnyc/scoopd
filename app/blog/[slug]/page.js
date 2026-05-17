@@ -136,7 +136,7 @@ export default async function BlogPost({ params }) {
         </div>
         <div className="bl-cta">
           <p className="bl-cta-text">Scoopd tracks drop times for every restaurant on this list.</p>
-          <Link href="/drops" className="bl-cta-link">See tonight&apos;s drops</Link>
+          <Link href="/signup" className="bl-cta-link">Get access →</Link>
         </div>
       </div>
       <ScoopFooter />

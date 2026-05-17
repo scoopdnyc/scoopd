@@ -59,7 +59,12 @@ export default function PremiumReveal({ dropDate, isPlatformWalkIn }) {
       <div className="rp-drop-blurred">{getPlaceholderDate()}</div>
       {!loading && (
         <div className="rp-drop-overlay">
-          <span className="rp-drop-lock">🔒</span>
+          <span className="rp-drop-lock">
+            <svg width="20" height="24" viewBox="0 0 20 24" fill="none" stroke="#c9a96e" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="2" y="11" width="16" height="12" rx="2"/>
+              <path d="M6 11V7a4 4 0 0 1 8 0v4"/>
+            </svg>
+          </span>
           <span className="rp-drop-overlay-text">Sign up to unlock exact drop dates</span>
           <Link href="/signup" className="rp-drop-cta">Get access →</Link>
         </div>

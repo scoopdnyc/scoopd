@@ -121,7 +121,7 @@ export default async function DropsPage() {
 
       {!isPremium && (
         <div className="dr-upsell-banner">
-          <span className="dr-upsell-text">Unlock the exact date each drop opens for. Know what to target before everyone else.</span>
+          <span className="dr-upsell-text">Unlock the exact date each drop opens for. Know what to target before everyone else. From $9.99/month.</span>
           <Link href="/signup" className="dr-upsell-cta">Get access →</Link>
         </div>
       )}
