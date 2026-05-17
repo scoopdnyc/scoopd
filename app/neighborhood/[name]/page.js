@@ -31,11 +31,11 @@ export async function generateMetadata({ params }) {
   const neighborhood = NEIGHBORHOOD_MAP[name]
   if (!neighborhood) return {}
   return {
-    title: `${neighborhood} Restaurants — Reservations & Drop Times`,
+    title: `${neighborhood} Restaurant Reservations and Drop Times`,
     description: `Every ${neighborhood} restaurant on Scoopd, with exact drop times and booking windows. Know exactly when tables open at the hardest spots in ${neighborhood}.`,
     alternates: { canonical: `https://scoopd.nyc/neighborhood/${name}` },
     openGraph: {
-      title: `${neighborhood} Restaurants — Reservations & Drop Times | Scoopd`,
+      title: `${neighborhood} Restaurant Reservations and Drop Times | Scoopd`,
       description: `Every ${neighborhood} restaurant on Scoopd, with exact drop times and booking windows.`,
       url: `https://scoopd.nyc/neighborhood/${name}`,
       siteName: 'Scoopd',
@@ -84,8 +84,7 @@ export default async function NeighborhoodPage({ params }) {
     '@type': 'BreadcrumbList',
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://scoopd.nyc' },
-      { '@type': 'ListItem', position: 2, name: 'Neighborhoods', item: 'https://scoopd.nyc/neighborhoods' },
-      { '@type': 'ListItem', position: 3, name: neighborhood, item: pageUrl },
+      { '@type': 'ListItem', position: 2, name: neighborhood, item: pageUrl },
     ],
   }
 
@@ -97,8 +96,6 @@ export default async function NeighborhoodPage({ params }) {
       <div className="np-container">
         <nav className="np-breadcrumb">
           <Link href="/">Home</Link>
-          <span className="np-sep">/</span>
-          <span>Neighborhoods</span>
           <span className="np-sep">/</span>
           <span>{neighborhood}</span>
         </nav>
@@ -140,7 +137,7 @@ export default async function NeighborhoodPage({ params }) {
           })}
         </div>
         <div className="np-cta">
-          <p className="np-cta-text">Get the exact date to book — from $9.99/month.</p>
+          <p className="np-cta-text">Get the exact date to book. From $9.99/month.</p>
           <Link href="/signup" className="np-cta-link">Get access →</Link>
         </div>
       </div>

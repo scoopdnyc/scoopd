@@ -48,6 +48,11 @@ export async function generateMetadata({ params }) {
       publishedTime: data.publishedAt,
       modifiedTime: data.updatedAt,
       siteName: 'Scoopd',
+      images: [{ url: `/blog/${slug}/opengraph-image` }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      images: [`/blog/${slug}/opengraph-image`],
     },
   }
 }
@@ -67,9 +72,10 @@ export default async function BlogPost({ params }) {
     '@type': 'Article',
     headline: data.title,
     description: data.description,
-    url: postUrl,
+    mainEntityOfPage: { '@type': 'WebPage', '@id': postUrl },
+    image: `https://scoopd.nyc/blog/${slug}/opengraph-image`,
     datePublished: data.publishedAt,
-    dateModified: data.updatedAt,
+    dateModified: data.updatedAt ?? data.publishedAt,
     author: {
       '@type': 'Organization',
       name: 'Scoopd',
@@ -79,6 +85,7 @@ export default async function BlogPost({ params }) {
       '@type': 'Organization',
       name: 'Scoopd',
       url: 'https://scoopd.nyc',
+      logo: { '@type': 'ImageObject', url: 'https://scoopd.nyc/opengraph-image' },
     },
   }
 

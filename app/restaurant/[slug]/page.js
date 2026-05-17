@@ -24,7 +24,7 @@ export async function generateStaticParams() {
   return (data ?? []).filter(r => r.slug).map(r => ({ slug: r.slug }))
 }
 
-// Cached restaurant fetch — keyed by slug, revalidates every hour.
+// Cached restaurant fetch: keyed by slug, revalidates every hour.
 // Includes non_standard_inventory so the NSI query is eliminated.
 const getRestaurantCached = unstable_cache(
   async (slug) => {
@@ -41,7 +41,7 @@ const getRestaurantCached = unstable_cache(
   { revalidate: 3600, tags: ['restaurant'] }
 )
 
-// Cached cross-link fetch — keyed by slug + filters.
+// Cached cross-link fetch: keyed by slug + filters.
 const getCrossLinksCached = unstable_cache(
   async (slug, neighborhood, difficulty, platform) => {
     const db = createSupabaseStatic()
@@ -78,7 +78,7 @@ export async function generateMetadata({ params }) {
   const r = await getRestaurantCached(slug)
   if (!r) return { title: 'Not Found' }
 
-  const title = `${r.restaurant} Reservations — Drop Time & Booking Intelligence`
+  const title = `${r.restaurant} Reservations: Drop Time and Booking Intelligence`
 
   let description
   if (r.notes) {
@@ -146,7 +146,7 @@ export default async function RestaurantPage({ params }) {
     : r.difficulty === 'Easy' ? '#6ec9a0'
     : '#8a8a80'
 
-  // Days out display logic — asterisk suppressed for non-standard inventory restaurants
+  // Days out display logic: asterisk suppressed for non-standard inventory restaurants
   const daysOutValue = r.observed_days
     ? `${r.observed_days} days${isNonStandardInventory ? '' : '*'}`
     : r.release_schedule
@@ -165,7 +165,7 @@ export default async function RestaurantPage({ params }) {
   let autoSentence = null
   if (!r.notes) {
     if (isWalkin) {
-      autoSentence = `${r.restaurant} does not take reservations — walk-in only.`
+      autoSentence = `${r.restaurant} does not take reservations. Walk-in only.`
     } else if (isPhone) {
       autoSentence = `${r.restaurant} takes reservations by phone only.`
     } else if (r.observed_days && r.release_time && r.platform) {
@@ -179,10 +179,15 @@ export default async function RestaurantPage({ params }) {
 
   const streetAddress = r.address ? r.address.split(',')[0].trim() : undefined
   const postalCode    = r.address ? (r.address.match(/\b\d{5}\b/) || [])[0] : undefined
+  const descriptionText = r.notes || autoSentence || undefined
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Restaurant',
     name: r.restaurant,
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': `https://scoopd.nyc/restaurant/${slug}`,
+    },
     ...(r.cuisine && { servesCuisine: r.cuisine }),
     ...(r.address && {
       address: {
@@ -194,8 +199,8 @@ export default async function RestaurantPage({ params }) {
         ...(postalCode && { postalCode }),
       },
     }),
-    url: `https://scoopd.nyc/restaurant/${slug}`,
-    ...(r.notes && { description: r.notes }),
+    ...(photoUrl && { image: photoUrl }),
+    ...(descriptionText && { description: descriptionText }),
     ...(r.price_tier && { priceRange: r.price_tier }),
     acceptsReservations: r.platform !== 'Walk-in' && r.platform !== 'CLOSED',
   }
@@ -239,7 +244,7 @@ export default async function RestaurantPage({ params }) {
         </div>
       )}
       {isClosed && <div className="rp-closed-notice">This restaurant is permanently closed.</div>}
-      {isWalkin && <div className="rp-walkin-notice">Walk-in only — no reservations accepted. Arrive early.</div>}
+      {isWalkin && <div className="rp-walkin-notice">Walk-in only. No reservations accepted. Arrive early.</div>}
       {!isClosed && <>
         <div className="rp-section-heading-row">
           <h2 className="rp-section-heading">Booking Intelligence</h2>

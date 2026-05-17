@@ -31,11 +31,11 @@ export async function generateMetadata({ params }) {
   const platform = PLATFORM_MAP[name]
   if (!platform) return {}
   return {
-    title: `${platform} Restaurants NYC — Drop Times & Reservations`,
+    title: `${platform} Restaurants NYC: Drop Times and Reservations`,
     description: `Every ${platform} restaurant tracked by Scoopd, with release times and booking windows. Know exactly when reservations open.`,
     alternates: { canonical: `https://scoopd.nyc/platform/${name}` },
     openGraph: {
-      title: `${platform} Restaurants NYC — Drop Times & Reservations | Scoopd`,
+      title: `${platform} Restaurants NYC: Drop Times and Reservations | Scoopd`,
       description: `Every ${platform} restaurant tracked by Scoopd, with release times and booking windows.`,
       url: `https://scoopd.nyc/platform/${name}`,
       siteName: 'Scoopd',
@@ -84,8 +84,7 @@ export default async function PlatformPage({ params }) {
     '@type': 'BreadcrumbList',
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://scoopd.nyc' },
-      { '@type': 'ListItem', position: 2, name: 'Platforms', item: 'https://scoopd.nyc/platforms' },
-      { '@type': 'ListItem', position: 3, name: platform, item: pageUrl },
+      { '@type': 'ListItem', position: 2, name: platform, item: pageUrl },
     ],
   }
 
@@ -98,11 +97,9 @@ export default async function PlatformPage({ params }) {
         <nav className="pp-breadcrumb">
           <Link href="/">Home</Link>
           <span className="pp-sep">/</span>
-          <span>Platforms</span>
-          <span className="pp-sep">/</span>
           <span>{platform}</span>
         </nav>
-        <h1 className="pp-heading">{platform} Restaurants NYC — Drop Times & Reservations</h1>
+        <h1 className="pp-heading">{platform} Restaurants NYC: Drop Times and Reservations</h1>
         <p className="pp-intro">Every {platform} restaurant tracked by Scoopd, with release times and booking windows.</p>
         <div className="pp-table">
           <div className="pp-thead">
@@ -140,7 +137,7 @@ export default async function PlatformPage({ params }) {
           })}
         </div>
         <div className="pp-cta">
-          <p className="pp-cta-text">Get the exact date to book — from $9.99/month.</p>
+          <p className="pp-cta-text">Get the exact date to book. From $9.99/month.</p>
           <Link href="/signup" className="pp-cta-link">Get access →</Link>
         </div>
       </div>

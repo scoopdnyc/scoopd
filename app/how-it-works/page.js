@@ -7,19 +7,19 @@ import './how-it-works.css'
 export const dynamic = 'force-static'
 
 export const metadata = {
-  title: 'How Scoopd Works — Restaurant Reservation Drop Times Explained',
-  description: 'Scoopd tracks when NYC restaurants release reservations — the exact platform, time, and date. Here\'s how we do it and how to use it.',
+  title: 'How Scoopd Works: Restaurant Reservation Drop Times Explained',
+  description: 'Scoopd tracks when NYC restaurants release reservations: the exact platform, time, and date. Here\'s how we do it and how to use it.',
   openGraph: {
-    title: 'How Scoopd Works — Restaurant Reservation Drop Times Explained',
-    description: 'Scoopd tracks when NYC restaurants release reservations — the exact platform, time, and date. Here\'s how we do it and how to use it.',
+    title: 'How Scoopd Works: Restaurant Reservation Drop Times Explained',
+    description: 'Scoopd tracks when NYC restaurants release reservations: the exact platform, time, and date. Here\'s how we do it and how to use it.',
     url: 'https://scoopd.nyc/how-it-works',
     siteName: 'Scoopd',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'How Scoopd Works — Restaurant Reservation Drop Times Explained',
-    description: 'Scoopd tracks when NYC restaurants release reservations — the exact platform, time, and date. Here\'s how we do it and how to use it.',
+    title: 'How Scoopd Works: Restaurant Reservation Drop Times Explained',
+    description: 'Scoopd tracks when NYC restaurants release reservations: the exact platform, time, and date. Here\'s how we do it and how to use it.',
   },
   alternates: { canonical: 'https://scoopd.nyc/how-it-works' },
 }
@@ -37,7 +37,7 @@ export default async function HowItWorks() {
         name: 'Why is it so hard to get a reservation at top NYC restaurants?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'NYC dining has split into two worlds: restaurants you can book whenever, and restaurants where hundreds of people compete the second a booking window opens. Resy and OpenTable made reservations more accessible, which means the best tables at the hardest restaurants are gone in seconds — often before most people have had their first coffee.',
+          text: 'NYC dining has split into two worlds: restaurants you can book whenever, and restaurants where hundreds of people compete the second a booking window opens. Resy and OpenTable made reservations more accessible, which means the best tables at the hardest restaurants are gone in seconds. Often before most people have had their first coffee.',
         },
       },
       {
@@ -45,7 +45,7 @@ export default async function HowItWorks() {
         name: 'What is a restaurant reservation drop time?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Most reservation-based restaurants release availability on a rolling schedule — instead of opening every future date at once, they release a fixed window that moves forward one day at a time. A restaurant with a 30-day window opens a new date every morning at a specific time. That moment is the drop time. Being at the restaurant page at 10:00:01 instead of 10:00:00 is often the difference between getting a table and watching it disappear.',
+          text: 'Most reservation-based restaurants release availability on a rolling schedule. Instead of opening every future date at once, they release a fixed window that moves forward one day at a time. A restaurant with a 30-day window opens a new date every morning at a specific time. That moment is the drop time. Being at the restaurant page at 10:00:01 instead of 10:00:00 is often the difference between getting a table and watching it disappear.',
         },
       },
       {
@@ -61,7 +61,7 @@ export default async function HowItWorks() {
         name: 'How do I prepare to book a hard-to-get NYC restaurant reservation?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Have your account logged in and payment method saved before the drop time. Know your party size and preferred time slots in advance. Get to the restaurant page before the drop — searching at the exact drop time is already too late at the hardest places. Know whether desktop or mobile works better for that specific platform. And remember: missing the initial drop is not the end — cancellations happen throughout the day.',
+          text: 'Have your account logged in and payment method saved before the drop time. Know your party size and preferred time slots in advance. Get to the restaurant page before the drop. Searching at the exact drop time is already too late at the hardest places. Know whether desktop or mobile works better for that specific platform. Missing the initial drop is not the end. Cancellations happen throughout the day.',
         },
       },
       {
@@ -69,7 +69,7 @@ export default async function HowItWorks() {
         name: 'What does Scoopd do?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Scoopd tracks when NYC restaurants release reservations — the exact platform, time, and days out — and calculates the specific date premium subscribers need to be online to book. The free directory shows release times and booking windows for 190+ restaurants. Premium subscribers get the exact calculated drop date for any future dinner date, across every restaurant Scoopd tracks.',
+          text: 'Scoopd tracks when NYC restaurants release reservations: the exact platform, time, and days out. It calculates the specific date premium subscribers need to be online to book. The free directory shows release times and booking windows for 190+ restaurants. Premium subscribers get the exact calculated drop date for any future dinner date, across every restaurant Scoopd tracks.',
         },
       },
     ],
@@ -178,8 +178,8 @@ export default async function HowItWorks() {
               </>
             ) : (
               <>
-                <p className="hiw-cta-sub">Join the waitlist for exact drop date calculations, real-time alerts, and the full Scoopd platform when it launches.</p>
-                <Link href="/signup" className="hiw-cta-btn">Join the waitlist</Link>
+                <p className="hiw-cta-sub">See every reservation dropping today across all 192 restaurants Scoopd tracks.</p>
+                <Link href="/drops" className="hiw-cta-btn">See tonight&apos;s drops</Link>
               </>
             )}
           </div>

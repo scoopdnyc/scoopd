@@ -1,387 +1,305 @@
-# Scoopd SEO Audit Report
-**Site:** https://scoopd.nyc | **Date:** April 20, 2026 | **Overall Score: 58/100**
+# Scoopd SEO Full Audit Report
+**Date:** May 17, 2026
+**URL:** https://scoopd.nyc
+**Stack:** Next.js 16.2.1 App Router, Vercel Hobby, Supabase
+**Agents run:** technical, content, schema, sitemap, performance (blocked), geo, backlinks (blocked), visual (blocked), sxo
 
 ---
 
-## Executive Summary
+## Overall SEO Health Score: 67/100
 
-Scoopd has a strong technical foundation — Vercel hosting, HTTPS, valid sitemap, Google Analytics, JSON-LD on restaurant pages — but is being held back by a cluster of fixable issues. The site has a title duplication bug on every restaurant page, zero canonical URLs sitewide, no OG images for social sharing, and a cache-control header problem that prevents Vercel's CDN from caching any page.
+| Category | Weight | Score | Weighted |
+|---|---|---|---|
+| Technical SEO | 22% | 72 | 15.8 |
+| Content Quality | 23% | 62 | 14.3 |
+| On-Page SEO | 20% | 74 | 14.8 |
+| Schema | 10% | 58 | 5.8 |
+| Performance | 10% | 70* | 7.0 |
+| AI Search Readiness | 10% | 72 | 7.2 |
+| Images | 5% | 35 | 1.8 |
+| **Total** | | | **66.7 → 67/100** |
 
-**Business Type:** NYC Restaurant Reservation Intelligence Platform (SaaS / Freemium Directory)
-**Pages Crawled:** 197 (homepage + 194 restaurant pages + supporting pages)
-**Stack:** Next.js 16.2.1 App Router, Supabase, Stripe, Vercel Hobby
-
-### Top 5 Critical Issues
-
-1. **Title tag duplication bug** — Every restaurant page renders "... | Scoopd | Scoopd" (double brand suffix). Affects ~194 pages.
-2. **No canonical URLs anywhere** — Zero `<link rel="canonical">` tags on any page. Vulnerable to duplicate content from query strings and URL variations.
-3. **No OG or Twitter images** — Every page social share shows a blank card. Critical for organic social traffic.
-4. **cache-control: private, no-cache on all HTML** — Vercel CDN cannot cache any page. Every request hits origin server.
-5. **No schema on homepage or /how-it-works** — Two highest-traffic pages have zero structured data.
-
-### Top 5 Quick Wins
-
-1. Remove `| Scoopd` from restaurant page title strings — layout template already appends it
-2. Add `alternates: { canonical: url }` to every generateMetadata export
-3. Add `priceRange` to Restaurant JSON-LD — price_tier column already exists, one-line fix
-4. Remove /signup from sitemap — no search demand, wastes crawl budget
-5. Add `export const dynamic = 'force-static'` to /how-it-works — immediately CDN-cacheable
+*Performance: measurement blocked by tool permissions; score is estimated.
 
 ---
 
-## Score Card
+## Top 5 Critical Issues
 
-| Category | Score | Weight |
+1. **Blog OG images completely absent** — confirmed via HTTP. `<meta og:image>` returns empty on all blog posts. Blocks social sharing previews and Article rich results eligibility.
+2. **Neighborhood and platform pages: 30-40 words of content** — pure DB query with one template sentence. 44 neighborhood + 7 platform pages of near-identical structure. Classic thin programmatic content under Sept 2025 QRG.
+3. **Restaurant schema missing `image`** — `photoUrl` is fetched and rendered in the UI but not passed to JSON-LD. Blocks Restaurant rich result thumbnails.
+4. **Sitemap has deprecated tags on all 251 entries** — `<changefreq>` and `<priority>` present site-wide. Also uses `lib/supabase.js` instead of `lib/supabase-static.js` (CLAUDE.md violation).
+5. **`/how-it-works` CTA is stale** — "Join the waitlist...when it launches" but the platform is live. P0 conversion damage.
+
+## Top 5 Quick Wins
+
+1. Remove `changeFrequency` and `priority` from all sitemap entries.
+2. Fix sitemap Supabase client: `lib/supabase.js` → `lib/supabase-static.js`.
+3. Add `image: photoUrl` to Restaurant JSON-LD (existing variable, one line).
+4. Fix `/how-it-works` CTA — "Join the waitlist" → "Get access" or "See drop times."
+5. Collapse neighborhood/platform breadcrumb to 2 levels (removes crawlable 404 refs).
+
+---
+
+## Technical SEO
+
+### Canonicals
+All correct. Self-referential confirmed on:
+- Homepage: `https://scoopd.nyc` (no trailing slash, consistent with sitemap)
+- Restaurant: `https://scoopd.nyc/restaurant/[slug]`
+- Neighborhood: `https://scoopd.nyc/neighborhood/west-village`
+- Platform: `https://scoopd.nyc/platform/resy`
+
+### Trailing Slash
+308 permanent redirect from `/restaurant/carbone/` to `/restaurant/carbone`. Correct, handled by Vercel.
+
+### Sitemap
+
+**Stats:**
+- 251 total URLs: 192 restaurant, 44 neighborhood, 7 platform, 4 blog, 4 static
+- All key static pages present: `/`, `/how-it-works`, `/drops`, `/plan`, `/blog`
+- Noindexed pages correctly excluded: `/signup`, `/login`, `/terms`, `/privacy`
+- Blog posts have correct individual `lastmod` from MDX frontmatter
+
+**Issues:**
+- **251 `<priority>` and 251 `<changefreq>` tags** — deprecated, ignored by Google, add payload weight. Remove.
+- **Wrong Supabase client** — `sitemap.js` imports `{ supabase } from '../lib/supabase'` not `createSupabaseStatic` from `lib/supabase-static.js`. CLAUDE.md invariant violation.
+- Neighborhood/platform pages have hardcoded `lastmod: 2026-05-02` — acceptable for now.
+
+### OG Images (Critical)
+`curl` against `/blog/the-reservation-economy` returns empty for `og:image`. All 4 blog posts confirmed missing `og:image` in `<head>`. Means social shares show blank previews, and Article rich results in Google are ineligible without `image`.
+
+### Indexability
+All sampled pages return 200: restaurant/hillstone, restaurant/jean-georges, restaurant/corima, neighborhood/williamsburg, platform/resy, blog/the-reservation-economy, blog/who-gets-the-table.
+
+### Rendering Architecture
+- `RestaurantList.js` is `'use client'` — full 192-restaurant directory rendered in JS
+- Server-rendered homepage HTML contains only the hero text and schema
+- This limits crawlable homepage content to ~80 words
+- /drops and /plan: no explicit `revalidate` or `force-*` directives detected
+
+---
+
+## Content Quality
+
+### Scorecard
+
+| Page | Content | E-E-A-T | Severity |
+|---|---|---|---|
+| Homepage | 72/100 | 61/100 | Moderate |
+| /restaurant/carbone | 81/100 | 74/100 | Low |
+| /restaurant/via-carota | 52/100 | 48/100 | High |
+| /blog/the-reservation-economy | 88/100 | 76/100 | Low |
+| /how-it-works | 84/100 | 72/100 | Low |
+| /neighborhood/west-village | 44/100 | 38/100 | Critical |
+| /blog/ index | 68/100 | 55/100 | Moderate |
+
+### Critical — Neighborhood and Platform Pages
+One template sentence per page. 44 neighborhood + 7 platform pages with identical structure. A Quality Rater comparing `/neighborhood/west-village` to `/neighborhood/williamsburg` sees two pages with different data and identical prose. This is the textbook thin programmatic content pattern.
+
+**Fix:** 150-200 words of unique editorial per page. Start with top 5 neighborhoods by restaurant count.
+
+### High — Days-Out Discrepancy in Do-Not-Touch Notes
+Carbone and Via Carota notes say "30 days out" but `observed_days` panel shows 31. These are on the Do-Not-Touch list. Verify which is correct, then edit the notes field manually.
+
+### High — No Author Attribution
+No page identifies a human author. Article schema attributes blog content to `"@type": "Organization"`. For content covering a legally regulated market (NY reservation law), Sept 2025 QRG expects authorship to be answerable.
+
+### High (P0) — Stale CTA on /how-it-works
+"Join the waitlist...when it launches" — platform is live since `7df920f`. Actively signals the product is unavailable. Any visitor who reads this leaves without converting.
+
+### Moderate — No /about Page
+No `/about` page exists. Quality Raters specifically look for a page explaining who built the site, their methodology, and why the data is trustworthy.
+
+### Moderate — Blog Word Counts Below Threshold
+- `rolling-windows-and-monthly-drops`: ~895 words (minimum 1,500 for blog posts)
+- `the-reservation-economy`: ~1,350 words (150 short)
+
+### AI Citation Strengths
+- "Torrisi drops at 10:00 AM on Resy, 31 days out, and Don Angie drops at 9:00 AM on OpenTable, 8 days out" — directly quotable specific claim
+- FAQPage on /how-it-works — 5 structured Q&A pairs
+- Carbone restaurant schema with explicit drop time
+
+---
+
+## Schema
+
+### Status Table
+
+| Page | Status | Priority Issues |
 |---|---|---|
-| Technical SEO | 52/100 | 22% |
-| Content Quality | 68/100 | 23% |
-| On-Page SEO | 55/100 | 20% |
-| Schema / Structured Data | 48/100 | 10% |
-| Performance (CWV) | 62/100 | 10% |
-| AI Search Readiness | 45/100 | 10% |
-| Open Graph / Social | 30/100 | 5% |
-| Internal Linking | 52/100 | — |
-| **OVERALL** | **58/100** | |
+| Homepage — Organization + SearchAction | Pass with gaps | Missing `logo`, `sameAs`, `@id` |
+| /restaurant/[slug] — Restaurant + BreadcrumbList | Pass with gaps | Missing `image`, no `description` fallback, wrong `url` semantics |
+| /blog/[slug] — Article + BreadcrumbList | Pass with gaps | Missing `image`, no `mainEntityOfPage`, `author` is Org not Person |
+| /neighborhood/[name] — ItemList + BreadcrumbList | Pass with issue | BreadcrumbList pos 2 → non-existent `/neighborhoods` |
+| /platform/[name] — ItemList + BreadcrumbList | Pass with issue | BreadcrumbList pos 2 → non-existent `/platforms` |
+| /how-it-works — FAQPage | Pass | Note: FAQPage rich results disabled for commercial sites post-Aug 2023 but strong GEO/AI signal |
 
----
+### Fix 1 — Restaurant: add `image`, fix `description`, fix `url`
+In `app/restaurant/[slug]/page.js`, the `jsonLd` object:
+```js
+const descriptionText = r.notes || autoSentence || undefined
 
-## 1. Technical SEO — 52/100
-
-### robots.txt — PASS
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Restaurant',
+  name: r.restaurant,
+  mainEntityOfPage: {
+    '@type': 'WebPage',
+    '@id': `https://scoopd.nyc/restaurant/${slug}`,
+  },
+  ...(photoUrl && { image: photoUrl }),
+  ...(descriptionText && { description: descriptionText }),
+  ...(r.cuisine && { servesCuisine: r.cuisine }),
+  ...(r.address && { address: { /* existing logic */ } }),
+  ...(r.price_tier && { priceRange: r.price_tier }),
+  acceptsReservations: r.platform !== 'Walk-in' && r.platform !== 'CLOSED',
+}
 ```
-User-agent: *
-Allow: /
-Disallow: /admin
-Disallow: /_next/static/
-Disallow: /api/
-Sitemap: https://scoopd.nyc/sitemap.xml
+
+### Fix 2 — Article: add `image`, `mainEntityOfPage`, `publisher.logo`
+In `app/blog/[slug]/page.js`:
+```js
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: data.title,
+  description: data.description,
+  mainEntityOfPage: { '@type': 'WebPage', '@id': postUrl },
+  ...(data.image && { image: data.image }),
+  datePublished: data.publishedAt,
+  dateModified: data.updatedAt ?? data.publishedAt,
+  author: { '@type': 'Organization', name: 'Scoopd', url: 'https://scoopd.nyc' },
+  publisher: {
+    '@type': 'Organization',
+    name: 'Scoopd',
+    url: 'https://scoopd.nyc',
+    logo: { '@type': 'ImageObject', url: 'https://scoopd.nyc/scoopd-og.png' },
+  },
+}
 ```
-Correct configuration. /api/ and /_next/static/ blocked. /admin blocked. No issues.
+Also add to `generateMetadata`: `openGraph: { images: [data.image] }` when `data.image` is set.
 
-### Sitemap — PARTIAL PASS
-- 197 URLs total: homepage, /how-it-works, /signup, and 194 restaurant pages
-- Missing: /drops and /plan are not in the sitemap
-- All 197 URLs share identical lastmod timestamp (build time) — not meaningful to Googlebot
-- /signup is included but has no organic search value — should be excluded
+### Fix 3 — Neighborhood/Platform breadcrumbs: collapse to 2 levels
+Remove middle item (`/neighborhoods`, `/platforms`) — both 404. Reduce to Home → [Page].
 
-### Canonical URLs — FAIL
-- Zero `<link rel="canonical">` tags found on any page fetched
-- Next.js metadata API supports `alternates.canonical` — none of the pages use it
-- Without canonicals, query string variations can create duplicate content
-
-### Indexability — MOSTLY PASS
-- Restaurant pages, homepage, /how-it-works: correctly indexed
-- /founding, /terms, /privacy, blog placeholder: correctly noindexed
-- ISSUE: /signup is indexed and in sitemap but targets no search intent
-
-### HTTPS / Security — PASS
-- HTTPS enforced, HSTS header present (max-age=63072000)
-- x-powered-by: Next.js header exposed (minor)
-
-### Caching — FAIL (Critical)
-- Every HTML page returns: `cache-control: private, no-cache, no-store, max-age=0, must-revalidate`
-- x-vercel-cache: MISS on every HTML request
-- Root cause: createSupabaseServer() reads cookies, forcing Next.js into dynamic rendering mode
-- Static assets (sitemap.xml, robots.txt) correctly return CACHE HIT
-- Impact: Every page view hits the origin server; TTFB ~250ms under single request load
+### Fix 4 — Organization: add `logo`, `sameAs`, `@id`
+In `app/page.js`:
+```js
+const orgLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  '@id': 'https://scoopd.nyc/#organization',
+  name: 'Scoopd',
+  url: 'https://scoopd.nyc',
+  logo: { '@type': 'ImageObject', url: 'https://scoopd.nyc/scoopd-og.png' },
+  contactPoint: { /* existing */ },
+  sameAs: [ /* add social handles when confirmed */ ],
+}
+```
 
 ---
 
-## 2. On-Page SEO — 55/100
+## SXO Analysis
 
-### Title Tags — FAIL
+### SERP Page-Type Mismatches
 
-**Critical Bug:** Restaurant pages have title duplication.
+| Query | Expected Type | What Scoopd Serves | Mismatch |
+|---|---|---|---|
+| "how to get a reservation at Carbone NYC" | How-to editorial (1,000+ words) | Data card | HIGH |
+| "when does Carbone release reservations" | Direct-answer guide with answer in prose | Data card with answer below fold | MEDIUM |
+| "Scoopd NYC reservations" (navigational) | Brand homepage with crawlable content | Client-rendered directory shell | MEDIUM |
+| "NYC restaurant reservation tracker" | Product landing page with CTA + social proof | Directory homepage with bare hero | HIGH |
+| "best way to get hard restaurant reservations NYC" | Long-form tactical guide | Opinion essay on the economy | HIGH |
 
-- layout.js defines template: `"%s | Scoopd"` — wraps every child page title
-- restaurant/[slug]/page.js builds: `"${r.restaurant} Reservations — Drop Time & Booking Intelligence | Scoopd"`
-- Next.js then applies template: `"Carbone Reservations — Drop Time & Booking Intelligence | Scoopd | Scoopd"`
-- Affects all ~194 restaurant pages and /drops page
-- Google may auto-rewrite these titles in SERPs
+**Primary finding:** Scoopd pages are built for users who already know what Scoopd is. They are not built for users arriving from Google with a question. The product is being served where an explanation is expected.
 
-**Fix:** Remove `| Scoopd` from the title string in generateMetadata. The layout template handles brand suffix.
+### SXO Gap Scores by Page
 
-### Meta Descriptions — GOOD
-- Homepage: 155 chars, keyword-rich
-- Restaurant pages with editorial notes: uses hand-written copy truncated to 155 chars
-- Restaurant pages without notes: auto-generated, functional
+| Page | Score | Key Gap |
+|---|---|---|
+| /drops | 47/100 | No schema, no intro prose, lock emoji reads as broken not premium |
+| Homepage | 50/100 | No CTA in hero, no restaurant count, full directory is client-side JS |
+| /restaurant/carbone | 56/100 | No how-to guide wrapper, answer below fold, no data freshness signal |
+| /blog/the-reservation-economy | 56/100 | CTA sends to /drops not /signup, no internal links to named restaurants |
+| /how-it-works | 64/100 | No visuals, stale CTA, force-static with no freshness signal |
 
-### Heading Structure — PARTIAL PASS
-- Each restaurant page has exactly one H1 (restaurant name) — correct
-- Restaurant pages have zero H2 tags — info sections are styled divs, not semantic headings
-- Homepage has one H1 but zero H2s despite listing 194 restaurants
-- How It Works: good structure with one H1 and five H2 sections
+### P0 Findings
 
-### H1 Alignment — PARTIAL PASS
-- H1: "Carbone" | Title target: "Carbone Reservations — Drop Time & Booking Intelligence"
-- H1 and title keyword are misaligned — including intent keyword in H1 would strengthen relevance
+**Stale CTA on /how-it-works:** "Join the waitlist for exact drop date calculations, real-time alerts, and the full Scoopd platform when it launches." Product is live. Fix immediately.
+
+**No hero CTA on homepage:** Most commercially important page for "NYC restaurant reservation tracker" has zero above-the-fold CTA. The gold "The Scoop" dropdown is for existing users. A first-time Google arrival has no primary action.
+
+### P1 Findings
+
+**Restaurant pages need a guide layer for informational queries.** "How to get a reservation at Carbone" is high-volume. SERP rewards 1,000+ word how-to guides. A 200-300 word "How to book [Restaurant]" prose section per restaurant page would align with the dominant SERP page type without breaking the product experience.
+
+**Blog CTA targets wrong destination.** `/blog/the-reservation-economy` ends by naming Torrisi and Don Angie with specific drop data — but neither is linked, and the bottom CTA goes to `/drops`, not `/signup` or the individual restaurant pages. Decision-stage readers should be CTA'd to convert.
+
+**Homepage hero missing restaurant count and social proof.** "192 restaurants tracked" is the most compelling specificity signal and lives below 192 restaurant cards. It should be in the hero. "Know when tables drop across 192 NYC restaurants" as the sub-headline increases clarity and trust simultaneously.
+
+### P2 Findings
+
+**PremiumReveal placeholder date is time-stale.** The blurred placeholder hardcodes "Tuesday, April 15 at 10:00 AM ET." As of May 2026 this is a month-old past date. A perceptive user sees a locked, past date and loses trust in the data. Dynamically generate a future-looking placeholder.
+
+**Homepage directory is fully client-side.** 192 restaurants rendered by `RestaurantList` (`'use client'`). Crawlable homepage HTML is ~80 words. Adding a static server-rendered list of the top 10-15 restaurants beneath the client component would substantially increase homepage crawl authority.
+
+**Lock emoji on premium gate.** The Unicode padlock on a dark luxury UI reads as "something is broken," not "this is premium." A custom gold SVG lock matching the design system would convert better, especially for Persona B (corporate entertainer).
+
+### Persona Scores
+
+| Persona | Score | Biggest Gap |
+|---|---|---|
+| Date-Night Planner | 48/100 | /plan page is not discoverable from any organic path |
+| Casual first-timer from Google | 52/100 | Lands on /restaurant/[slug], gets data card, not the how-to guide they searched for |
+| Obsessive foodie (returning) | 61/100 | Logged-out state shows re-acquisition CTA, not "log back in" |
+| Corporate entertainer | 64/100 | Price not visible on /drops upsell banner |
 
 ---
 
-## 3. Content Quality — 68/100
+## GEO / AI Search Readiness
 
 ### Strengths
-- ~140 restaurant pages have high-quality hand-written editorial descriptions in Scoopd voice (specific, insider, no marketing language)
-- Carbone note example: "The most hunted reservation in New York, full stop..." — strong E-E-A-T signal
-- Auto-generated descriptions for ~52 remaining restaurants are functional and accurate
-- How It Works (~2,000 words) is substantive editorial content explaining the reservation ecosystem
-- All data (release times, platform names, days-out windows) is verified and specific
-
-### Weaknesses
-- ~52 auto-generated restaurant pages are formulaic and thin — Google may classify as low-quality over time
-- Zero restaurant photos on any page — no image alt text, no image-based traffic, lower CTR from search
-- Homepage is mostly a restaurant directory list — minimal editorial prose
-- No FAQ content for featured snippet eligibility
-- Blog at /blog/how-catch-hospitality-reservations-work is a "coming soon" placeholder
-
-### E-E-A-T Assessment
-- Experience: Strong — specific insider knowledge evident in editorial notes
-- Expertise: Moderate — topical depth on reservation mechanics present in How It Works
-- Authoritativeness: Weak — no author attribution, no bylines, no third-party citations
-- Trustworthiness: Moderate — HTTPS, legal pages present, clear pricing
-
----
-
-## 4. Schema / Structured Data — 48/100
-
-### Restaurant Pages — PARTIAL PASS
-JSON-LD `@type: Restaurant` present on all restaurant pages.
-
-**Fields present:** name, servesCuisine, address (with postalCode), url, description
-
-**Fields missing:**
-- priceRange (maps directly to existing price_tier column — one-line fix)
-- image (no restaurant photos available)
-- telephone
-- aggregateRating
-- geo (latitude/longitude from address column)
-- acceptsReservations (true for all non-walk-in, non-closed restaurants)
-- BreadcrumbList (Home > Restaurant > [Name])
-
-### Homepage — FAIL
-Zero JSON-LD. Missing:
-- WebSite schema with SearchAction (sitelinks searchbox signal)
-- ItemList schema for the restaurant directory
-- Organization schema for entity identity
-
-### How It Works — FAIL
-Zero JSON-LD. FAQPage schema would suit the five H2 sections perfectly and is a high-value featured snippet opportunity.
-
----
-
-## 5. Open Graph / Social — 30/100
-
-### Critical: No OG Images on Any Page
-
-All pages have og:title, og:description, og:type, og:url — but:
-- og:image: ABSENT on every page
-- twitter:image: ABSENT on every page
-- twitter:card is set to "summary" — "summary_large_image" preferred
-
-**Impact:** Every Scoopd page shared on Twitter/X, LinkedIn, iMessage, or Slack renders as a bare text card with no image. This dramatically reduces click-through rates from social shares.
-
-**Fix:** Create `/app/opengraph-image.js` (default) and `/app/restaurant/[slug]/opengraph-image.js` using Next.js ImageResponse (built-in, uses Vercel's Edge runtime, free).
-
-**OG type mismatch:** Restaurant pages use og:type: website instead of article or restaurant type.
-
----
-
-## 6. Performance — 62/100
-
-### TTFB
-- Observed: ~250ms (single request, no load)
-- Expected under real load: significantly higher due to no-cache forcing origin hits
-
-### Caching (see Technical SEO)
-- Root cause: auth check on every page forces dynamic rendering
-- All HTML pages: x-vercel-cache: MISS
-- Static assets: correctly cached
-
-### Font Loading — PASS
-- Three Google Fonts loaded via next/font/google with WOFF2 preloading
-- Correct Next.js approach, avoids FOUT
-
-### Images — N/A (no images on site)
-- Zero images means no image-related performance issues
-- Also means no opportunities for image-based traffic
-
-### JavaScript
-- Restaurant page HTML: ~28KB
-- Homepage HTML: ~143KB (full directory server-rendered — good for SEO, heavy for initial load)
-
-### Core Web Vitals
-- Cannot measure directly without browser
-- No-cache issue will hurt LCP under concurrent load
-- Large homepage HTML will affect FCP on slow connections
-
----
-
-## 7. Internal Linking — 52/100
-
-### What Works
-- "More in [Neighborhood]" section: links to 4 random restaurants in same neighborhood on every restaurant page
-- Every page links back to homepage via logo and back button
-- Footer links to /terms and /privacy sitewide
-
-### What's Missing
-- No category/filter pages — neighborhood and platform filters are client-side state with no URL changes. No /neighborhood/west-village or /platform/resy pages for Google to crawl
-- No cross-linking by difficulty or platform on restaurant pages
-- /how-it-works has no links to specific restaurant pages — no link equity flowing to money pages
-- No breadcrumbs in HTML
-- Homepage has no text link to /how-it-works from the restaurant list area
-
----
-
-## 8. AI Search Readiness — 45/100
-
-### Why This Matters
-AI search (Perplexity, ChatGPT with browsing, Google AI Overviews) favors pages with clear entity structure, factual specific data, and authoritativeness signals. Scoopd's data (exact release times, platform names, days-out windows) is exactly what AI search systems extract and cite.
-
-### Positives
-- Restaurant pages are factual, specific, and structured — strong AI citation candidates
-- How It Works explains a niche topic clearly — candidate for AI summary citation
-- Specific data points are the type of intelligence AI search systems extract
+- `llms.txt` present — explicit AI crawler guidance
+- FAQPage on /how-it-works — 5 Q&A pairs, machine-readable
+- Restaurant schema with explicit booking data in `description`
+- Blog posts contain specific verifiable facts ("Torrisi drops at 10:00 AM on Resy, 31 days out")
 
 ### Gaps
-- No author attribution anywhere on the site
-- No datePublished or dateModified signals on any content
-- No Organization or Person entity markup
-- No FAQ schema — missed featured snippet and AI Overview opportunity
-- No breadcrumbs — AI systems use hierarchical signals
-- No llms.txt file signaling AI crawler access preferences
+- Neighborhood pages: no quotable prose, uncitable
+- Homepage: ~80 words of crawlable text, no methodology statement
+- Blog posts: no named author reduces AI attribution confidence
+
+### Citation Readiness
+
+| Page | Rating |
+|---|---|
+| /blog/the-reservation-economy | High |
+| /blog/reservation-shadow-market | High |
+| /how-it-works | High (FAQPage) |
+| /restaurant/carbone | High (specific schema) |
+| /restaurant/via-carota | Medium (data discrepancy) |
+| Homepage | Low-Medium |
+| /neighborhood/[name] | Low |
 
 ---
 
-## Prioritized Action Plan
+## Backlinks
 
-### CRITICAL — Fix Immediately
-
-**C1. Fix title tag duplication bug**
-- File: app/restaurant/[slug]/page.js
-- Change: Remove `| Scoopd` from the end of the title string in generateMetadata
-- Before: `"${r.restaurant} Reservations — Drop Time & Booking Intelligence | Scoopd"`
-- After: `"${r.restaurant} Reservations — Drop Time & Booking Intelligence"`
-- Also check: app/drops/page.js — same bug
-- Impact: 194 pages fixed immediately
-
-**C2. Add canonical URLs to all pages**
-- Add to every generateMetadata return: `alternates: { canonical: 'https://scoopd.nyc/[path]' }`
-- Add to static page metadata exports: `alternates: { canonical: 'https://scoopd.nyc/how-it-works' }`
-- Impact: Prevents all future duplicate content issues from query strings and URL variations
-
-**C3. Create OG images for social sharing**
-- Create: app/opengraph-image.js (sitewide default)
-- Create: app/restaurant/[slug]/opengraph-image.js (per-restaurant branded card)
-- Uses Next.js ImageResponse — built-in, free, runs at Vercel Edge
-- Update twitter:card to "summary_large_image" across all pages
-- Impact: Every social share gets a visual card
+Common Crawl scripts blocked by permissions. Estimated baseline: new domain (~3 months), no known inbound links, no active link building. 4 blog posts on timely topics (reservation economy, anti-piracy law) are natural press-bait for Eater NY, Grub Street, Infatuation.
 
 ---
 
-### HIGH — Address Within 1 Week
+## Cluster Analysis
 
-**H1. Complete Restaurant JSON-LD schema**
-- Add priceRange: r.price_tier (one-line fix, data already in DB)
-- Add acceptsReservations: r.platform !== 'Walk-in' && r.platform !== 'CLOSED'
-- Add BreadcrumbList schema alongside Restaurant schema
-- File: app/restaurant/[slug]/page.js
-
-**H2. Add homepage schema**
-- Add WebSite schema with SearchAction
-- Add Organization schema (name, url, contactPoint)
-- File: app/page.js
-
-**H3. Add FAQPage schema to /how-it-works**
-- Map the five H2 sections to FAQ question/answer pairs
-- High ROI for featured snippet eligibility
-- File: app/how-it-works/page.js
-
-**H4. Remove /signup from sitemap and add noindex**
-- Add robots: { index: false } to app/signup/page.js metadata
-- Remove /signup from sitemap.js
-- No search demand; conserves crawl budget
-
-**H5. Fix cache-control for static pages**
-- Add `export const dynamic = 'force-static'` to app/how-it-works/page.js
-- Add `export const revalidate = 3600` to restaurant pages (ISR — 1 hour cache)
-- Moves auth/premium check client-side for restaurant pages
+Cluster agent hit usage limits before completing. Known content gaps from other agents' findings:
+- No "how to get a reservation at [restaurant]" guide layer on restaurant pages
+- No neighborhood-specific booking guide ("hardest West Village reservations")
+- No tactical "how to use Resy" / "how to use OpenTable" guide
+- Blog post `rolling-windows-and-monthly-drops` at 895 words is underweight for a pillar piece
 
 ---
 
-### MEDIUM — Plan for Phase 4
+## Visual / Mobile
 
-**M1. Add H2 headings to restaurant pages**
-- "Booking Intelligence", "About [Restaurant]", "More in [Neighborhood]" as semantic H2 elements
-- Currently all subheadings are styled div elements, not headings
-
-**M2. Align H1 with target keyword on restaurant pages**
-- Current H1: "Carbone" | Target: "Carbone Reservations"
-- Change to: `${r.restaurant} Reservations` in the H1
-
-**M3. Create neighborhood and platform category pages**
-- /neighborhood/[name] and /platform/[name] static pages
-- ~15-20 high-value indexable pages targeting "Resy NYC restaurants" and "West Village reservation drops"
-- Currently all filters are client-side state — zero crawlable URLs
-
-**M4. Fix sitemap lastmod accuracy**
-- Add last_updated_at column to restaurants table
-- Use real timestamps in sitemap generation instead of build-time Date()
-- Tells Googlebot which pages actually changed
-
-**M5. Add Article schema with datePublished to editorial content**
-- How It Works and future blog posts
-- Signals freshness to AI search systems
-
-**M6. Cross-link by difficulty and platform on restaurant pages**
-- Add "Other Very Hard restaurants" or "More restaurants on Resy" sections
-- Deepens internal link equity and topical clustering beyond neighborhood-only linking
-
----
-
-### LOW — Longer Term
-
-**L1. Restaurant photos**
-- Zero images is the biggest CTR opportunity
-- Even a branded placeholder card (dark background, Playfair Display name) would improve social sharing
-- Full photography unlocks Google Images traffic
-
-**L2. Build the blog content layer**
-- "How to get a Carbone reservation" — high intent, low competition
-- "Best Resy restaurants NYC 2026" — category-level demand
-- Each post should link to 5-10 restaurant pages for internal equity
-
-**L3. Target "how to get [restaurant] reservation" keywords**
-- High commercial intent queries
-- Current pages partially answer this — adding explicit "How to book" section would capture the intent
-
-**L4. Verify Google Search Console coverage**
-- Check for: pages marked Discovered but not indexed
-- The dynamic rendering + no-cache issue may cause coverage issues
-- GSC verification meta tag is present in layout.js
-
-**L5. Submit sitemap to Bing Webmaster Tools**
-- Bing powers ChatGPT's web browsing — higher strategic value than historical
-- Takes 5 minutes, no code changes required
-
----
-
-## Implementation Roadmap
-
-| Priority | Task | Effort | Impact |
-|---|---|---|---|
-| Critical | Fix title duplication bug | 15 min | High |
-| Critical | Add canonical URLs | 30 min | High |
-| Critical | Create OG images | 2 hrs | High |
-| Critical | Cache-control / ISR fix | 2 hrs | High |
-| Critical | Homepage + how-it-works schema | 1 hr | Medium |
-| High | Complete Restaurant JSON-LD | 30 min | Medium |
-| High | Remove /signup from sitemap | 10 min | Low |
-| Medium | H2 headings on restaurant pages | 1 hr | Medium |
-| Medium | Neighborhood/platform category pages | 4 hrs | High |
-| Medium | Sitemap lastmod accuracy | 1 hr | Low |
-| Low | Blog content layer | Ongoing | High |
-| Low | Restaurant photos | Ongoing | High |
-
----
-
-*Report generated April 20, 2026. Based on live crawl of https://scoopd.nyc.*
+Playwright screenshot collection blocked by image processing errors. Known from code review: mobile layout fixes previously applied (ScoopSubBar, /drops and /plan horizontal scroll).
