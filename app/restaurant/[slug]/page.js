@@ -279,8 +279,8 @@ export default async function RestaurantPage({ params }) {
         </div>
         {r.scoop ? (
           <div style={{ display: 'flex', alignItems: 'flex-start', flexWrap: 'wrap' }}>
-            <div className="rp-content" style={{ flex: 'none' }}>{bookingCards}</div>
-            <div style={{ flex: 1, padding: '2rem 2rem 0 0', minWidth: '260px' }}>
+            <div className="rp-content" style={{ flex: 'none', width: '800px' }}>{bookingCards}</div>
+            <div style={{ flex: 1, padding: '2rem 2rem 0 0', minWidth: 0 }}>
               <ScoopNote scoop={r.scoop} />
             </div>
           </div>
