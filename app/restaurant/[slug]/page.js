@@ -278,11 +278,13 @@ export default async function RestaurantPage({ params }) {
           {!isWalkin && <AlertBell slug={slug} />}
         </div>
         {r.scoop ? (
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', alignItems: 'start', padding: '2rem', gap: '1rem' }}>
-            <div style={{ gridColumn: '1 / 3', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+            <div className="rp-content" style={{ flex: 'none', width: '800px' }}>
               {bookingCards}
             </div>
-            <ScoopNote scoop={r.scoop} />
+            <div style={{ flex: 1, minWidth: 0, alignSelf: 'flex-start', padding: '2rem 2rem 2rem 0' }}>
+              <ScoopNote scoop={r.scoop} />
+            </div>
           </div>
         ) : (
           <div className="rp-content">{bookingCards}</div>
