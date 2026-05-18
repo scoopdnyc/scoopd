@@ -60,7 +60,7 @@ Required in .env.local and Vercel:
 - photo_position — text, focal point for photo crop
 - photo_height — integer, display height control
 - last_updated_at — timestamp, used by sitemap for real lastmod values
-- scoop — text, optional editorial booking intelligence note; renders in right column of Booking Intelligence section on restaurant pages when non-null
+- scoop — text, optional editorial booking intelligence note; renders in right column of Booking Intelligence section on restaurant pages when non-null. Sentence-divider design treatment. Not final design.
 - resy_venue_id — numeric Resy venue ID, used by availability monitor
 - resy_slug — override for known Resy slug mismatches (cote→cote-nyc, saga→saga-ny, saga-lounge→saga-the-lounge-and-terraces, sartriano→sartianos)
 - sevenrooms_slug — SevenRooms venue slug
@@ -297,6 +297,14 @@ Blog stub: `app/blog/how-catch-hospitality-reservations-work/page.js` (content T
 - Notes sourcing method: minimum 3 sources required (Michelin, restaurant website, press coverage). Never fabricate. Never plagiarize. Rewrite from scratch using sources as reference only.
 - Do-not-touch list (notes must never be overwritten by scripts): 4 Charles Prime Rib, Bemelmans Bar, Bistrot Ha, Carbone, Cote, Double Chicken Please, Eleven Madison Park, Ha's Snack Bar, Jeju Noodle Bar, Joo Ok, Lilia, Minetta Tavern, Tatiana, Theodora, Torrisi, Via Carota
 - The do-not-touch restriction applies to editorial voice, sourcing, and rewriting. Factual corrections such as day counts that conflict with observed_days are permitted and should be made directly in the DB with last_updated_at updated.
+
+## Editorial Rules
+
+- observed_days is always authoritative. Platforms and restaurants do not count days correctly. Scoopd counts the drop day as day one.
+- Don Angie moved from Resy to OpenTable in May 2025. Any guide pointing to Resy is out of date.
+- Don Angie Friday through Sunday midday service is not called brunch. It is lunch service running the full dinner menu.
+- 4 Charles has no walk-in program. People occasionally show up for cancellations but this is not an endorsed path.
+- Via Carota holds walk-in tables at dinner but is not fundamentally a walk-in restaurant.
 
 ## Competitive Context
 

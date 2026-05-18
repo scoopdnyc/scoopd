@@ -27,7 +27,8 @@ Does not contain: monitor algorithms, design system values, founding system spec
 ## Open Tasks
 
 - **Blog content** — four posts live: `/blog/the-reservation-economy`, `/blog/rolling-windows-and-monthly-drops`, `/blog/reservation-shadow-market`, `/blog/who-gets-the-table`. High ROI backlog continues.
-- **SEO action plan** — audit run May 17 2026 at 67/100. Criticals and XS items shipped. Remaining open: M1 (neighborhood editorial), M6 (how-to-book sections on top 6 restaurants), M7 (expand rolling-windows post), L2 (/about page), L3 (blog author byline), L6 (static homepage restaurant list), L8 (ItemList schema on /drops).
+- **SEO action plan** — audit run May 17 2026 at 67/100. L3 (blog author byline) and L8 (ItemList on /drops) shipped May 18. Remaining open: M1 (neighborhood editorial), M6 (how-to-book sections on top 6 restaurants — next needle-mover per GSC data), M7 (expand rolling-windows post), L2 (/about page), L6 (static homepage restaurant list).
+- **ScoopNote** — scoop column live, content populated for 6 restaurants (carbone, lilia, via-carota, don-angie, torrisi, 4-charles-prime-rib). Component renders in right column of Booking Intelligence section when non-null. Design not final, deferred until traffic warrants revisiting.
 - **Need to Know box system** — deferred.
 - **Catch Hospitality blog post** — deferred.
 - **Backlink outreach** — not started.
@@ -345,3 +346,14 @@ Write it to the repo root as handoff.md and commit with "docs: update handoff.md
 - Blog post published: /blog/rolling-windows-and-monthly-drops
 - GA4 key events added: signup, subscribe, alert_set
 - Phase 4A Traffic + Marketing strategy documented in scoopd.md
+
+### Session — May 18, 2026
+- SEO items L3 and L8 shipped: blog author byline added, ItemList schema on /drops page.
+- H5 resolved via Supabase MCP: Carbone and Via Carota notes corrected from "30 days out" to "31 days out." observed_days was authoritative.
+- scoop TEXT column added to restaurants table via Supabase MCP.
+- ScoopNote component built: renders in right column beside data cards when r.scoop is non-null, invisible when null. Sentence-divider design treatment, gold label, matches data card container styling.
+- Six restaurants populated with scoop content via Supabase MCP after editorial review: carbone, lilia, via-carota, don-angie, torrisi, 4-charles-prime-rib.
+- Key editorial rules: observed_days is always authoritative regardless of what platforms or restaurants claim. Don Angie moved from Resy to OpenTable in May 2025 — any guide pointing to Resy is out of date. 4 Charles has no walk-in program. Don Angie lunch service Fri-Sun is not called brunch. Via Carota holds walk-in tables at dinner, not fundamentally a walk-in restaurant.
+- ScoopNote design is not final — deferred until traffic warrants revisiting. Content is approved and correct.
+- OpenTable Inngest cron still failing with No function ID found in request — GitHub Actions version is the active monitor, Inngest version is orphaned. Needs investigation and cleanup.
+- GSC: average position mid-50s, zero clicks in 2 months. Root cause is page-type mismatch, not technical. M6 content work is the next needle-mover.
