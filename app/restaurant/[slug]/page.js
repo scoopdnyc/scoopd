@@ -11,6 +11,7 @@ import ShareButton from '../../components/ShareButton'
 import AlertBell from '../../components/AlertBell'
 import NsiField from '../../components/NsiField'
 import PremiumReveal from './PremiumReveal'
+import ScoopNote from './ScoopNote'
 import { getPlacePhoto } from '../../../lib/places'
 import './restaurant.css'
 
@@ -31,7 +32,7 @@ const getRestaurantCached = unstable_cache(
     const db = createSupabaseStatic()
     const { data, error } = await db
       .from('restaurants')
-      .select('restaurant, neighborhood, platform, cuisine, release_time, observed_days, release_schedule, seat_count, michelin_stars, price_tier, difficulty, notes, slug, address, non_standard_inventory, google_place_id, photo_override_url, photo_position, photo_height, last_updated_at')
+      .select('restaurant, neighborhood, platform, cuisine, release_time, observed_days, release_schedule, seat_count, michelin_stars, price_tier, difficulty, notes, scoop, slug, address, non_standard_inventory, google_place_id, photo_override_url, photo_position, photo_height, last_updated_at')
       .eq('slug', slug)
       .single()
     if (error || !data) return null
@@ -177,6 +178,28 @@ export default async function RestaurantPage({ params }) {
     }
   }
 
+  const bookingCards = (
+    <>
+      <div className="rp-info-card" style={nsiCardStyle}>
+        <div className="rp-info-label">Release Time</div>
+        {isNonStandardInventory
+          ? <NsiField value={r.release_time || '—'} valueClassName={`rp-info-value ${r.release_time ? 'mono' : 'na'}`} />
+          : <div className={`rp-info-value ${r.release_time ? 'mono' : 'na'}`}>{r.release_time || (isWalkin ? 'Walk-in only' : isPhone ? 'Phone only' : '—')}</div>
+        }
+      </div>
+      <div className="rp-info-card" style={nsiCardStyle}>
+        <div className="rp-info-label">Days Out</div>
+        {isNonStandardInventory
+          ? <NsiField value={daysOutValue} valueClassName={daysOutClass} />
+          : <div className={daysOutClass}>{daysOutValue}</div>
+        }
+      </div>
+      <div className="rp-info-card"><div className="rp-info-label">Platform</div><div className="rp-info-value">{r.platform || '—'}</div></div>
+      <div className="rp-info-card"><div className="rp-info-label">Difficulty</div><div className="rp-info-value" style={{color:diffColor}}>{r.difficulty || '—'}</div></div>
+      <div className="rp-info-card"><div className="rp-info-label">Seats</div><div className={`rp-info-value ${r.seat_count ? '' : 'na'}`}>{r.seat_count || '—'}</div></div>
+    </>
+  )
+
   const lastVerified = r.last_updated_at
     ? new Date(r.last_updated_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' })
     : null
@@ -254,25 +277,16 @@ export default async function RestaurantPage({ params }) {
           <h2 className="rp-section-heading">Booking Intelligence</h2>
           {!isWalkin && <AlertBell slug={slug} />}
         </div>
-        <div className="rp-content">
-          <div className="rp-info-card" style={nsiCardStyle}>
-            <div className="rp-info-label">Release Time</div>
-            {isNonStandardInventory
-              ? <NsiField value={r.release_time || '—'} valueClassName={`rp-info-value ${r.release_time ? 'mono' : 'na'}`} />
-              : <div className={`rp-info-value ${r.release_time ? 'mono' : 'na'}`}>{r.release_time || (isWalkin ? 'Walk-in only' : isPhone ? 'Phone only' : '—')}</div>
-            }
+        {r.scoop ? (
+          <div style={{ display: 'flex', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+            <div className="rp-content" style={{ flex: 'none' }}>{bookingCards}</div>
+            <div style={{ flex: 1, padding: '2rem 2rem 0 0', minWidth: '260px' }}>
+              <ScoopNote scoop={r.scoop} />
+            </div>
           </div>
-          <div className="rp-info-card" style={nsiCardStyle}>
-            <div className="rp-info-label">Days Out</div>
-            {isNonStandardInventory
-              ? <NsiField value={daysOutValue} valueClassName={daysOutClass} />
-              : <div className={daysOutClass}>{daysOutValue}</div>
-            }
-          </div>
-          <div className="rp-info-card"><div className="rp-info-label">Platform</div><div className="rp-info-value">{r.platform || '—'}</div></div>
-          <div className="rp-info-card"><div className="rp-info-label">Difficulty</div><div className="rp-info-value" style={{color:diffColor}}>{r.difficulty || '—'}</div></div>
-          <div className="rp-info-card"><div className="rp-info-label">Seats</div><div className={`rp-info-value ${r.seat_count ? '' : 'na'}`}>{r.seat_count || '—'}</div></div>
-        </div>
+        ) : (
+          <div className="rp-content">{bookingCards}</div>
+        )}
         <PremiumReveal dropDate={dropDateDisplay} isPlatformWalkIn={isWalkin} />
         {(r.notes || autoSentence) && (
           <div className="rp-section-heading-row">
