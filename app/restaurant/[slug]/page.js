@@ -279,12 +279,12 @@ export default async function RestaurantPage({ params }) {
         </div>
         <div className="rp-content">{bookingCards}</div>
         <PremiumReveal dropDate={dropDateDisplay} isPlatformWalkIn={isWalkin} />
+        {r.how_to_book && <HowToBook data={r.how_to_book} restaurantName={r.restaurant} />}
         {(r.notes || autoSentence) && (
           <div className="rp-section-heading-row">
             <h2 className="rp-section-label">About</h2>
           </div>
         )}
-        {r.how_to_book && <HowToBook data={r.how_to_book} restaurantName={r.restaurant} />}
         {r.notes
           ? <div className="rp-description">{r.notes}</div>
           : autoSentence && <div className="rp-description">{autoSentence}</div>
