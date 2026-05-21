@@ -284,11 +284,11 @@ export default async function RestaurantPage({ params }) {
             <h2 className="rp-section-label">About</h2>
           </div>
         )}
+        {r.how_to_book && <HowToBook data={r.how_to_book} restaurantName={r.restaurant} />}
         {r.notes
           ? <div className="rp-description">{r.notes}</div>
           : autoSentence && <div className="rp-description">{autoSentence}</div>
         }
-        {r.how_to_book && <HowToBook data={r.how_to_book} restaurantName={r.restaurant} />}
       </>}
       {neighborhoodRestaurants.length > 0 && (
         <div className="nb-section">

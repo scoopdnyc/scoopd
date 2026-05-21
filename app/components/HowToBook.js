@@ -6,7 +6,7 @@ export default function HowToBook({ data, restaurantName }) {
   const { stats, cards, blog_slug } = data
   return (
     <div className="htb-wrap">
-      <div className="htb-label">How to Book</div>
+      <div className="htb-label">The Scoop</div>
       {stats?.length > 0 && (
         <div className="htb-stats">
           {stats.map((s, i) => (
