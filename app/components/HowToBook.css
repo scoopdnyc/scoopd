@@ -1,0 +1,16 @@
+.htb-wrap{margin:0 2rem 2rem;background:#141412;border:1px solid #1e1e1c;border-radius:8px;overflow:hidden}
+.htb-label{font-family:var(--font-dm-mono),monospace;font-size:10px;letter-spacing:1.5px;color:#8a8a80;text-transform:uppercase;padding:1.25rem 1.5rem 0}
+.htb-stats{display:flex;background:#1e1e1c;gap:1px;margin-top:1rem}
+.htb-stat{flex:1;background:#141412;padding:1.25rem 1.5rem 1.5rem;position:relative;overflow:hidden;min-width:0}
+.htb-stat::before{content:'';display:block;position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(to right,#c9a96e,transparent)}
+.htb-stat-value{font-family:var(--font-dm-mono),monospace;font-size:26px;color:#e8e4dc;line-height:1.1;margin-bottom:0.35rem}
+.htb-stat-unit{font-family:var(--font-dm-mono),monospace;font-size:9px;text-transform:uppercase;color:#c9a96e;letter-spacing:1px}
+.htb-cards{display:flex;flex-wrap:wrap;gap:1px;background:#1e1e1c;margin-top:1px}
+.htb-card{flex:1 1 calc(50% - 1px);background:#141412;padding:1.25rem 1.5rem;min-width:0}
+.htb-card-label{font-family:var(--font-dm-mono),monospace;font-size:9px;text-transform:uppercase;color:#c9a96e;letter-spacing:1px;margin-bottom:0.6rem}
+.htb-card-text{font-size:12px;color:#6a6a62;line-height:1.7;margin:0}
+.htb-card-text strong{color:#e8e4dc;font-weight:500}
+.htb-footer{padding:1rem 1.5rem;border-top:1px solid #1e1e1c}
+.htb-link{font-size:13px;color:#c9a96e;text-decoration:none}
+.htb-link:hover{color:#e8c98e}
+@media(max-width:600px){.htb-stats{flex-direction:column}.htb-card{flex:1 1 100%}}

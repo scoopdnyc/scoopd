@@ -11,7 +11,7 @@ import ShareButton from '../../components/ShareButton'
 import AlertBell from '../../components/AlertBell'
 import NsiField from '../../components/NsiField'
 import PremiumReveal from './PremiumReveal'
-import ScoopNote from './ScoopNote'
+import HowToBook from '../../components/HowToBook'
 import { getPlacePhoto } from '../../../lib/places'
 import './restaurant.css'
 
@@ -32,7 +32,7 @@ const getRestaurantCached = unstable_cache(
     const db = createSupabaseStatic()
     const { data, error } = await db
       .from('restaurants')
-      .select('restaurant, neighborhood, platform, cuisine, release_time, observed_days, release_schedule, seat_count, michelin_stars, price_tier, difficulty, notes, scoop, slug, address, non_standard_inventory, google_place_id, photo_override_url, photo_position, photo_height, last_updated_at')
+      .select('restaurant, neighborhood, platform, cuisine, release_time, observed_days, release_schedule, seat_count, michelin_stars, price_tier, difficulty, notes, scoop, how_to_book, slug, address, non_standard_inventory, google_place_id, photo_override_url, photo_position, photo_height, last_updated_at')
       .eq('slug', slug)
       .single()
     if (error || !data) return null
@@ -277,18 +277,7 @@ export default async function RestaurantPage({ params }) {
           <h2 className="rp-section-heading">Booking Intelligence</h2>
           {!isWalkin && <AlertBell slug={slug} />}
         </div>
-        {r.scoop ? (
-          <div style={{ display: 'flex', alignItems: 'flex-start' }}>
-            <div className="rp-content" style={{ flex: 'none', width: '800px' }}>
-              {bookingCards}
-            </div>
-            <div style={{ flex: 1, minWidth: 0, alignSelf: 'flex-start', padding: '2rem 2rem 2rem 0' }}>
-              <ScoopNote scoop={r.scoop} />
-            </div>
-          </div>
-        ) : (
-          <div className="rp-content">{bookingCards}</div>
-        )}
+        <div className="rp-content">{bookingCards}</div>
         <PremiumReveal dropDate={dropDateDisplay} isPlatformWalkIn={isWalkin} />
         {(r.notes || autoSentence) && (
           <div className="rp-section-heading-row">
@@ -299,6 +288,7 @@ export default async function RestaurantPage({ params }) {
           ? <div className="rp-description">{r.notes}</div>
           : autoSentence && <div className="rp-description">{autoSentence}</div>
         }
+        {r.how_to_book && <HowToBook data={r.how_to_book} restaurantName={r.restaurant} />}
       </>}
       {neighborhoodRestaurants.length > 0 && (
         <div className="nb-section">
