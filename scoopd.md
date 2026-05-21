@@ -142,16 +142,17 @@ Supabase Auth, Stripe subscriptions (monthly + yearly), premium blur/unlock patt
 ## Monitor System
 
 ### Status
-- Resy: Live. 119 restaurants, daily at 12:30 PM ET via Inngest.
+- Resy: Live. 119 restaurants, daily 12:30 PM ET via Inngest.
 - SevenRooms rolling: Live. Adda, Dhamaka, Semma, Masalawala & Sons, Noz 17.
 - SevenRooms long calendar: Live. Marea, Rezdora. Daily at 12:30 PM ET.
 - SevenRooms monthly: Live. Sushi Noz only. Runs 1st and 15th of month at 2 PM UTC.
-- NSI opportunistic: Live. Corner Store, Or'Esh, The 86. Every 5 minutes noon–6 PM ET via GitHub Actions.
-- OpenTable: Live. GitHub Actions cron daily at 5 PM UTC. Moved from Inngest — Akamai blocks Vercel IPs. First run tomorrow.
+- NSI opportunistic (SevenRooms): Live. Corner Store, Or'Esh, The 86. Every 5 min noon–6 PM ET via GitHub Actions (self-hosted Mac runner).
+- DoorDash: Live. Corner Store, The Eighty Six, Or'Esh. Every 5 min noon–6 PM ET via GitHub Actions (self-hosted Mac runner). DD_WEB_TOKEN expires ~June 20 — refresh by June 19.
+- OpenTable: Live. 28 restaurants, daily 5 PM UTC via GitHub Actions (self-hosted Mac runner). Moved from Inngest — Akamai blocks datacenter IPs, bypassed via residential IP.
 
 ### Infrastructure
-- Inngest (free tier): resy-daily-check, sevenrooms-daily-check, sevenrooms-longcal-monthly-check, alert-digest, opentable-daily-check (5 functions total)
-- GitHub Actions: `.github/workflows/opportunistic-check.yml` — NSI check every 5 minutes noon–6 PM ET, secured via CRON_SECRET bearer token
+- Inngest (free tier): 4 functions — resy-daily-check, sevenrooms-daily-check, sevenrooms-longcal-monthly-check, alert-digest
+- GitHub Actions self-hosted (Mac runner): opportunistic-check.yml, doordash-check.yml, opentable-daily-check.yml — all require residential IP to bypass platform bot detection
 - Resend: digest emails to support@scoopd.nyc
 - All monitor state written to `monitor_log` table
 
@@ -159,6 +160,7 @@ Supabase Auth, Stripe subscriptions (monthly + yearly), premium blur/unlock patt
 - Lilia: known false positive (closed day compression)
 - Cafe Spaghetti: known false positive (temporary closure)
 - Rezdora: observed_days corrected from 30 to 31 (first monitor catch)
+- DD_WEB_TOKEN expires ~June 20. Extract fresh token from Chrome DevTools (Application > Cookies > doordash.com > ddweb_token) and update DD_WEB_TOKEN GitHub Actions secret.
 
 ### Algorithm Detail
 See scoopd-reference.md for full algorithm-level documentation of each monitor.
@@ -215,7 +217,7 @@ See scoopd-reference.md for full algorithm-level documentation of each monitor.
 
 ### app/api/
 - `stripe/checkout/route.js`, `stripe/portal/route.js`, `stripe/webhook/route.js`
-- `inngest/route.js` — serves 4 Inngest functions
+- `inngest/route.js` — serves 4 Inngest functions (resy-daily-check, sevenrooms-daily-check, sevenrooms-longcal-monthly-check, alert-digest)
 - `alerts/route.js` — GET (list alerts), POST toggle (upsert/delete)
 - `alerts/toggle/route.js`
 - `opportunistic-check/route.js` — NSI monitor endpoint, CRON_SECRET auth
@@ -356,4 +358,11 @@ Write it to the repo root as handoff.md and commit with "docs: update handoff.md
 - Key editorial rules: observed_days is always authoritative regardless of what platforms or restaurants claim. Don Angie moved from Resy to OpenTable in May 2025 — any guide pointing to Resy is out of date. 4 Charles has no walk-in program. Don Angie lunch service Fri-Sun is not called brunch. Via Carota holds walk-in tables at dinner, not fundamentally a walk-in restaurant.
 - ScoopNote design is not final — deferred until traffic warrants revisiting. Content is approved and correct.
 - OpenTable Inngest cron still failing with No function ID found in request — GitHub Actions version is the active monitor, Inngest version is orphaned. Needs investigation and cleanup.
+
+### Session — May 21, 2026
+- DoorDash availability monitor built: lib/monitors/doordash.py, app/api/doordash-check/route.js, .github/workflows/doordash-check.yml. Watches reservation_filters endpoint for Corner Store, The Eighty Six, Or'Esh. Detects when dates leave unavailable_dates array. Slot count via merchant/details endpoint. Auth: ddweb_token cookie only via curl_cffi Chrome TLS impersonation.
+- Self-hosted Mac runner registered for GitHub Actions (label: self-hosted,mac). Required for both DoorDash (Cloudflare) and OpenTable (Akamai) monitors — datacenter IPs blocked by both. launchd service with KeepAlive=true at ~/Library/LaunchAgents/actions.runner.scoopdnyc-scoopd.mac-local.plist.
+- OpenTable monitor fixed: switched opentable-daily-check.yml from ubuntu-latest to self-hosted runner. Akamai bypass confirmed, HTTP 200 from GraphQL API.
+- Inngest opentable-daily-check removed. Was orphaned and failing daily. GitHub Actions is the active monitor. Inngest now serves exactly 4 functions.
+- reservation_store_ids confirmed: corner-store 28147fe3-96cf-4826-af76-e54872b4e248, the-86 a0b42bce-c259-483a-bf70-1729bbc3d5e4, oresh 0128c310-5d6e-4cac-95a2-291a356f7dca.
 - GSC: average position mid-50s, zero clicks in 2 months. Root cause is page-type mismatch, not technical. M6 content work is the next needle-mover.

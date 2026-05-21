@@ -65,6 +65,7 @@ Required in .env.local and Vercel:
 - resy_slug — override for known Resy slug mismatches (cote→cote-nyc, saga→saga-ny, saga-lounge→saga-the-lounge-and-terraces, sartriano→sartianos)
 - sevenrooms_slug — SevenRooms venue slug
 - sevenrooms_type — rolling, long_calendar, or null (for monthly/NSI restaurants)
+- doordash_reservation_store_id — UUID, used by DoorDash availability monitor. Populated for corner-store (28147fe3-96cf-4826-af76-e54872b4e248), the-86 (a0b42bce-c259-483a-bf70-1729bbc3d5e4), oresh (0128c310-5d6e-4cac-95a2-291a356f7dca).
 
 ### subscriptions table
 - user_id — references auth.users
@@ -195,9 +196,8 @@ Required in .env.local and Vercel:
 - Monitor flags trigger manual investigation only. Never update observed_days or any DB field based solely on a monitor alert. Verify directly before making any change.
 
 ### Infrastructure
-- Inngest (free tier) handles scheduling for daily checks and monthly Sushi Noz check
-- GitHub Actions: `.github/workflows/opportunistic-check.yml` — NSI opportunistic check every 5 minutes noon-6 PM ET, secured with CRON_SECRET bearer token
-- GitHub Actions: `.github/workflows/opentable-daily-check.yml` — OpenTable daily check at 5 PM UTC, hits /api/opentable-check secured with CRON_SECRET. Separate from Inngest due to Akamai bot protection blocking Vercel IPs.
+- Inngest (free tier): 4 functions — resy-daily-check, sevenrooms-daily-check, sevenrooms-longcal-monthly-check, alert-digest
+- GitHub Actions self-hosted (Mac runner): opportunistic-check.yml (NSI SevenRooms, every 5 min noon-6 PM ET), doordash-check.yml (DoorDash NSI, every 5 min noon-6 PM ET), opentable-daily-check.yml (OpenTable, daily 5 PM UTC). All require residential IP — Cloudflare and Akamai both block datacenter IPs.
 - Resend sends digest emails to support@scoopd.nyc
 - All monitor state written to monitor_log table (separate from restaurants table)
 
@@ -251,11 +251,26 @@ Persisted GraphQL query hash: `cbcf4838a9b399f742e3741785df64560a826d8d3cc2828aa
 - `beforeDate` = today_ET + observed_days - 2: flag if completely empty (window shorter than expected)
 - Restaurants with null `opentable_restaurant_id` or null `observed_days` are skipped
 
-**Known limitation:** OpenTable's dapi/fe/gql endpoint has Akamai bot protection that blocks Vercel server IPs. Resolved by moving to GitHub Actions (ubuntu-latest runners use different IP ranges not blocked by Akamai).
+**Known limitation:** OpenTable's dapi/fe/gql endpoint has Akamai bot protection that blocks datacenter IPs. Resolved by moving to self-hosted Mac runner on residential IP.
 
 **IDs populated (29 restaurants):** antons, bar-miller, bm, di-an-di, don-angie, estela, frenchette, kochi, mari, muku, nami-nori, odo, red-hook-tavern, san-sabino, tempura-matsui, una-pizza-napoletana, wild-cherry, win-son, bad-roman, bar-contra, bondst, casa-mono, gage-tollner, jean-georges, le-veau-dor, roscioli-nyc, zou-zous, aska, yingtao
 
 **Excluded from active monitoring:** aska (334675), yingtao (1295479) — experience-only slots only, no Standard reservations. Monitor detects and logs `skip:experience_only`.
+
+### DoorDash monitor (lib/monitors/doordash.py)
+
+**Status:** Live. Covers Corner Store, The Eighty Six, Or'Esh. Every 5 min noon-6 PM ET via `.github/workflows/doordash-check.yml` on self-hosted Mac runner.
+
+**Auth:** `ddweb_token` cookie only. Uses `curl_cffi` with Chrome TLS impersonation (`impersonate='chrome124'`) to bypass Cloudflare TLS fingerprinting. Token expires ~monthly. Refresh by extracting from Chrome DevTools (Application > Cookies > doordash.com > ddweb_token) and updating `DD_WEB_TOKEN` GitHub Actions secret.
+
+**Availability signal:**
+- `GET /unified-gateway/reservation/v1/reservation_filters` — returns 30-day booking calendar. Available dates are those in the window absent from `filters[1].config.unavailable_dates`. Any available date triggers flag.
+- `GET /unified-gateway/dine_out/v1/merchant/details` — counts occurrences of `button_name=reservation_timeslot` in response. Ignores `date` query param — always returns today's inventory only.
+
+**Notes:**
+- `business_id=1337` in merchant/details URL is a generic DoorDash placeholder, not restaurant-specific.
+- Datacenter IPs (GitHub ubuntu-latest, Vercel) get 403 from Cloudflare. Self-hosted Mac runner on residential IP required.
+- restaurant_store_ids: corner-store `28147fe3-96cf-4826-af76-e54872b4e248`, the-86 `a0b42bce-c259-483a-bf70-1729bbc3d5e4`, oresh `0128c310-5d6e-4cac-95a2-291a356f7dca`.
 
 ## Alerts System
 
