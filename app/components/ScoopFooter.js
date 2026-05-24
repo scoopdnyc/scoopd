@@ -16,6 +16,8 @@ export default function ScoopFooter() {
         <Link href="/terms" className="sf-link">Terms of Service</Link>
         <span className="sf-sep">·</span>
         <Link href="/privacy" className="sf-link">Privacy Policy</Link>
+        <span className="sf-sep">·</span>
+        <Link href="/about" className="sf-link">About</Link>
       </div>
     </footer>
   )
