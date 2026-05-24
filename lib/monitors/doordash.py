@@ -209,10 +209,30 @@ def check_restaurant(token, restaurant, check_date, supabase_url, service_role_k
         return {"slug": slug, "found": False, "error": str(e)}
 
 
+def trigger_notify(cron_secret):
+    """POST to /api/notify-monitor to fire email alerts for unnotified rows."""
+    try:
+        req = urllib.request.Request(
+            "https://scoopd.nyc/api/notify-monitor",
+            data=b"{}",
+            headers={
+                "Authorization": f"Bearer {cron_secret}",
+                "Content-Type": "application/json",
+            },
+            method="POST",
+        )
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            body = resp.read().decode()
+            print(f"[doordash] notify-monitor: {body}", file=sys.stderr)
+    except Exception as e:
+        print(f"[doordash] notify-monitor failed (non-fatal): {e}", file=sys.stderr)
+
+
 def main():
     token = os.environ.get("DD_WEB_TOKEN", "").strip()
     supabase_url = os.environ.get("NEXT_PUBLIC_SUPABASE_URL", "").strip()
     service_role_key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "").strip()
+    cron_secret = os.environ.get("CRON_SECRET", "").strip()
 
     if not token:
         print(json.dumps({"error": "DD_WEB_TOKEN not set"}))
@@ -227,7 +247,13 @@ def main():
         result = check_restaurant(token, restaurant, check_date, supabase_url, service_role_key)
         results.append(result)
 
-    print(json.dumps({"check_date": check_date, "results": results}))
+    summary = {"check_date": check_date, "results": results}
+    print(json.dumps(summary))
+
+    if cron_secret:
+        trigger_notify(cron_secret)
+    else:
+        print("[doordash] CRON_SECRET not set — skipping notify-monitor", file=sys.stderr)
 
 
 if __name__ == "__main__":

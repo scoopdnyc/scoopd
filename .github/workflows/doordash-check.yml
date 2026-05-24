@@ -1,7 +1,16 @@
 name: DoorDash Availability Check
 on:
   schedule:
-    - cron: '*/5 16-22 * * *'
+    # Every 15 min, 7 AM–6 PM ET (12:00–22:00 UTC)
+    - cron: '0,15,30,45 12-22 * * *'
+    # 6 PM ET final quarter-hours (23:00 UTC)
+    - cron: '0,15,30,45 23 * * *'
+    # 7 PM ET (00:00 UTC next day)
+    - cron: '0 0 * * *'
+    # 8 PM ET (01:00 UTC next day)
+    - cron: '0 1 * * *'
+    # Midnight ET (05:00 UTC)
+    - cron: '0 5 * * *'
   workflow_dispatch:
 jobs:
   check:
@@ -13,4 +22,5 @@ jobs:
           DD_WEB_TOKEN: ${{ secrets.DD_WEB_TOKEN }}
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
         run: python3 lib/monitors/doordash.py
