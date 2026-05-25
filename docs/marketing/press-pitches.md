@@ -89,4 +89,83 @@ Founder, Scoopd.nyc
 
 ## "The Reservation Economy" -- Secondary Vehicle
 
-Note: Pending rewrite of ending. See Task 3. Will be added here after Task 3 completes.
+A shorter, more opinionated essay on the modern reservation economy: platform tiers (Amex GDA, Chase Visa Dining Collection), bot services, the resale secondary market, membership platforms, and the NY legislation that changed what's permissible without changing the underlying incentives. Ends on the idea that the information to compete fairly was always there -- the problem was access, not price.
+
+After rewrite: no Scoopd product pitch in the body. Byline is the only attribution.
+
+Published at: scoopd.nyc/blog/the-reservation-economy
+
+### Author Bio (all submissions)
+
+[Name] has spent three years tracking how New York's most competitive restaurant reservations actually work -- the drop times, booking windows, and platform mechanics behind the rooms that never seem to have availability. They are the founder of Scoopd (scoopd.nyc).
+
+### Pitch: Nikita Richardson / The Counter
+
+**Editor targeting note:** Nikita Richardson writes The Counter, a food newsletter with a strong NYC focus and a critical eye on restaurant culture, access, and the business of eating. Her audience is exactly the reader who would find the platform-tier and secondary-market analysis useful. Pitch directly to her; she is the sole author and editor.
+
+---
+
+**Subject:** Essay on bots, resale, and who the platforms actually built those tiers for
+
+Hi Nikita,
+
+A short essay arguing that the New York reservation market -- bots, resale marketplaces, Amex GDA, the Chase Visa Dining Collection -- exists at the scale it does because the information required to navigate it fairly was never organized. The piece covers the platform tiers, the secondary market mechanics, and the NY legislation passed in early 2025, and closes on the question that doesn't get asked often enough: how much of this did consumers build by choosing the expensive route before they knew there was a free one?
+
+About 2,000 words. The piece is self-published at scoopd.nyc/blog/the-reservation-economy and I would take it down upon acceptance.
+
+[Name] has spent three years tracking how New York's most competitive restaurant reservations actually work -- the drop times, booking windows, and platform mechanics behind the rooms that never seem to have availability. They are the founder of Scoopd (scoopd.nyc).
+
+[Name]
+Founder, Scoopd.nyc
+
+---
+
+### Pitch: Robert Sietsema (Eater NY / Substack)
+
+**Editor targeting note:** Robert Sietsema has covered New York food for decades and writes critically about access and the business of restaurants, not just what's on the plate. He is currently at Eater NY and also maintains a Substack readership. This piece suits his interest in how the restaurant industry actually functions -- the economics, the power dynamics, the structures most diners never see. If pitching to Eater NY via Sietsema, confirm whether he has a "Voices" or guest essay avenue; if not, pitch his Substack directly.
+
+---
+
+**Subject:** Essay pitch -- the reservation secondary market and who built it
+
+Hi Robert,
+
+An essay on the mechanics of the New York reservation economy: how the platform tiers work (Amex GDA, Chase Visa Dining Collection), how the bot services and resale marketplaces operate, what the 2025 NY resale legislation actually changed (and didn't), and why the consumer who paid to skip the line is the same person who made the line longer for everyone else.
+
+The piece closes on the information gap: the drop times, release windows, and platform mechanics that make the market navigable were always available -- they just weren't organized. About 2,000 words, currently self-published at scoopd.nyc/blog/the-reservation-economy. Happy to take it down upon acceptance.
+
+[Name] has spent three years tracking how New York's most competitive restaurant reservations actually work -- the drop times, booking windows, and platform mechanics behind the rooms that never seem to have availability. They are the founder of Scoopd (scoopd.nyc).
+
+[Name]
+Founder, Scoopd.nyc
+
+---
+
+### Pitch: Tammie Teclemariam (food criticism Substack)
+
+**Editor targeting note:** Tammie Teclemariam writes food criticism on Substack with a sharper political and structural edge than most food writing. Her readers are interested in who holds power in the restaurant world and how it gets exercised. This piece -- which implicates the platforms, the credit card companies, the bot services, and the consumers themselves -- fits her angle. Pitch directly to her Substack; research her current publication name and subscriber contact method before sending.
+
+---
+
+**Subject:** A piece on reservation bots, Amex GDA, and who the platforms built those programs for
+
+Hi Tammie,
+
+An essay arguing that the modern New York reservation market -- bots, resale, Amex GDA, the Chase Visa Dining Collection, the 2025 legislation -- is a consumer-funded system. The people who paid a bot service or bought a table on a resale marketplace did more to build the secondary market than the operators of those services did. The platforms built their premium tiers for the credit card companies, not for diners. The restaurants built the scarcity and saw none of the upside.
+
+The piece traces those incentives without a prescription. About 2,000 words. Self-published at scoopd.nyc/blog/the-reservation-economy; I would take it down upon acceptance.
+
+[Name] has spent three years tracking how New York's most competitive restaurant reservations actually work -- the drop times, booking windows, and platform mechanics behind the rooms that never seem to have availability. They are the founder of Scoopd (scoopd.nyc).
+
+[Name]
+Founder, Scoopd.nyc
+
+---
+
+## Submission Tracking -- "The Reservation Economy"
+
+| Outlet | Editor | Sent | Follow-up | Response | Notes |
+|--------|--------|------|-----------|----------|-------|
+| The Counter (newsletter) | Nikita Richardson | | | | |
+| Eater NY / Substack | Robert Sietsema | | | | |
+| Food criticism Substack | Tammie Teclemariam | | | | |
