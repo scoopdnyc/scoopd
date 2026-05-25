@@ -109,7 +109,7 @@ Published at: scoopd.nyc/blog/the-reservation-economy
 
 Hi Nikita,
 
-A short essay arguing that the New York reservation market -- bots, resale marketplaces, Amex GDA, the Chase Visa Dining Collection -- exists at the scale it does because the information required to navigate it fairly was never organized. The piece covers the platform tiers, the secondary market mechanics, and the NY legislation passed in early 2025, and closes on the question that doesn't get asked often enough: how much of this did consumers build by choosing the expensive route before they knew there was a free one?
+The New York reservation market -- bots, resale, Amex GDA, the Chase Visa Dining Collection -- runs on consumers who paid a premium before they knew there was a free alternative. The piece traces how the platform tiers work, how the secondary market operates, and what the 2025 NY resale legislation actually changed. The question it closes on: how much of this did diners build themselves by choosing the expensive route before anyone told them they didn't have to?
 
 About 2,000 words. The piece is self-published at scoopd.nyc/blog/the-reservation-economy and I would take it down upon acceptance.
 
@@ -130,7 +130,7 @@ Founder, Scoopd.nyc
 
 Hi Robert,
 
-An essay on the mechanics of the New York reservation economy: how the platform tiers work (Amex GDA, Chase Visa Dining Collection), how the bot services and resale marketplaces operate, what the 2025 NY resale legislation actually changed (and didn't), and why the consumer who paid to skip the line is the same person who made the line longer for everyone else.
+The consumer who paid a bot service or bought a resale table made the line longer for the next person who wouldn't. The piece traces how the New York reservation secondary market works: platform tiers (Amex GDA, Chase Visa Dining Collection), bot services, resale marketplaces, the 2025 NY legislation -- and why the incentives that built all of it haven't changed.
 
 The piece closes on the information gap: the drop times, release windows, and platform mechanics that make the market navigable were always available -- they just weren't organized. About 2,000 words, currently self-published at scoopd.nyc/blog/the-reservation-economy. Happy to take it down upon acceptance.
 
@@ -151,7 +151,7 @@ Founder, Scoopd.nyc
 
 Hi Tammie,
 
-An essay arguing that the modern New York reservation market -- bots, resale, Amex GDA, the Chase Visa Dining Collection, the 2025 legislation -- is a consumer-funded system. The people who paid a bot service or bought a table on a resale marketplace did more to build the secondary market than the operators of those services did. The platforms built their premium tiers for the credit card companies, not for diners. The restaurants built the scarcity and saw none of the upside.
+American Express and Chase built their restaurant reservation tiers for the credit card companies, not for diners. The restaurants created the scarcity and saw none of the upside. The consumers who paid for bot services and resale tables funded the secondary market more than its operators did. The piece traces those incentive structures through the platform tiers, the resale mechanics, the 2025 NY legislation, and who actually held power at each step.
 
 The piece traces those incentives without a prescription. About 2,000 words. Self-published at scoopd.nyc/blog/the-reservation-economy; I would take it down upon acceptance.
 
