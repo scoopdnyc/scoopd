@@ -1,0 +1,9 @@
+.nb-hero{padding:3rem 2rem 2rem;border-bottom:0.5px solid #2a2a26;max-width:780px}
+.nb-eyebrow{font-family:var(--font-dm-mono),monospace;font-size:11px;letter-spacing:2px;color:#c9a96e;text-transform:uppercase;margin-bottom:0.75rem}
+.nb-headline{font-family:var(--font-playfair),serif;font-size:42px;line-height:1.1;color:#e8e4dc;margin-bottom:0}
+.nb-content{max-width:780px;padding:2rem 2rem 4rem}
+.nb-list{list-style:none;margin:0;padding:0}
+.nb-item{border-bottom:0.5px solid #2a2a26}
+.nb-item:last-child{border-bottom:none}
+.nb-link{display:block;padding:0.85rem 0;font-size:15px;color:#e8e4dc;text-decoration:none}
+.nb-link:hover{color:#c9a96e}

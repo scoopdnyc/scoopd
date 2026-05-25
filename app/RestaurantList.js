@@ -44,6 +44,7 @@ export default function RestaurantList({ restaurants }) {
 
       <div className="section-label">
         {filtered.length} restaurant{filtered.length !== 1 ? 's' : ''}
+        <Link href="/neighborhoods" className="section-label-link">View by neighborhood →</Link>
       </div>
 
       <div className="restaurant-list">
