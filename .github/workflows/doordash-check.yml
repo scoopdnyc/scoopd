@@ -12,9 +12,15 @@ on:
     # Midnight ET (05:00 UTC)
     - cron: '0 5 * * *'
   workflow_dispatch:
+
+concurrency:
+  group: doordash-check
+  cancel-in-progress: true
+
 jobs:
   check:
     runs-on: self-hosted
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
       - name: Run DoorDash monitor
