@@ -26,9 +26,11 @@ Does not contain: monitor algorithms, design system values, founding system spec
 
 ## Open Tasks
 
-- **Blog content** — four posts live: `/blog/the-reservation-economy`, `/blog/rolling-windows-and-monthly-drops`, `/blog/reservation-shadow-market`, `/blog/who-gets-the-table`. High ROI backlog continues.
-- **SEO action plan** — audit run May 17 2026 at 67/100. L3 (blog author byline) and L8 (ItemList on /drops) shipped May 18. Remaining open: M1 (neighborhood editorial), M6 (how-to-book sections on top 6 restaurants — next needle-mover per GSC data), M7 (expand rolling-windows post), L2 (/about page), L6 (static homepage restaurant list).
-- **ScoopNote** — scoop column live, content populated for 6 restaurants (carbone, lilia, via-carota, don-angie, torrisi, 4-charles-prime-rib). Component renders in right column of Booking Intelligence section when non-null. Design not final, deferred until traffic warrants revisiting.
+- **Blog content** — ten posts live: `/blog/the-reservation-economy`, `/blog/rolling-windows-and-monthly-drops`, `/blog/reservation-shadow-market`, `/blog/who-gets-the-table`, plus six how-to-get-a-reservation posts (carbone, lilia, via-carota, don-angie, torrisi, 4-charles-prime-rib). High ROI backlog continues.
+- **SEO action plan** — audit run May 17 2026 at 67/100. L3 and L8 shipped May 18. M1, M6, M7, L2, L6 all shipped May 24. No open audit items.
+- **DD_WEB_TOKEN expires June 20** — refresh by June 19. Extract from Chrome DevTools (Application > Cookies > doordash.com > ddweb_token), update DD_WEB_TOKEN in GitHub Actions secrets.
+- **actions/checkout@v4 → @v5** — upgrade before September 2026.
+- **Six how-to-get-a-reservation blog posts** — stubs created as part of M6, full content published May 24 for all six M6 restaurants.
 - **Need to Know box system** — deferred.
 - **Catch Hospitality blog post** — deferred.
 - **Backlink outreach** — not started.
@@ -262,7 +264,7 @@ Full schema including monitor columns in scoopd-reference.md. Fields actively us
 - `user_id`, `restaurant_slug`, `release_window_key` (UNIQUE), `sent_at`
 
 ### monitor_log table
-- `id`, `restaurant_id` (integer FK), `platform`, `checked_at`, `api_verified_days`, `expected_days`, `flagged`, `flag_reason`, `raw_value`
+- `id`, `restaurant_slug`, `source`, `field`, `old_value`, `new_value`, `raw_value`, `flag_reason`, `checked_at`, `notified`
 
 ---
 
@@ -366,3 +368,20 @@ Write it to the repo root as handoff.md and commit with "docs: update handoff.md
 - Inngest opentable-daily-check removed. Was orphaned and failing daily. GitHub Actions is the active monitor. Inngest now serves exactly 4 functions.
 - reservation_store_ids confirmed: corner-store 28147fe3-96cf-4826-af76-e54872b4e248, the-86 a0b42bce-c259-483a-bf70-1729bbc3d5e4, oresh 0128c310-5d6e-4cac-95a2-291a356f7dca.
 - GSC: average position mid-50s, zero clicks in 2 months. Root cause is page-type mismatch, not technical. M6 content work is the next needle-mover.
+
+### Session — May 24, 2026
+- DoorDash availability monitor built and live: lib/monitors/doordash.py, app/api/doordash-check/route.js, .github/workflows/doordash-check.yml. Watches reservation_filters and merchant/details endpoints for Corner Store, The Eighty Six, Or'Esh. Auth: ddweb_token cookie only via curl_cffi Chrome TLS impersonation. Self-hosted Mac runner required — Cloudflare blocks datacenter IPs.
+- Self-hosted Mac runner registered for GitHub Actions (label: self-hosted,mac). launchd service with KeepAlive=true. Required for DoorDash (Cloudflare) and OpenTable (Akamai) monitors.
+- OpenTable monitor fixed: switched from ubuntu-latest to self-hosted runner. Akamai bypass confirmed.
+- Inngest opentable-daily-check removed. Inngest now serves 4 functions.
+- Email notification layer built: lib/monitors/notify.js, app/api/notify-monitor/route.js. Whitelist-only triggers: DD inventory available, DD ghost slot, SevenRooms days-out diff, OpenTable 403. Suppress list: no_inventory, clean*, error*, event extends calendar*, no_slots_at_expected_end*, no_bookable_slots*. 10-row batch cap per invocation. 401 digest: one email per day max. NOTIFY_EMAIL env var added to Vercel and GitHub Actions.
+- DoorDash check schedule expanded: every 15 min 7 AM to 6 PM ET, plus single checks at 7 PM, 8 PM, and midnight ET.
+- M6 shipped: HowToBook (Option D styling) component built as The Scoop section on six restaurant pages. ScoopNote removed, mobile layout bug fixed. Six full blog posts published at content/blog/how-to-get-a-reservation-at-[slug].mdx for carbone, lilia, via-carota, don-angie, torrisi, 4-charles-prime-rib.
+- M7 shipped: cancellation fee timing paragraph added to rolling-windows-and-monthly-drops post.
+- L2 shipped: /about page built at app/about/page.js with AboutPage JSON-LD. About link added to footer.
+- M1 shipped: neighborhood editorial prose added to five neighborhood pages (west-village, williamsburg, lower-east-side, soho, midtown). NEIGHBORHOOD_PROSE map in page.js.
+- Neighborhoods index page built at app/neighborhoods/page.js. "View by neighborhood" link added to homepage next to restaurant count.
+- L6 closed: homepage restaurant list already existed, action plan item was stale.
+- The Reservation Economy confirmed live at /blog/the-reservation-economy — no action needed.
+- monitor_log schema confirmed: id, restaurant_slug, source, field, old_value, new_value, raw_value, flag_reason, checked_at, notified.
+- CRON_SECRET was missing from .env.local and GitHub Actions — regenerated and updated in all three locations (Vercel, GitHub Actions, .env.local).
