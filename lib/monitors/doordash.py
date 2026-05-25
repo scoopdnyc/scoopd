@@ -254,7 +254,7 @@ def main():
         result = check_restaurant(token, restaurant, check_date, supabase_url, service_role_key, ts)
         results.append(result)
 
-    summary = {"check_date": check_date, "results": results}
+    summary = {"check_date": check_date, "run_time": ts, "results": results}
     print(json.dumps(summary))
 
     if cron_secret:
