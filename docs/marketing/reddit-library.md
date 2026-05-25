@@ -9,7 +9,7 @@ A curated collection of answer templates for Scoopd founder engagement on r/Food
 ### Carbone — "How do I get a reservation?"
 
 **Subreddit targets:** r/FoodNYC, r/AskNYC, r/finedining
-**Watch for:** Direct questions about Carbone booking, any mention of "Carbone + 10 AM" or timing confusion
+**Watch for:** "Carbone reservation tips," "trying to book Carbone," "Carbone impossible," "Carbone Resy," any direct booking questions about Carbone, or timing confusion posts
 
 The drop is 10 AM on Resy, 31 days out. Set an alarm. Be signed in before the minute turns. Have your party size, date, and time already selected. Do not browse first — go directly to the booking page.
 
@@ -127,7 +127,7 @@ Depends on the restaurant type — there are two systems:
 
 **Monthly drop restaurants** release an entire month at once, usually on the 1st. Eleven Madison Park, Per Se, Masa, Joo Ok — all first of the month. Miss the drop and you wait another month. Multiple of these conflict on the same day at the same time, so you have to pick one.
 
-The difference matters because your strategy is completely different. Scoopd tracks all of this for 192 NYC restaurants: [scoopd.nyc](https://scoopd.nyc)
+The difference matters because your strategy is completely different. Full breakdown of drop times and platforms for 192 NYC restaurants: [scoopd.nyc](https://scoopd.nyc)
 
 ---
 
@@ -215,6 +215,7 @@ The access tiers that replaced the secondary market (Amex GDA, Visa Dining Colle
 ### Voice & Engagement Rules
 
 - Answer from experience, not as Scoopd founder — use "I've found," "I've seen," personal observations
+- Note: templates are written in neutral informational voice. Before posting, adapt to first-person by opening with a grounding sentence like "I've tried this a few times" or "From what I've seen" to match the personal voice required.
 - Never lead with "Scoopd tracks this" — it's context, not the message
 - Correcting outdated information (like Don Angie moving to OpenTable) is the highest-value contribution
 - If someone asks "do you work for Scoopd," acknowledge briefly ("I built it") and refocus on the actual question
