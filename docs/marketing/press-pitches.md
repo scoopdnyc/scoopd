@@ -22,11 +22,11 @@ Published at: scoopd.nyc/blog/who-gets-the-table
 
 Hi [editor name],
 
-The piece runs from Chumley's and Henri Soulé's pencil book through Elaine Kaufman, the Truman Capote implosion at La Côte Basque, Danny Meyer's road not taken, and the platform consolidation that made the purple brick in the Resy app the latest version of a transaction that has never really changed. It's a cultural history of how the currency required to sit at New York's best tables has shifted from social capital to credit card annual fees -- without the underlying transaction changing at all.
+The currency required to get the best table in New York has always been the same transaction -- the only thing that changes is what you need to bring. Henri Soulé's pencil book and the Resy purple brick are the same object serving the same function; the transaction has simply shifted from social capital to credit card annual fees.
 
-I think it's a strong fit for Eater Voices. It reads as independent cultural journalism, not a product pitch, and the arc from Prohibition-era access to the Amex acquisition of Resy and Tock is one I haven't seen told in full anywhere.
+The piece traces that shift from Chumley's and Soulé through Elaine Kaufman, the Truman Capote implosion at La Côte Basque, Danny Meyer's road not taken, and the platform consolidation that made the purple brick in the Resy app the latest version of an arrangement that has never really changed. It's a cultural history of access in New York's most coveted dining rooms -- from Prohibition through the Amex acquisition of Resy and Tock -- and an arc I haven't seen told in full anywhere.
 
-I'm the founder of Scoopd, a reservation intelligence platform tracking 192 NYC restaurants. The piece runs around 4,500 words. The piece is currently self-published on my site and I would take it down upon acceptance.
+I think it's a strong fit for Eater Voices. It reads as independent cultural journalism, not a product pitch. I'm the founder of Scoopd, a reservation intelligence platform tracking 192 NYC restaurants. The piece runs 4,500 words, is currently self-published on my site, and I would take it down upon acceptance.
 
 [Name]
 Founder, Scoopd.nyc
@@ -39,13 +39,15 @@ Founder, Scoopd.nyc
 
 ---
 
-**Subject:** Pitch: Cultural history of NYC dining access, Chumley's to Amex
+**Subject:** Pitch: Henri Soulé's pencil book and the Resy purple brick are the same object
 
 Hi [editor name],
 
 A long piece on how the table at the front of every hard New York dining room has always been reserved -- and how the currency required to sit there has changed from social capital to credit card annual fees without the underlying transaction changing at all.
 
 Runs from Prohibition-era Greenwich Village through Soulé, Elaine Kaufman, the Capote scandal, Danny Meyer, and the Amex acquisition of Resy and Tock. About 4,500 words. The piece is currently self-published on my site and I would take it down upon acceptance.
+
+[Name] has spent three years tracking how New York's most competitive restaurant reservations actually work -- the drop times, booking windows, and platform mechanics behind the rooms that never seem to have availability. They are the founder of Scoopd (scoopd.nyc).
 
 [Name]
 Founder, Scoopd.nyc
@@ -68,6 +70,8 @@ The through-line: the transaction has never changed. Only the currency has.
 
 4,500 words, available on request. The piece is currently self-published on my site and I would take it down upon acceptance.
 
+[Name] has spent three years tracking how New York's most competitive restaurant reservations actually work -- the drop times, booking windows, and platform mechanics behind the rooms that never seem to have availability. They are the founder of Scoopd (scoopd.nyc).
+
 [Name]
 Founder, Scoopd.nyc
 
@@ -75,11 +79,11 @@ Founder, Scoopd.nyc
 
 ## Submission Tracking
 
-| Outlet | Editor | Sent | Response | Notes |
-|--------|--------|------|----------|-------|
-| Eater NY | | | | |
-| Grub Street | | | | |
-| The Cut | | | | |
+| Outlet | Editor | Sent | Follow-up | Response | Notes |
+|--------|--------|------|-----------|----------|-------|
+| Eater NY | | | | | |
+| Grub Street | | | | | |
+| The Cut | | | | | |
 
 ---
 
