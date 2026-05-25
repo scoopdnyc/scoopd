@@ -52,15 +52,17 @@ export default async function sitemap() {
     lastModified: new Date('2026-05-02'),
   }))
 
-  const blogPosts = getBlogPosts().map(post => ({
-    url: `https://scoopd.nyc/blog/${post.slug}`,
-    lastModified: new Date(post.updatedAt),
-  }))
+  const blogPosts = getBlogPosts()
+    .filter(post => post.slug && post.slug !== 'undefined')
+    .map(post => ({
+      url: `https://scoopd.nyc/blog/${post.slug}`,
+      lastModified: new Date(post.updatedAt),
+    }))
 
   return [
     {
       url: 'https://scoopd.nyc',
-      lastModified: new Date('2026-04-27'),
+      lastModified: new Date('2026-05-24'),
     },
     {
       url: 'https://scoopd.nyc/how-it-works',
@@ -68,7 +70,15 @@ export default async function sitemap() {
     },
     {
       url: 'https://scoopd.nyc/blog',
-      lastModified: new Date('2026-05-02'),
+      lastModified: new Date('2026-05-24'),
+    },
+    {
+      url: 'https://scoopd.nyc/about',
+      lastModified: new Date('2026-05-24'),
+    },
+    {
+      url: 'https://scoopd.nyc/neighborhoods',
+      lastModified: new Date('2026-05-24'),
     },
     {
       url: 'https://scoopd.nyc/drops',
