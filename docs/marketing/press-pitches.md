@@ -120,9 +120,9 @@ Founder, Scoopd.nyc
 
 ---
 
-### Pitch: Robert Sietsema (Eater NY / Substack)
+### Pitch: Robert Sietsema (Substack)
 
-**Editor targeting note:** Robert Sietsema has covered New York food for decades and writes critically about access and the business of restaurants, not just what's on the plate. He is currently at Eater NY and also maintains a Substack readership. This piece suits his interest in how the restaurant industry actually functions -- the economics, the power dynamics, the structures most diners never see. If pitching to Eater NY via Sietsema, confirm whether he has a "Voices" or guest essay avenue; if not, pitch his Substack directly.
+**Editor targeting note:** Robert Sietsema has covered New York food for decades and writes critically about access and the business of restaurants, not just what's on the plate. He maintains a Substack readership separate from his staff work. Pitch his Substack directly -- do not pitch via Eater NY (reserved for "Who Gets the Table"). Research his current Substack URL and subscriber contact method before sending.
 
 ---
 
@@ -167,5 +167,5 @@ Founder, Scoopd.nyc
 | Outlet | Editor | Sent | Follow-up | Response | Notes |
 |--------|--------|------|-----------|----------|-------|
 | The Counter (newsletter) | Nikita Richardson | | | | |
-| Eater NY / Substack | Robert Sietsema | | | | |
+| Sietsema (Substack) | Robert Sietsema | | | | |
 | Food criticism Substack | Tammie Teclemariam | | | | |
