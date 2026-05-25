@@ -47,15 +47,20 @@ RESTAURANTS = [
 
 def today_et():
     from datetime import datetime
-    import time
-    # GitHub Actions runs UTC; convert to ET for the date string
-    # ET = UTC-4 (EDT) or UTC-5 (EST)
     now_utc = datetime.utcnow()
-    # Use offset-based approximation (EDT April-October, EST otherwise)
     month = now_utc.month
     offset = -4 if 4 <= month <= 10 else -5
     now_et = now_utc + timedelta(hours=offset)
     return now_et.date().isoformat()
+
+
+def et_timestamp():
+    from datetime import datetime
+    now_utc = datetime.utcnow()
+    month = now_utc.month
+    offset = -4 if 4 <= month <= 10 else -5
+    now_et = now_utc + timedelta(hours=offset)
+    return now_et.strftime("[%Y-%m-%d %H:%M ET]")
 
 
 def get_reservation_filters(token, reservation_store_id, check_date):
@@ -148,7 +153,7 @@ def write_monitor_log(supabase_url, service_role_key, row):
             raise RuntimeError(f"Supabase insert failed: {resp.status}")
 
 
-def check_restaurant(token, restaurant, check_date, supabase_url, service_role_key):
+def check_restaurant(token, restaurant, check_date, supabase_url, service_role_key, ts):
     slug = restaurant["slug"]
     name = restaurant["name"]
     store_id = restaurant["reservation_store_id"]
@@ -163,7 +168,7 @@ def check_restaurant(token, restaurant, check_date, supabase_url, service_role_k
                 today_slots = get_today_slot_count(token, store_id)
             except Exception as e:
                 today_slots = -1
-                print(f"[doordash] {name} merchant/details failed: {e}", file=sys.stderr)
+                print(f"{ts} [doordash] {name} merchant/details failed: {e}", file=sys.stderr)
 
             raw_value = f"{len(available_dates)} dates available, {today_slots} today slots"
             flag_reason = "inventory_available"
@@ -189,12 +194,12 @@ def check_restaurant(token, restaurant, check_date, supabase_url, service_role_k
             "today_slots": today_slots if found else 0,
             "raw_value": raw_value,
         }
-        print(f"[doordash] {name}: {raw_value}", file=sys.stderr)
+        print(f"{ts} [doordash] {name}: {raw_value}", file=sys.stderr)
         return result
 
     except Exception as e:
         msg = f"error: {e}"
-        print(f"[doordash] {name} FAILED: {e}", file=sys.stderr)
+        print(f"{ts} [doordash] {name} FAILED: {e}", file=sys.stderr)
         try:
             write_monitor_log(supabase_url, service_role_key, {
                 "restaurant_slug": slug,
@@ -210,7 +215,7 @@ def check_restaurant(token, restaurant, check_date, supabase_url, service_role_k
         return {"slug": slug, "found": False, "error": str(e)}
 
 
-def trigger_notify(cron_secret):
+def trigger_notify(cron_secret, ts):
     """POST to /api/notify-monitor to fire email alerts for unnotified rows."""
     try:
         req = urllib.request.Request(
@@ -224,9 +229,9 @@ def trigger_notify(cron_secret):
         )
         with urllib.request.urlopen(req, timeout=15) as resp:
             body = resp.read().decode()
-            print(f"[doordash] notify-monitor: {body}", file=sys.stderr)
+            print(f"{ts} [doordash] notify-monitor: {body}", file=sys.stderr)
     except Exception as e:
-        print(f"[doordash] notify-monitor failed (non-fatal): {e}", file=sys.stderr)
+        print(f"{ts} [doordash] notify-monitor failed (non-fatal): {e}", file=sys.stderr)
 
 
 def main():
@@ -242,19 +247,23 @@ def main():
         print(json.dumps({"error": "Supabase env vars not set"}))
         sys.exit(1)
 
+    ts = et_timestamp()
     check_date = today_et()
     results = []
     for restaurant in RESTAURANTS:
-        result = check_restaurant(token, restaurant, check_date, supabase_url, service_role_key)
+        result = check_restaurant(token, restaurant, check_date, supabase_url, service_role_key, ts)
         results.append(result)
 
     summary = {"check_date": check_date, "results": results}
     print(json.dumps(summary))
 
     if cron_secret:
-        trigger_notify(cron_secret)
+        if any(r.get("found") for r in results):
+            trigger_notify(cron_secret, ts)
+        else:
+            print(f"{ts} [doordash] no inventory found -- skipping notify-monitor", file=sys.stderr)
     else:
-        print("[doordash] CRON_SECRET not set — skipping notify-monitor", file=sys.stderr)
+        print(f"{ts} [doordash] CRON_SECRET not set -- skipping notify-monitor", file=sys.stderr)
 
 
 if __name__ == "__main__":
