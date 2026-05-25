@@ -10,7 +10,7 @@ Logic per restaurant:
   2. Find dates in window NOT in unavailable_dates = available dates
   3. If none: log flag_reason=null, raw_value='no_inventory'
   4. If any: call merchant/details for today's live slot count
-     (date param is ignored by the endpoint — always returns today)
+     (date param is ignored by the endpoint -- always returns today)
   5. Log flag_reason='inventory_available', raw_value='{N} dates available, {M} today slots'
 
 Writes one row to monitor_log per restaurant per run.
@@ -168,7 +168,7 @@ def check_restaurant(token, restaurant, check_date, supabase_url, service_role_k
                 today_slots = get_today_slot_count(token, store_id)
             except Exception as e:
                 today_slots = -1
-                print(f"{ts} [doordash] {name} merchant/details failed: {e}", file=sys.stderr)
+                print(f"{ts} [doordash] {name} merchant/details failed: {e}", file=sys.stderr, flush=True)
 
             raw_value = f"{len(available_dates)} dates available, {today_slots} today slots"
             flag_reason = "inventory_available"
@@ -194,12 +194,12 @@ def check_restaurant(token, restaurant, check_date, supabase_url, service_role_k
             "today_slots": today_slots if found else 0,
             "raw_value": raw_value,
         }
-        print(f"{ts} [doordash] {name}: {raw_value}", file=sys.stderr)
+        print(f"{ts} [doordash] {name}: {raw_value}", file=sys.stderr, flush=True)
         return result
 
     except Exception as e:
         msg = f"error: {e}"
-        print(f"{ts} [doordash] {name} FAILED: {e}", file=sys.stderr)
+        print(f"{ts} [doordash] {name} FAILED: {e}", file=sys.stderr, flush=True)
         try:
             write_monitor_log(supabase_url, service_role_key, {
                 "restaurant_slug": slug,
@@ -229,9 +229,9 @@ def trigger_notify(cron_secret, ts):
         )
         with urllib.request.urlopen(req, timeout=15) as resp:
             body = resp.read().decode()
-            print(f"{ts} [doordash] notify-monitor: {body}", file=sys.stderr)
+            print(f"{ts} [doordash] notify-monitor: {body}", file=sys.stderr, flush=True)
     except Exception as e:
-        print(f"{ts} [doordash] notify-monitor failed (non-fatal): {e}", file=sys.stderr)
+        print(f"{ts} [doordash] notify-monitor failed (non-fatal): {e}", file=sys.stderr, flush=True)
 
 
 def main():
@@ -261,9 +261,9 @@ def main():
         if any(r.get("found") for r in results):
             trigger_notify(cron_secret, ts)
         else:
-            print(f"{ts} [doordash] no inventory found -- skipping notify-monitor", file=sys.stderr)
+            print(f"{ts} [doordash] no inventory found -- skipping notify-monitor", file=sys.stderr, flush=True)
     else:
-        print(f"{ts} [doordash] CRON_SECRET not set -- skipping notify-monitor", file=sys.stderr)
+        print(f"{ts} [doordash] CRON_SECRET not set -- skipping notify-monitor", file=sys.stderr, flush=True)
 
 
 if __name__ == "__main__":
