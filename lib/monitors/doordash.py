@@ -199,6 +199,8 @@ def check_restaurant(token, restaurant, check_date, supabase_url, service_role_k
 
     except Exception as e:
         msg = f"error: {e}"
+        is_auth_error = '401' in str(e)
+        flag_reason = 'auth_error' if is_auth_error else None
         print(f"{ts} [doordash] {name} FAILED: {e}", file=sys.stderr, flush=True)
         try:
             write_monitor_log(supabase_url, service_role_key, {
@@ -208,11 +210,11 @@ def check_restaurant(token, restaurant, check_date, supabase_url, service_role_k
                 "old_value": None,
                 "new_value": msg,
                 "raw_value": msg,
-                "flag_reason": None,
+                "flag_reason": flag_reason,
             })
         except Exception:
             pass
-        return {"slug": slug, "found": False, "error": str(e)}
+        return {"slug": slug, "found": False, "auth_error": is_auth_error, "error": str(e)}
 
 
 def trigger_notify(cron_secret, ts):
@@ -258,7 +260,9 @@ def main():
     print(json.dumps(summary))
 
     if cron_secret:
-        if any(r.get("found") for r in results):
+        has_inventory = any(r.get("found") for r in results)
+        has_auth_error = any(r.get("auth_error") for r in results)
+        if has_inventory or has_auth_error:
             trigger_notify(cron_secret, ts)
         else:
             print(f"{ts} [doordash] no inventory found -- skipping notify-monitor", file=sys.stderr, flush=True)
