@@ -112,24 +112,6 @@ def parse_available_dates(filters_data, check_date):
     return available
 
 
-def get_today_slot_count(token, reservation_store_id):
-    """Count reservation_timeslot buttons in merchant/details for today."""
-    r = cfr.get(
-        f"{DD_BASE}/unified-gateway/dine_out/v1/merchant/details",
-        params={
-            "business_id": "1337",
-            "store_id": f"RESERVATION-{reservation_store_id}",
-            "device_lat": "40.737111",
-            "device_lng": "-73.998795",
-            "source": "MERCHANT_DETAILS_SOURCE_UNSPECIFIED",
-        },
-        cookies={"ddweb_token": token},
-        impersonate="chrome124",
-        timeout=15,
-    )
-    r.raise_for_status()
-    return r.text.count("reservation_timeslot")
-
 
 def write_monitor_log(supabase_url, service_role_key, row):
     """Insert a row into monitor_log via Supabase REST API."""
@@ -164,13 +146,8 @@ def check_restaurant(token, restaurant, check_date, supabase_url, service_role_k
         found = len(available_dates) > 0
 
         if found:
-            try:
-                today_slots = get_today_slot_count(token, store_id)
-            except Exception as e:
-                today_slots = -1
-                print(f"{ts} [doordash] {name} merchant/details failed: {e}", file=sys.stderr, flush=True)
-
-            raw_value = f"{len(available_dates)} dates available, {today_slots} today slots"
+            dates_str = ", ".join(available_dates)
+            raw_value = f"dates={dates_str}"
             flag_reason = "inventory_available"
         else:
             raw_value = "no_inventory"
@@ -191,7 +168,6 @@ def check_restaurant(token, restaurant, check_date, supabase_url, service_role_k
             "slug": slug,
             "found": found,
             "available_dates": len(available_dates),
-            "today_slots": today_slots if found else 0,
             "raw_value": raw_value,
         }
         print(f"{ts} [doordash] {name}: {raw_value}", file=sys.stderr, flush=True)
