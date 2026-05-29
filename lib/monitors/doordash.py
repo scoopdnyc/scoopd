@@ -41,12 +41,7 @@ RESTAURANTS = [
         "slug": "oresh",
         "name": "Or'Esh",
         "reservation_store_id": "0128c310-5d6e-4cac-95a2-291a356f7dca",
-    },
-    {
-        "slug": "roscioli-nyc",
-        "name": "Roscioli NYC",
-        "reservation_store_id": "f13b5fbd-aed3-4912-bdd6-1772734d82ba",
-    },
+    },  
 ]
 
 
