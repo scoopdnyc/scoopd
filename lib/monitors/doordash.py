@@ -63,13 +63,13 @@ def et_timestamp():
     return now_et.strftime("[%Y-%m-%d %H:%M ET]")
 
 
-def get_reservation_filters(token, reservation_store_id, check_date):
+def get_reservation_filters(token, reservation_store_id, check_date, party_size="2"):
     r = cfr.get(
         f"{DD_BASE}/unified-gateway/reservation/v1/reservation_filters",
         params={
             "reservation.date": check_date,
             "reservation.time": "Anytime",
-            "reservation.party_size": "2",
+            "reservation.party_size": str(party_size),
             "reservation_store_id": reservation_store_id,
         },
         cookies={"ddweb_token": token},
@@ -141,13 +141,23 @@ def check_restaurant(token, restaurant, check_date, supabase_url, service_role_k
     store_id = restaurant["reservation_store_id"]
 
     try:
-        filters_data = get_reservation_filters(token, store_id, check_date)
-        available_dates = parse_available_dates(filters_data, check_date)
-        found = len(available_dates) > 0
+        filters_2 = get_reservation_filters(token, store_id, check_date, party_size="2")
+        filters_4 = get_reservation_filters(token, store_id, check_date, party_size="4")
+        dates_2 = set(parse_available_dates(filters_2, check_date))
+        dates_4 = set(parse_available_dates(filters_4, check_date))
+        all_dates = sorted(dates_2 | dates_4)
+        found = len(all_dates) > 0
 
         if found:
-            dates_str = ", ".join(available_dates)
-            raw_value = f"dates={dates_str}"
+            parts = []
+            for d in all_dates:
+                if d in dates_2 and d in dates_4:
+                    parts.append(f"{d} (party=2,4)")
+                elif d in dates_2:
+                    parts.append(f"{d} (party=2)")
+                else:
+                    parts.append(f"{d} (party=4)")
+            raw_value = "dates=" + ", ".join(parts)
             flag_reason = "inventory_available"
         else:
             raw_value = "no_inventory"
@@ -167,7 +177,7 @@ def check_restaurant(token, restaurant, check_date, supabase_url, service_role_k
         result = {
             "slug": slug,
             "found": found,
-            "available_dates": len(available_dates),
+            "available_dates": len(all_dates),
             "raw_value": raw_value,
         }
         print(f"{ts} [doordash] {name}: {raw_value}", file=sys.stderr, flush=True)
