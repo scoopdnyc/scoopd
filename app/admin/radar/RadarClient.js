@@ -85,21 +85,20 @@ I built scoopd.nyc to track the drop times and windows for around 50 NYC restaur
 ]
 
 function RedditCard({ item }) {
+  const date = item.created_utc ? new Date(item.created_utc).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : ''
   return (
     <a
-      href={`https://reddit.com${item.permalink}`}
+      href={item.url}
       target="_blank"
       rel="noopener noreferrer"
       className="rdr-card"
     >
       <div className="rdr-card-meta">
-        <span className="rdr-card-sub">r/{item.subreddit}</span>
-        <span className="rdr-card-dot">·</span>
-        <span className="rdr-card-score">{item.score} pts</span>
-        <span className="rdr-card-dot">·</span>
-        <span className="rdr-card-comments">{item.num_comments} comments</span>
+        {item.subreddit && <span className="rdr-card-sub">r/{item.subreddit}</span>}
+        {date && <><span className="rdr-card-dot">·</span><span className="rdr-card-date">{date}</span></>}
       </div>
       <div className="rdr-card-title">{item.title}</div>
+      {item.selftext && <div className="rdr-card-selftext">{item.selftext}</div>}
     </a>
   )
 }
@@ -150,7 +149,7 @@ export default function RadarClient() {
       const res = await fetch(`/api/admin/radar-search?${params}`, { credentials: 'include' })
       if (!res.ok) throw new Error(`HTTP ${res.status}`)
       const data = await res.json()
-      setRedditResults(data.data?.children?.map(c => c.data) ?? [])
+      setRedditResults(data.items ?? [])
     } catch (err) {
       setRedditError(err.message)
     }
