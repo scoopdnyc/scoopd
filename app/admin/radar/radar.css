@@ -15,6 +15,8 @@
 
 .rdr-section-label{font-family:var(--font-dm-mono),monospace;font-size:10px;letter-spacing:2px;color:#c9a96e;text-transform:uppercase;margin-bottom:0.75rem}
 
+.rdr-sub-input{width:100%;max-width:520px;background:#1a1a16;border:0.5px solid #2a2a26;border-radius:8px;padding:0.6rem 0.875rem;color:#e8e4dc;font-family:var(--font-dm-mono),monospace;font-size:12px;outline:none;box-sizing:border-box;margin-bottom:0.75rem}
+.rdr-sub-input:focus{border-color:#c9a96e}
 .rdr-chips{display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1.5rem}
 .rdr-chip{background:#1a1a16;border:0.5px solid #2a2a26;border-radius:6px;color:#a8a49c;font-family:var(--font-dm-sans),sans-serif;font-size:12px;padding:0.4rem 0.875rem;cursor:pointer}
 .rdr-chip:hover{border-color:#c9a96e;color:#e8e4dc}

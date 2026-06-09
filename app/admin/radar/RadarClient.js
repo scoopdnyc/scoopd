@@ -3,6 +3,8 @@
 import { useState } from 'react'
 import './radar.css'
 
+const DEFAULT_SUB = 'FoodNYC+AskNYC+finedining+nycfood+nyc'
+
 const REDDIT_KEYWORDS = [
   { label: 'nyc restaurant reservations', q: 'nyc restaurant reservations', sub: null },
   { label: 'impossible reservation NYC', q: 'impossible reservation NYC restaurant', sub: null },
@@ -126,6 +128,7 @@ function HNCard({ item }) {
 export default function RadarClient() {
   const [tab, setTab] = useState('reddit')
 
+  const [subreddit, setSubreddit] = useState(DEFAULT_SUB)
   const [redditResults, setRedditResults] = useState([])
   const [redditLoading, setRedditLoading] = useState(false)
   const [redditError, setRedditError] = useState(null)
@@ -138,14 +141,14 @@ export default function RadarClient() {
 
   const [copied, setCopied] = useState(null)
 
-  async function fetchReddit(keyword) {
+  async function fetchReddit(keyword, sub = subreddit) {
     setRedditLoading(true)
     setRedditError(null)
     setRedditQuery(keyword.label)
     setRedditResults([])
     try {
       const params = new URLSearchParams({ source: 'reddit', q: keyword.q, sort: 'new' })
-      if (keyword.sub) params.set('subreddit', keyword.sub)
+      if (sub) params.set('subreddit', sub)
       const res = await fetch(`/api/admin/radar-search?${params}`, { credentials: 'include' })
       if (!res.ok) throw new Error(`HTTP ${res.status}`)
       const data = await res.json()
@@ -202,13 +205,21 @@ export default function RadarClient() {
 
         {tab === 'reddit' && (
           <div>
-            <div className="rdr-section-label">Keyword Search</div>
+            <div className="rdr-section-label">Subreddit Filter</div>
+            <input
+              className="rdr-sub-input"
+              value={subreddit}
+              onChange={e => setSubreddit(e.target.value)}
+              placeholder="e.g. FoodNYC+AskNYC+nyc"
+              spellCheck={false}
+            />
+            <div className="rdr-section-label" style={{ marginTop: '1.25rem' }}>Keyword Search</div>
             <div className="rdr-chips">
               {REDDIT_KEYWORDS.map(kw => (
                 <button
                   key={kw.label}
                   className={`rdr-chip ${redditQuery === kw.label ? 'active' : ''}`}
-                  onClick={() => fetchReddit(kw)}
+                  onClick={() => { setSubreddit(DEFAULT_SUB); fetchReddit(kw, DEFAULT_SUB) }}
                 >
                   {kw.label}
                 </button>
