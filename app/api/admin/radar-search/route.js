@@ -12,8 +12,8 @@ export async function GET(request) {
   const subreddit = searchParams.get('subreddit') || ''
   const sort = searchParams.get('sort') || 'new'
 
+  let upstreamUrl = ''
   try {
-    let upstreamUrl
     if (source === 'reddit') {
       const base = subreddit
         ? `https://www.reddit.com/r/${encodeURIComponent(subreddit)}/search.json`
@@ -28,12 +28,20 @@ export async function GET(request) {
       return Response.json({ error: 'Invalid source' }, { status: 400 })
     }
 
+    console.log('[radar-search] fetching', upstreamUrl)
     const upstream = await fetch(upstreamUrl, {
       headers: { 'User-Agent': 'scoopd-radar/1.0' },
     })
+    console.log('[radar-search] upstream status', upstream.status)
+    if (!upstream.ok) {
+      const text = await upstream.text()
+      console.error('[radar-search] upstream error body:', text.slice(0, 300))
+      return Response.json({ error: `Upstream ${upstream.status}`, body: text.slice(0, 300) }, { status: 502 })
+    }
     const data = await upstream.json()
-    return Response.json(data, { status: upstream.status })
+    return Response.json(data)
   } catch (err) {
-    return Response.json({ error: err.message }, { status: 502 })
+    console.error('[radar-search] caught:', err.name, err.message, 'url:', upstreamUrl)
+    return Response.json({ error: err.message, name: err.name, url: upstreamUrl }, { status: 502 })
   }
 }
