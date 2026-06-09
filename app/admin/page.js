@@ -124,7 +124,6 @@ export default function AdminPage() {
       <div className="admin-header">
         <div className="admin-logo">Scoopd</div>
         <div className="admin-header-label">Add Restaurant</div>
-        <a href="/admin/radar" style={{ fontSize: '12px', color: '#8a8a80', textDecoration: 'none', fontFamily: 'var(--font-dm-mono)', letterSpacing: '1px' }}>Radar →</a>
       </div>
 
       {status && (

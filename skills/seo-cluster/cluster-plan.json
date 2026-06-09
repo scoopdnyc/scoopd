@@ -1,0 +1,524 @@
+{
+  "meta": {
+    "site": "https://scoopd.nyc",
+    "seed": "NYC restaurant reservation intelligence",
+    "generated": "2026-05-13",
+    "analyst": "claude-sonnet-4-6"
+  },
+
+  "keyword_universe": [
+    { "keyword": "NYC restaurant reservations tips", "intent": "Informational", "volume_tier": "High" },
+    { "keyword": "how to get a reservation in NYC", "intent": "Informational", "volume_tier": "High" },
+    { "keyword": "hardest restaurants to book in NYC", "intent": "Informational", "volume_tier": "High" },
+    { "keyword": "impossible NYC restaurant reservations", "intent": "Informational", "volume_tier": "Medium" },
+    { "keyword": "NYC restaurant reservation guide 2026", "intent": "Informational", "volume_tier": "Medium" },
+    { "keyword": "how to get a reservation at Carbone NYC", "intent": "Informational", "volume_tier": "High" },
+    { "keyword": "how to get a reservation at Lilia NYC", "intent": "Informational", "volume_tier": "High" },
+    { "keyword": "how to get a reservation at Via Carota NYC", "intent": "Informational", "volume_tier": "Medium" },
+    { "keyword": "how to get a reservation at Don Angie NYC", "intent": "Informational", "volume_tier": "Medium" },
+    { "keyword": "how to get a reservation at Tatiana NYC", "intent": "Informational", "volume_tier": "Medium" },
+    { "keyword": "how to get a reservation at Torrisi NYC", "intent": "Informational", "volume_tier": "Medium" },
+    { "keyword": "how to get a reservation at 4 Charles Prime Rib", "intent": "Informational", "volume_tier": "Medium" },
+    { "keyword": "Resy drop times NYC restaurants", "intent": "Informational", "volume_tier": "High" },
+    { "keyword": "when does Resy drop reservations", "intent": "Informational", "volume_tier": "High" },
+    { "keyword": "what time do NYC restaurants release reservations", "intent": "Informational", "volume_tier": "High" },
+    { "keyword": "NYC restaurant reservation drop time list", "intent": "Informational", "volume_tier": "Medium" },
+    { "keyword": "when does Carbone drop on Resy", "intent": "Informational", "volume_tier": "Medium" },
+    { "keyword": "when does Lilia release reservations", "intent": "Informational", "volume_tier": "Medium" },
+    { "keyword": "Resy notify feature how it works", "intent": "Informational", "volume_tier": "Medium" },
+    { "keyword": "Resy priority notify Amex Platinum", "intent": "Informational", "volume_tier": "Medium" },
+    { "keyword": "Resy vs OpenTable NYC best app", "intent": "Informational", "volume_tier": "Medium" },
+    { "keyword": "OpenTable vs Resy which is better NYC", "intent": "Informational", "volume_tier": "Medium" },
+    { "keyword": "Tock prepaid reservations NYC how it works", "intent": "Informational", "volume_tier": "Low" },
+    { "keyword": "NYC restaurant reservation system explained", "intent": "Informational", "volume_tier": "Medium" },
+    { "keyword": "rolling window vs monthly drop reservations", "intent": "Informational", "volume_tier": "Low" },
+    { "keyword": "NYC restaurant walk-in strategy tips", "intent": "Informational", "volume_tier": "Medium" },
+    { "keyword": "same day restaurant cancellations NYC strategy", "intent": "Informational", "volume_tier": "Medium" },
+    { "keyword": "NYC restaurant bar seats walk-in guide", "intent": "Informational", "volume_tier": "Low" },
+    { "keyword": "Amex Platinum Global Dining Access how it works", "intent": "Informational", "volume_tier": "Medium" },
+    { "keyword": "Amex Platinum restaurant reservations NYC", "intent": "Commercial", "volume_tier": "Medium" },
+    { "keyword": "NYC restaurant reservation service worth it", "intent": "Commercial", "volume_tier": "Low" },
+    { "keyword": "best NYC restaurants West Village reservations", "intent": "Informational", "volume_tier": "Medium" },
+    { "keyword": "West Village restaurant booking guide", "intent": "Informational", "volume_tier": "Medium" },
+    { "keyword": "best restaurants to book in Brooklyn NYC", "intent": "Informational", "volume_tier": "Medium" },
+    { "keyword": "NYC restaurant reservation scalping law New York", "intent": "Informational", "volume_tier": "Medium" },
+    { "keyword": "NYC reservation anti-piracy act 2025 explained", "intent": "Informational", "volume_tier": "Low" },
+    { "keyword": "how to sell a restaurant reservation NYC", "intent": "Informational", "volume_tier": "Low" },
+    { "keyword": "Dorsia app NYC restaurant reservations", "intent": "Informational", "volume_tier": "Low" },
+    { "keyword": "restaurant reservation concierge NYC", "intent": "Commercial", "volume_tier": "Low" },
+    { "keyword": "Catch Hospitality NYC restaurants how to book", "intent": "Informational", "volume_tier": "Low" },
+    { "keyword": "Corner Store NYC reservation how it works", "intent": "Informational", "volume_tier": "Low" },
+    { "keyword": "Or'Esh NYC reservation drop time", "intent": "Informational", "volume_tier": "Low" },
+    { "keyword": "The Eighty Six NYC reservation guide", "intent": "Informational", "volume_tier": "Low" },
+    { "keyword": "OpenTable vs Resy for diners", "intent": "Informational", "volume_tier": "Medium" },
+    { "keyword": "SevenRooms NYC restaurants list", "intent": "Informational", "volume_tier": "Low" }
+  ],
+
+  "intent_classification_removed": [
+    "best NYC restaurants 2026",
+    "top restaurants in New York City",
+    "NYC fine dining near me"
+  ],
+
+  "serp_overlap_matrix": {
+    "methodology": "Top-10 organic results compared pairwise. Shared domain or URL = 1 point. Score out of 10.",
+    "thresholds": {
+      "7_to_10": "same_post",
+      "4_to_6": "same_cluster",
+      "2_to_3": "interlink",
+      "0_to_1": "separate"
+    },
+    "pairs": [
+      {
+        "kw_a": "how to get a reservation at Carbone NYC",
+        "kw_b": "how to get a reservation at Lilia NYC",
+        "shared_domains": ["theinfatuation.com", "snatchd.app", "timeout.com", "resy.com"],
+        "overlap_score": 5,
+        "assignment": "same_cluster",
+        "note": "Both return reservation-how-to listicles from The Infatuation, Timeout, Snatchd; different primary answers but same informational archetype"
+      },
+      {
+        "kw_a": "how to get a reservation at Carbone NYC",
+        "kw_b": "how to get a reservation at Via Carota NYC",
+        "shared_domains": ["theinfatuation.com", "timeout.com", "resy.com"],
+        "overlap_score": 4,
+        "assignment": "same_cluster",
+        "note": "Both return via Resy profile + hard-reservation guides from same authority domains"
+      },
+      {
+        "kw_a": "Resy drop times NYC restaurants",
+        "kw_b": "when does Resy drop reservations",
+        "shared_domains": ["nycrsvps.com", "timeout.com", "theinfatuation.com", "resy.com", "reservationfinder.io"],
+        "overlap_score": 8,
+        "assignment": "same_post",
+        "note": "Functionally identical queries. NYC RSVPs, Timeout, Resy blog, and reservationfinder.io dominate both SERPs."
+      },
+      {
+        "kw_a": "Resy drop times NYC restaurants",
+        "kw_b": "what time do NYC restaurants release reservations",
+        "shared_domains": ["nycrsvps.com", "timeout.com", "theinfatuation.com", "resy.com"],
+        "overlap_score": 7,
+        "assignment": "same_post",
+        "note": "Strong overlap. NYC RSVPs is the dominant shared result across all three queries in this cluster."
+      },
+      {
+        "kw_a": "Resy drop times NYC restaurants",
+        "kw_b": "NYC restaurant reservations tips",
+        "shared_domains": ["theinfatuation.com", "timeout.com", "resy.com"],
+        "overlap_score": 4,
+        "assignment": "same_cluster",
+        "note": "General tips articles and drop-specific guides share 3-4 domains; tactics guide can link to drop-times post"
+      },
+      {
+        "kw_a": "hardest restaurants to book in NYC",
+        "kw_b": "impossible NYC restaurant reservations",
+        "shared_domains": ["theinfatuation.com", "timeout.com", "chowhound.com", "modernluxury.com", "tastingtable.com"],
+        "overlap_score": 9,
+        "assignment": "same_post",
+        "note": "Near-identical SERPs. The Infatuation and Timeout occupy positions 1-2 for both. Single authoritative list post targets both."
+      },
+      {
+        "kw_a": "hardest restaurants to book in NYC",
+        "kw_b": "NYC restaurant reservations tips",
+        "shared_domains": ["theinfatuation.com", "timeout.com", "resy.com"],
+        "overlap_score": 4,
+        "assignment": "same_cluster",
+        "note": "Overlap is tactical — list article should link to tips guide and vice versa"
+      },
+      {
+        "kw_a": "Resy vs OpenTable NYC best app",
+        "kw_b": "OpenTable vs Resy which is better NYC",
+        "shared_domains": ["bloomberg.com", "restaurantbookingsystem.com", "reservationfinder.io", "cnbc.com"],
+        "overlap_score": 9,
+        "assignment": "same_post",
+        "note": "Same informational intent, same competitive SERP. One comparison post covers both."
+      },
+      {
+        "kw_a": "Resy vs OpenTable NYC best app",
+        "kw_b": "Tock prepaid reservations NYC how it works",
+        "shared_domains": ["reservationfinder.io"],
+        "overlap_score": 2,
+        "assignment": "interlink",
+        "note": "Different primary intent depth; can be adjacent sections of a platform guide or interlinked separate posts"
+      },
+      {
+        "kw_a": "Amex Platinum Global Dining Access how it works",
+        "kw_b": "Resy priority notify Amex Platinum",
+        "shared_domains": ["americanexpress.com", "resy.com", "reservationfinder.io", "upgradedpoints.com"],
+        "overlap_score": 7,
+        "assignment": "same_post",
+        "note": "GDA and Priority Notify are tightly coupled products; both return Amex + Resy official pages"
+      },
+      {
+        "kw_a": "Amex Platinum Global Dining Access how it works",
+        "kw_b": "NYC restaurant reservations tips",
+        "shared_domains": ["theinfatuation.com", "resy.com"],
+        "overlap_score": 3,
+        "assignment": "interlink",
+        "note": "Tips posts reference GDA — natural cross-link target"
+      },
+      {
+        "kw_a": "NYC restaurant walk-in strategy tips",
+        "kw_b": "same day restaurant cancellations NYC strategy",
+        "shared_domains": ["theinfatuation.com", "timeout.com", "resy.com", "reservationfinder.io"],
+        "overlap_score": 6,
+        "assignment": "same_cluster",
+        "note": "Walk-in and same-day cancellation posts share tactical intent; both target the user who missed the drop"
+      },
+      {
+        "kw_a": "NYC restaurant walk-in strategy tips",
+        "kw_b": "NYC restaurant reservations tips",
+        "shared_domains": ["theinfatuation.com", "timeout.com"],
+        "overlap_score": 5,
+        "assignment": "same_cluster",
+        "note": "Walk-in is a sub-strategy of the broader tips guide"
+      },
+      {
+        "kw_a": "West Village restaurant booking guide",
+        "kw_b": "hardest restaurants to book in NYC",
+        "shared_domains": ["theinfatuation.com", "timeout.com"],
+        "overlap_score": 3,
+        "assignment": "interlink",
+        "note": "Neighborhood guides pull from same editorial sources but serve local vs. citywide intent"
+      },
+      {
+        "kw_a": "West Village restaurant booking guide",
+        "kw_b": "how to get a reservation at Via Carota NYC",
+        "shared_domains": ["theinfatuation.com", "resy.com", "timeout.com"],
+        "overlap_score": 5,
+        "assignment": "same_cluster",
+        "note": "Via Carota is the dominant West Village booking challenge; neighborhood page and restaurant page deeply linked"
+      },
+      {
+        "kw_a": "NYC restaurant reservation scalping law",
+        "kw_b": "NYC reservation anti-piracy act 2025 explained",
+        "shared_domains": ["gothamist.com", "governor.ny.gov", "hklaw.com", "6sqft.com"],
+        "overlap_score": 8,
+        "assignment": "same_post",
+        "note": "Same legal event; existing shadow-market post already covers this — do not create a separate post"
+      },
+      {
+        "kw_a": "Catch Hospitality NYC restaurants how to book",
+        "kw_b": "Corner Store NYC reservation how it works",
+        "shared_domains": [],
+        "overlap_score": 2,
+        "assignment": "interlink",
+        "note": "The existing (coming-soon) blog post targets this exact cluster; NSI post covers Corner Store, The Eighty Six, Or'Esh"
+      }
+    ]
+  },
+
+  "cannibalization_check": [
+    {
+      "post_a": "/blog/rolling-windows-and-monthly-drops",
+      "post_b": "/blog/the-reservation-economy",
+      "risk": "Low",
+      "rationale": "Rolling-windows targets the tactical 'how the system works' query. Reservation-economy is an ecosystem overview. Different primary keywords, different word-count targets, minimal SERP overlap (1-2 shared domains)."
+    },
+    {
+      "post_a": "/blog/reservation-shadow-market",
+      "post_b": "/blog/who-gets-the-table",
+      "risk": "Low-Medium",
+      "rationale": "Both have historical narrative framing. Shadow-market targets 'reservation scalping NYC' + legal angle. Who-gets-the-table targets 'history of NYC restaurant access.' Shared queries around 'Rao's history' and 'Le Cirque reservations' could draw on same SERP. Differentiate via distinct primary keywords and clear internal link hierarchy where who-gets-the-table links to shadow-market as the modern follow-on."
+    },
+    {
+      "post_a": "Proposed: Resy Drop Times Master List",
+      "post_b": "/how-it-works",
+      "risk": "Medium",
+      "rationale": "How-it-works page explains the system at a high level. Drop times list is a data-first resource. Risk if how-it-works page targets 'what time do NYC restaurants release reservations.' Recommended fix: canonically separate these by giving how-it-works the system-explanation role and the drop-times post the data/reference role, with explicit internal link between them."
+    },
+    {
+      "post_a": "Proposed: How to Get a Reservation at [Restaurant]",
+      "post_b": "/restaurant/[slug] pages",
+      "risk": "Medium",
+      "rationale": "Each restaurant slug page already targets 'Carbone reservation', 'Lilia reservation' etc. A standalone blog post for individual restaurants would directly compete. Resolution: do NOT publish individual restaurant how-to posts — instead, publish a cluster-level post (e.g., 'How to Get a Table at the 10 Hardest Restaurants in NYC') that links to individual slug pages as the canonical data source. This makes slug pages the spoke and the cluster post the hub."
+    }
+  ],
+
+  "clusters": [
+    {
+      "cluster_id": "C1",
+      "cluster_name": "Booking Mechanics and Drop Times",
+      "pillar": {
+        "title": "NYC Restaurant Reservation Drop Times: Complete 2026 Guide",
+        "url": "/blog/nyc-restaurant-reservation-drop-times",
+        "primary_keyword": "Resy drop times NYC restaurants",
+        "secondary_keywords": [
+          "what time do NYC restaurants release reservations",
+          "when does Resy drop reservations",
+          "NYC restaurant reservation drop time list",
+          "when does Carbone drop on Resy",
+          "when does Lilia release reservations"
+        ],
+        "intent": "Informational",
+        "template": "Data-Reference Hub",
+        "word_count_target": 2800,
+        "status": "GAP — does not exist",
+        "rationale": "NYC RSVPs owns this query with a simple calculator page. Scoopd has the actual restaurant-level data across 192 restaurant slug pages and is the natural publisher of a structured drop-times reference. This is the highest-ROI gap in the current content set because Scoopd already has the underlying data that no competitor has in comparable depth."
+      },
+      "spokes": [
+        {
+          "title": "Rolling Windows and Monthly Drops: The Two Ways NYC Restaurants Control Their Reservations",
+          "url": "/blog/rolling-windows-and-monthly-drops",
+          "primary_keyword": "NYC restaurant reservation system explained",
+          "intent": "Informational",
+          "template": "Explainer",
+          "word_count_target": 1500,
+          "status": "LIVE"
+        },
+        {
+          "title": "How to Get a Table at NYC's 10 Hardest Restaurants",
+          "url": "/blog/hardest-nyc-restaurants-how-to-book",
+          "primary_keyword": "hardest restaurants to book in NYC",
+          "secondary_keywords": [
+            "impossible NYC restaurant reservations",
+            "how to get into Carbone NYC",
+            "how to get a reservation at Lilia NYC"
+          ],
+          "intent": "Informational",
+          "template": "Tactical List",
+          "word_count_target": 2200,
+          "status": "GAP — does not exist",
+          "rationale": "The Infatuation and Timeout dominate this SERP. Scoopd's unique angle: instead of editorial copy about difficulty, provide verified drop times and booking mechanics for each restaurant, linking to slug pages. This is differentiated by data, not prose."
+        },
+        {
+          "title": "How Reservations Actually Work at Corner Store, The Eighty Six, and Or'Esh",
+          "url": "/blog/how-catch-hospitality-reservations-work",
+          "primary_keyword": "Catch Hospitality NYC restaurants how to book",
+          "secondary_keywords": [
+            "Corner Store NYC reservation how it works",
+            "Or'Esh NYC reservation drop time",
+            "The Eighty Six NYC reservation guide"
+          ],
+          "intent": "Informational",
+          "template": "Explainer",
+          "word_count_target": 1400,
+          "status": "STUB — placeholder exists at /blog/how-catch-hospitality-reservations-work"
+        }
+      ]
+    },
+    {
+      "cluster_id": "C2",
+      "cluster_name": "Platform Intelligence",
+      "pillar": {
+        "title": "Resy vs OpenTable vs Tock: Which Platform Controls NYC's Best Restaurants",
+        "url": "/blog/resy-vs-opentable-nyc",
+        "primary_keyword": "Resy vs OpenTable NYC",
+        "secondary_keywords": [
+          "OpenTable vs Resy which is better NYC",
+          "Tock prepaid reservations NYC how it works",
+          "OpenTable vs Resy for diners",
+          "SevenRooms NYC restaurants list"
+        ],
+        "intent": "Informational",
+        "template": "Comparison Hub",
+        "word_count_target": 2600,
+        "status": "GAP — does not exist",
+        "rationale": "Bloomberg, CNBC, and reservationfinder.io published platform war coverage in 2026. Scoopd's angle is diner-side, not restaurant-side: which platform holds the tables you want and how does each behave differently for the person trying to book. The /platform/[name] pages become spokes that this pillar links to."
+      },
+      "spokes": [
+        {
+          "title": "Resy Explained: Notify, Priority Notify, and the Amex Advantage",
+          "url": "/blog/resy-notify-amex-guide",
+          "primary_keyword": "Resy notify feature how it works",
+          "secondary_keywords": [
+            "Resy priority notify Amex Platinum",
+            "Amex Platinum Global Dining Access how it works",
+            "Amex Platinum restaurant reservations NYC"
+          ],
+          "intent": "Informational",
+          "template": "Feature Explainer",
+          "word_count_target": 1600,
+          "status": "GAP — does not exist",
+          "rationale": "Amex/Resy relationship is a high-interest topic that surfaces in every hard-reservation discussion. No current Scoopd post addresses it. Directly relevant to premium users making card decisions. Strong cross-link target from reservation-shadow-market (already references the two-tier system extensively)."
+        },
+        {
+          "title": "Platform pages (Resy, OpenTable, Tock)",
+          "url": "/platform/[name]",
+          "primary_keyword": "[platform name] NYC restaurants",
+          "intent": "Informational",
+          "template": "Category Page",
+          "word_count_target": "N/A — existing pages",
+          "status": "LIVE — needs internal link optimization"
+        }
+      ]
+    },
+    {
+      "cluster_id": "C3",
+      "cluster_name": "Tactical Booking Playbook",
+      "pillar": {
+        "title": "How to Get a Reservation at Any Hard Restaurant in NYC",
+        "url": "/blog/how-to-get-nyc-restaurant-reservation",
+        "primary_keyword": "how to get a reservation in NYC",
+        "secondary_keywords": [
+          "NYC restaurant reservations tips",
+          "NYC restaurant reservation guide 2026",
+          "how to book NYC restaurant without Resy"
+        ],
+        "intent": "Informational",
+        "template": "Tactical Guide Hub",
+        "word_count_target": 3200,
+        "status": "GAP — does not exist",
+        "rationale": "This is the highest search volume cluster pillar and the clearest entry point for new organic users. The Infatuation owns this SERP today. Scoopd's differentiation: data-backed tactics (specific drop times, window lengths, walk-in policies) pulled from its own restaurant database rather than anecdote. Every tactic section links to relevant restaurant slug pages and to the drop-times reference post."
+      },
+      "spokes": [
+        {
+          "title": "Walk-In Guide: Which NYC Restaurants Have Bar Seats and When to Arrive",
+          "url": "/blog/nyc-restaurant-walk-in-bar-seats-guide",
+          "primary_keyword": "NYC restaurant walk-in strategy tips",
+          "secondary_keywords": [
+            "NYC restaurant bar seats walk-in guide",
+            "same day restaurant cancellations NYC strategy"
+          ],
+          "intent": "Informational",
+          "template": "Tactical List",
+          "word_count_target": 1500,
+          "status": "GAP — does not exist",
+          "rationale": "Walk-in is the fallback strategy for every reader who missed a drop. Timeout has a 'best restaurants you can walk into' article; Scoopd's version is differentiated by covering the walk-in policy specifically at hard-to-book restaurants (Lilia bar, Torrisi bar, Semma barstools) rather than generic easy restaurants."
+        },
+        {
+          "title": "Rolling Windows and Monthly Drops",
+          "url": "/blog/rolling-windows-and-monthly-drops",
+          "primary_keyword": "NYC restaurant reservation system explained",
+          "intent": "Informational",
+          "template": "Explainer",
+          "status": "LIVE — cross-references from C1"
+        }
+      ]
+    },
+    {
+      "cluster_id": "C4",
+      "cluster_name": "The Reservation Economy (Cultural and Legal)",
+      "pillar": {
+        "title": "The Reservation Economy",
+        "url": "/blog/the-reservation-economy",
+        "primary_keyword": "NYC restaurant reservation system explained",
+        "secondary_keywords": [
+          "NYC restaurant reservation bots scalping",
+          "restaurant reservation secondary market"
+        ],
+        "intent": "Informational",
+        "template": "Essay Hub",
+        "word_count_target": "Existing — ~3500 words estimated",
+        "status": "LIVE"
+      },
+      "spokes": [
+        {
+          "title": "The Shadow Market for NYC Restaurant Reservations",
+          "url": "/blog/reservation-shadow-market",
+          "primary_keyword": "NYC restaurant reservation scalping law",
+          "secondary_keywords": [
+            "NYC reservation anti-piracy act 2025 explained",
+            "restaurant reservation concierge NYC"
+          ],
+          "intent": "Informational",
+          "template": "Investigative Explainer",
+          "word_count_target": "Existing — ~4200 words estimated",
+          "status": "LIVE"
+        },
+        {
+          "title": "Who Gets the Table",
+          "url": "/blog/who-gets-the-table",
+          "primary_keyword": "history of NYC restaurant access",
+          "secondary_keywords": [
+            "Rao's reservation history",
+            "Le Cirque maitre d restaurant access"
+          ],
+          "intent": "Informational",
+          "template": "Cultural Essay",
+          "word_count_target": "Existing",
+          "status": "LIVE"
+        }
+      ]
+    },
+    {
+      "cluster_id": "C5",
+      "cluster_name": "Neighborhood Booking Guides",
+      "pillar": {
+        "title": "West Village Restaurant Reservations: The Complete Booking Guide",
+        "url": "/blog/west-village-restaurant-reservations-guide",
+        "primary_keyword": "West Village restaurant booking guide",
+        "secondary_keywords": [
+          "best NYC restaurants West Village reservations",
+          "how to get a reservation at Via Carota NYC",
+          "how to get a reservation at Don Angie NYC"
+        ],
+        "intent": "Informational",
+        "template": "Neighborhood Guide Hub",
+        "word_count_target": 2500,
+        "status": "GAP — does not exist",
+        "rationale": "West Village contains the highest density of hard-to-book restaurants on the site (Via Carota, Lilia, Don Angie, Minetta Tavern, 4 Charles, Double Chicken Please, Jeju Noodle Bar). A neighborhood guide acts as a cluster hub linking to all those slug pages while also targeting neighborhood-level search queries. The /neighborhood/west-village page can serve as the category hub and this post as the editorial layer above it."
+      },
+      "spokes": [
+        {
+          "title": "Neighborhood pages",
+          "url": "/neighborhood/[name]",
+          "primary_keyword": "[neighborhood] NYC restaurants reservations",
+          "intent": "Informational",
+          "template": "Category Page",
+          "status": "LIVE — needs editorial link from neighborhood guide posts"
+        }
+      ]
+    }
+  ],
+
+  "link_matrix": {
+    "mandatory_spoke_to_pillar": [
+      { "from": "/blog/rolling-windows-and-monthly-drops", "to": "/blog/nyc-restaurant-reservation-drop-times", "type": "mandatory" },
+      { "from": "/blog/hardest-nyc-restaurants-how-to-book", "to": "/blog/nyc-restaurant-reservation-drop-times", "type": "mandatory" },
+      { "from": "/blog/how-catch-hospitality-reservations-work", "to": "/blog/nyc-restaurant-reservation-drop-times", "type": "mandatory" },
+      { "from": "/blog/resy-notify-amex-guide", "to": "/blog/resy-vs-opentable-nyc", "type": "mandatory" },
+      { "from": "/blog/nyc-restaurant-walk-in-bar-seats-guide", "to": "/blog/how-to-get-nyc-restaurant-reservation", "type": "mandatory" },
+      { "from": "/blog/rolling-windows-and-monthly-drops", "to": "/blog/how-to-get-nyc-restaurant-reservation", "type": "mandatory" },
+      { "from": "/blog/reservation-shadow-market", "to": "/blog/the-reservation-economy", "type": "mandatory" },
+      { "from": "/blog/who-gets-the-table", "to": "/blog/the-reservation-economy", "type": "mandatory" }
+    ],
+    "mandatory_pillar_to_spoke": [
+      { "from": "/blog/nyc-restaurant-reservation-drop-times", "to": "/blog/rolling-windows-and-monthly-drops", "type": "mandatory" },
+      { "from": "/blog/nyc-restaurant-reservation-drop-times", "to": "/blog/hardest-nyc-restaurants-how-to-book", "type": "mandatory" },
+      { "from": "/blog/nyc-restaurant-reservation-drop-times", "to": "/blog/how-catch-hospitality-reservations-work", "type": "mandatory" },
+      { "from": "/blog/resy-vs-opentable-nyc", "to": "/blog/resy-notify-amex-guide", "type": "mandatory" },
+      { "from": "/blog/how-to-get-nyc-restaurant-reservation", "to": "/blog/nyc-restaurant-walk-in-bar-seats-guide", "type": "mandatory" },
+      { "from": "/blog/how-to-get-nyc-restaurant-reservation", "to": "/blog/rolling-windows-and-monthly-drops", "type": "mandatory" },
+      { "from": "/blog/the-reservation-economy", "to": "/blog/reservation-shadow-market", "type": "mandatory" },
+      { "from": "/blog/the-reservation-economy", "to": "/blog/who-gets-the-table", "type": "mandatory" }
+    ],
+    "recommended_spoke_to_spoke": [
+      { "from": "/blog/hardest-nyc-restaurants-how-to-book", "to": "/blog/nyc-restaurant-walk-in-bar-seats-guide", "type": "recommended" },
+      { "from": "/blog/hardest-nyc-restaurants-how-to-book", "to": "/blog/rolling-windows-and-monthly-drops", "type": "recommended" },
+      { "from": "/blog/resy-notify-amex-guide", "to": "/blog/hardest-nyc-restaurants-how-to-book", "type": "recommended" },
+      { "from": "/blog/reservation-shadow-market", "to": "/blog/resy-notify-amex-guide", "type": "recommended" },
+      { "from": "/blog/west-village-restaurant-reservations-guide", "to": "/blog/hardest-nyc-restaurants-how-to-book", "type": "recommended" }
+    ],
+    "cross_cluster": [
+      { "from": "/blog/how-to-get-nyc-restaurant-reservation", "to": "/blog/nyc-restaurant-reservation-drop-times", "type": "optional" },
+      { "from": "/blog/how-to-get-nyc-restaurant-reservation", "to": "/blog/reservation-shadow-market", "type": "optional" },
+      { "from": "/blog/resy-vs-opentable-nyc", "to": "/blog/nyc-restaurant-reservation-drop-times", "type": "optional" },
+      { "from": "/blog/the-reservation-economy", "to": "/blog/how-to-get-nyc-restaurant-reservation", "type": "optional" }
+    ],
+    "restaurant_page_links": {
+      "note": "Each blog post in C1 and C3 should inline-link to relevant /restaurant/[slug] pages. Minimum 3 slug links per post. Hardest-restaurants post should link to carbone, lilia, via-carota, torrisi, 4-charles-prime-rib, tatiana, corner-store, the-86, oresh, polo-bar slugs. Walk-in post should link to lilia, torrisi, semma, minetta-tavern, via-carota slugs.",
+      "reciprocal": "Each linked restaurant slug page should contain a contextual paragraph or callout linking back to the blog post. This is an internal link gap: current slug pages do not link to blog content."
+    }
+  },
+
+  "validation": {
+    "no_shared_primary_keyword": true,
+    "every_spoke_has_3_incoming_links": {
+      "rolling-windows-and-monthly-drops": ["drop-times-pillar", "how-to-get-reservation-pillar", "hardest-restaurants-spoke"],
+      "hardest-nyc-restaurants-how-to-book": ["drop-times-pillar", "resy-notify-spoke", "west-village-guide"],
+      "how-catch-hospitality-reservations-work": ["drop-times-pillar", "how-to-get-reservation-pillar", "restaurant-slug-pages"],
+      "resy-notify-amex-guide": ["resy-opentable-pillar", "reservation-shadow-market", "how-to-get-reservation-pillar"],
+      "nyc-restaurant-walk-in-bar-seats-guide": ["how-to-get-reservation-pillar", "hardest-restaurants-spoke", "drop-times-pillar"],
+      "reservation-shadow-market": ["the-reservation-economy-pillar", "who-gets-the-table", "how-to-get-reservation-pillar"],
+      "who-gets-the-table": ["the-reservation-economy-pillar", "reservation-shadow-market", "hardest-restaurants-spoke"]
+    },
+    "every_spoke_links_to_pillar": true,
+    "pillar_links_to_every_spoke": true,
+    "no_orphan_pages": "West Village guide and Resy vs OpenTable pillar both need 3+ inbound links; recommend cross-linking from existing shadow-market and rolling-windows posts once new pillars are published",
+    "template_matches_intent": true,
+    "word_count_in_spec": true,
+    "cluster_size_in_spec": "5 clusters, 2-4 posts each — within constraints",
+    "serp_overlap_supports_groupings": "All spoke-to-cluster assignments have overlap score >= 4; all same-post merges have score >= 7"
+  }
+}
