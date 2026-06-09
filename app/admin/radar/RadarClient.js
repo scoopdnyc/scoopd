@@ -145,12 +145,9 @@ export default function RadarClient() {
     setRedditQuery(keyword.label)
     setRedditResults([])
     try {
-      const base = keyword.sub
-        ? `https://www.reddit.com/r/${keyword.sub}/search.json`
-        : 'https://www.reddit.com/search.json'
-      const params = new URLSearchParams({ q: keyword.q, sort: 'new', t: 'month', limit: '25' })
-      if (keyword.sub) params.set('restrict_sr', 'on')
-      const res = await fetch(`${base}?${params}`)
+      const params = new URLSearchParams({ source: 'reddit', q: keyword.q, sort: 'new' })
+      if (keyword.sub) params.set('subreddit', keyword.sub)
+      const res = await fetch(`/api/admin/radar-search?${params}`, { credentials: 'include' })
       if (!res.ok) throw new Error(`HTTP ${res.status}`)
       const data = await res.json()
       setRedditResults(data.data?.children?.map(c => c.data) ?? [])
@@ -166,8 +163,8 @@ export default function RadarClient() {
     setHNQuery(keyword.label)
     setHNResults([])
     try {
-      const params = new URLSearchParams({ query: keyword.q, tags: 'story', hitsPerPage: '25' })
-      const res = await fetch(`https://hn.algolia.com/api/v1/search?${params}`)
+      const params = new URLSearchParams({ source: 'hn', q: keyword.q })
+      const res = await fetch(`/api/admin/radar-search?${params}`, { credentials: 'include' })
       if (!res.ok) throw new Error(`HTTP ${res.status}`)
       const data = await res.json()
       setHNResults(data.hits ?? [])
