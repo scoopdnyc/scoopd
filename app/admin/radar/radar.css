@@ -1,0 +1,56 @@
+.rdr-wrap{background:#0f0f0d;min-height:100vh;color:#e8e4dc;font-family:var(--font-dm-sans),sans-serif}
+
+.rdr-header{display:flex;align-items:center;gap:1rem;padding:1.25rem 2rem;border-bottom:0.5px solid #2a2a26}
+.rdr-logo{font-family:var(--font-playfair),serif;font-size:24px;color:#e8e4dc}
+.rdr-header-label{font-family:var(--font-dm-mono),monospace;font-size:11px;letter-spacing:2px;color:#a8a49c;text-transform:uppercase;flex:1}
+.rdr-back{font-size:12px;color:#8a8a80;text-decoration:none;font-family:var(--font-dm-mono),monospace;letter-spacing:1px}
+.rdr-back:hover{color:#e8e4dc}
+
+.rdr-tabs{display:flex;gap:0;border-bottom:0.5px solid #2a2a26;padding:0 2rem}
+.rdr-tab{background:none;border:none;border-bottom:2px solid transparent;color:#8a8a80;font-family:var(--font-dm-sans),sans-serif;font-size:13px;padding:0.875rem 1.25rem;cursor:pointer;margin-bottom:-0.5px}
+.rdr-tab:hover{color:#e8e4dc}
+.rdr-tab.active{color:#e8e4dc;border-bottom-color:#c9a96e}
+
+.rdr-body{padding:2rem;max-width:900px}
+
+.rdr-section-label{font-family:var(--font-dm-mono),monospace;font-size:10px;letter-spacing:2px;color:#c9a96e;text-transform:uppercase;margin-bottom:0.75rem}
+
+.rdr-chips{display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1.5rem}
+.rdr-chip{background:#1a1a16;border:0.5px solid #2a2a26;border-radius:6px;color:#a8a49c;font-family:var(--font-dm-sans),sans-serif;font-size:12px;padding:0.4rem 0.875rem;cursor:pointer}
+.rdr-chip:hover{border-color:#c9a96e;color:#e8e4dc}
+.rdr-chip.active{border-color:#c9a96e;color:#c9a96e;background:#1a1810}
+
+.rdr-x-row{display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1.5rem}
+.rdr-x-link{background:#1a1a16;border:0.5px solid #2a2a26;border-radius:6px;color:#a8a49c;font-size:12px;font-family:var(--font-dm-sans),sans-serif;padding:0.4rem 0.875rem;text-decoration:none}
+.rdr-x-link:hover{border-color:#3a3a36;color:#e8e4dc}
+
+.rdr-query-label{font-size:12px;color:#8a8a80;margin-bottom:1rem;font-family:var(--font-dm-mono),monospace}
+.rdr-loading{font-size:13px;color:#8a8a80;padding:1rem 0}
+.rdr-error{font-size:13px;color:#c96e6e;padding:0.75rem 1rem;background:#1a0f0f;border:0.5px solid #3a1f1f;border-radius:8px;margin-bottom:1rem}
+.rdr-empty{font-size:13px;color:#8a8a80;padding:1rem 0}
+.rdr-hint{font-size:13px;color:#8a8a80;padding:1rem 0}
+
+.rdr-results{display:flex;flex-direction:column;gap:0.5rem}
+.rdr-card{display:block;background:#1a1a16;border:0.5px solid #2a2a26;border-radius:8px;padding:0.875rem 1rem;text-decoration:none;color:inherit}
+.rdr-card:hover{border-color:#3a3a36}
+.rdr-card-meta{display:flex;align-items:center;gap:0.5rem;margin-bottom:0.4rem;font-size:11px;font-family:var(--font-dm-mono),monospace}
+.rdr-card-sub{color:#c9a96e}
+.rdr-card-dot{color:#3a3a36}
+.rdr-card-score{color:#8a8a80}
+.rdr-card-comments{color:#8a8a80}
+.rdr-card-title{font-size:14px;color:#e8e4dc;line-height:1.4}
+
+.rdr-target-list{display:flex;flex-direction:column;gap:0.5rem;margin-top:0.5rem}
+.rdr-target-card{display:block;background:#1a1a16;border:0.5px solid #2a2a26;border-radius:8px;padding:0.875rem 1rem;text-decoration:none;color:inherit}
+.rdr-target-card:hover{border-color:#3a3a36}
+.rdr-target-name{font-size:14px;color:#e8e4dc;margin-bottom:0.25rem}
+.rdr-target-notes{font-size:12px;color:#8a8a80}
+
+.rdr-template-list{display:flex;flex-direction:column;gap:1rem;margin-top:0.5rem}
+.rdr-template-card{background:#1a1a16;border:0.5px solid #2a2a26;border-radius:8px;overflow:hidden}
+.rdr-template-header{display:flex;align-items:center;justify-content:space-between;padding:0.75rem 1rem;border-bottom:0.5px solid #2a2a26}
+.rdr-template-label{font-size:12px;color:#a8a49c;font-family:var(--font-dm-mono),monospace}
+.rdr-copy-btn{background:#2a2a26;border:none;border-radius:6px;color:#8a8a80;font-size:11px;font-family:var(--font-dm-mono),monospace;letter-spacing:1px;text-transform:uppercase;padding:0.35rem 0.75rem;cursor:pointer}
+.rdr-copy-btn:hover{background:#3a3a36;color:#e8e4dc}
+.rdr-copy-btn.copied{background:#0f1a16;border:0.5px solid #1f3a2a;color:#6ec9a0}
+.rdr-template-text{margin:0;padding:1rem;font-size:13px;color:#e8e4dc;font-family:var(--font-dm-sans),sans-serif;white-space:pre-wrap;line-height:1.6}
