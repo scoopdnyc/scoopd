@@ -91,6 +91,7 @@ export async function GET(request) {
 
     if (source === 'reddit') {
       const xml = await upstream.text()
+      console.log('[radar-search] rss raw:', xml.slice(0, 500))
       console.log('[radar-search] rss length:', xml.length, 'items tag count:', (xml.match(/<item>/g) || []).length)
       const items = parseRss(xml)
       console.log('[radar-search] parsed items:', items.length)
