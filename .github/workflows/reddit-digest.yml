@@ -1,0 +1,17 @@
+name: Reddit Digest
+on:
+  schedule:
+    - cron: '0 18 * * *'  # 2 PM ET (18:00 UTC)
+  workflow_dispatch:
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: node lib/monitors/reddit-digest.js
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
