@@ -68,7 +68,7 @@ export async function GET(request) {
       const base = subreddit
         ? `https://www.reddit.com/r/${encodeURIComponent(subreddit)}/search.rss`
         : 'https://www.reddit.com/search.rss'
-      const params = new URLSearchParams({ q: encodeURIComponent(q), sort, t: 'month', limit: '15' })
+      const params = new URLSearchParams({ q, sort, t: 'month', limit: '15' })
       if (subreddit) params.set('restrict_sr', '1')
       upstreamUrl = `${base}?${params}`
     } else if (source === 'hn') {
@@ -78,18 +78,22 @@ export async function GET(request) {
       return Response.json({ error: 'Invalid source' }, { status: 400 })
     }
 
+    console.log('[radar-search] url:', upstreamUrl)
     const upstream = await fetch(upstreamUrl, {
       headers: { 'User-Agent': 'scoopd-radar/1.0' },
     })
+    console.log('[radar-search] status:', upstream.status)
     if (!upstream.ok) {
       const text = await upstream.text()
-      console.error('[radar-search] upstream error', upstream.status, text.slice(0, 200))
+      console.error('[radar-search] error body:', text.slice(0, 300))
       return Response.json({ error: `Upstream ${upstream.status}` }, { status: 502 })
     }
 
     if (source === 'reddit') {
       const xml = await upstream.text()
+      console.log('[radar-search] rss length:', xml.length, 'items tag count:', (xml.match(/<item>/g) || []).length)
       const items = parseRss(xml)
+      console.log('[radar-search] parsed items:', items.length)
       return Response.json({ items })
     } else {
       const data = await upstream.json()
