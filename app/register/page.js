@@ -35,22 +35,28 @@ function RegisterForm() {
 
     setStatus('loading')
     const supabase = getSupabaseBrowser()
-    const { error } = await supabase.auth.signUp({ email, password })
+    const { data: signUpData, error } = await supabase.auth.signUp({ email, password })
     if (error) {
       setStatus('error')
       setErrorMsg(error.message)
-    } else {
-      if (optIn) {
-        fetch('https://script.google.com/macros/s/AKfycbxftfY_nFOq59pOpWBkkSYuQTc5tUjZ8u5pQkXJ_SG03DB1PT7_Ny7DXhU46Q_mae2l/exec', {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email }),
-        }).catch(() => {})
-      }
-      window.gtag?.('event', 'signup')
-      setStatus('success')
+      return
     }
+
+    // Write 45-day active subscription for new user
+    if (signUpData?.user) {
+      fetch('/api/register', { method: 'POST', credentials: 'include' }).catch(() => {})
+    }
+
+    if (optIn) {
+      fetch('https://script.google.com/macros/s/AKfycbxftfY_nFOq59pOpWBkkSYuQTc5tUjZ8u5pQkXJ_SG03DB1PT7_Ny7DXhU46Q_mae2l/exec', {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      }).catch(() => {})
+    }
+    window.gtag?.('event', 'signup')
+    setStatus('success')
   }
 
   return (

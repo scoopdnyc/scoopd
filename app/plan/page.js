@@ -32,15 +32,7 @@ export default async function PlanPage() {
     serverSupabase.auth.getUser(),
   ])
 
-  let isPremium = false
-  if (user) {
-    const { data: sub } = await serverSupabase
-      .from('subscriptions')
-      .select('status')
-      .eq('user_id', user.id)
-      .single()
-    isPremium = sub?.status === 'active'
-  }
+  const isPremium = !!user
 
   // Current ET time
   const now = new Date()

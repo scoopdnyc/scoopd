@@ -25,12 +25,7 @@ export default function PremiumReveal({ dropDate, isPlatformWalkIn }) {
         const supabase = getSupabaseBrowser()
         const { data: { session } } = await supabase.auth.getSession()
         if (!session) return
-        const { data: sub } = await supabase
-          .from('subscriptions')
-          .select('status')
-          .eq('user_id', session.user.id)
-          .single()
-        if (sub?.status === 'active') setRevealed(true)
+        setRevealed(true)
       } catch {
         // silently fail, stays blurred
       } finally {
