@@ -81,12 +81,7 @@ export default async function AccountPage() {
             <div className="ac-card-value" style={{ fontSize: '14px', color: '#8a8a80', lineHeight: 1.6 }}>
               You have full access to exact drop dates across all restaurants on Scoopd.
             </div>
-            {periodEnd && (
-              <div className="ac-renews">Renews {periodEnd}</div>
-            )}
-            <form action="/api/stripe/portal" method="POST">
-              <button type="submit" className="ac-btn-gold">Manage billing</button>
-            </form>
+            <div className="ac-renews" style={{ marginTop: '1rem' }}>You have 45 days of free access. No billing required during this period.</div>
             <Link href="/alerts" className="ac-btn-outline">Manage your drop alerts →</Link>
           </div>
         ) : (
@@ -94,17 +89,8 @@ export default async function AccountPage() {
             <div className="ac-card-label">Subscription</div>
             <div className="ac-badge-inactive">NOT SUBSCRIBED</div>
             <div className="ac-card-value" style={{ fontSize: '14px', color: '#8a8a80', lineHeight: 1.6 }}>
-              Subscribe to unlock exact drop dates — no more math, no more guessing.
+              You have 45 days of free access. No billing required during this period.
             </div>
-            <ul className="ac-perks">
-              <li className="ac-perk"><div className="ac-perk-dot"></div><span>Exact calculated drop dates for every restaurant</span></li>
-              <li className="ac-perk"><div className="ac-perk-dot"></div><span>Coverage across Resy, OpenTable, DoorDash, and more</span></li>
-              <li className="ac-perk"><div className="ac-perk-dot"></div><span>Monthly restaurant calendar drops (EMP, Per Se, Masa)</span></li>
-              <li className="ac-perk"><div className="ac-perk-dot"></div><span>Plan by date — see what opens the night you want</span></li>
-            </ul>
-            <form action="/api/stripe/checkout" method="POST">
-              <button type="submit" className="ac-btn-gold">Subscribe for $9.99/month</button>
-            </form>
           </div>
         )}
       </div>
