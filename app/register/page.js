@@ -9,6 +9,7 @@ import ScoopFooter from '../components/ScoopFooter'
 function RegisterForm() {
   const searchParams = useSearchParams()
   const next = searchParams.get('next')
+  const ref = searchParams.get('ref')
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -44,7 +45,12 @@ function RegisterForm() {
 
     // Write 45-day active subscription for new user
     if (signUpData?.user) {
-      fetch('/api/register', { method: 'POST', credentials: 'include' }).catch(() => {})
+      fetch('/api/register', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ref_code: ref || null }),
+      }).catch(() => {})
     }
 
     if (optIn) {

@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import ScoopDropdown from './ScoopDropdown'
 import ScoopSubBar from './ScoopSubBar'
+import ReferralBanner from './ReferralBanner'
 
 const DROPDOWN_WIDTH = 220
 
@@ -50,6 +51,7 @@ export default function ScoopNav() {
         pillRightOffset={pillRightOffset}
         dropdownWidth={DROPDOWN_WIDTH}
       />
+      <ReferralBanner />
     </>
   )
 }
