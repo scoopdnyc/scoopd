@@ -55,6 +55,12 @@
 
 .bl-meta time {
   color: #8a8a80;
+  display: block;
+}
+
+.bl-byline {
+  display: block;
+  margin-top: 0.25rem;
 }
 
 .bl-body {
