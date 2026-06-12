@@ -270,7 +270,7 @@ export default async function RestaurantPage({ params }) {
       </div>
       {photoUrl && (
         <div className="rp-photo-banner" style={{ height: `${r.photo_height ?? 420}px` }}>
-          <Image src={photoUrl} alt={r.restaurant} fill className="rp-photo-img" sizes="100vw" style={{ objectPosition: r.photo_position || 'center' }} />
+          <Image src={photoUrl} alt={r.restaurant} fill className="rp-photo-img" sizes="100vw" style={{ objectPosition: r.photo_position || 'center' }} unoptimized />
         </div>
       )}
       {isClosed && <div className="rp-closed-notice">This restaurant is permanently closed.</div>}
