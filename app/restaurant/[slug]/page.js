@@ -130,6 +130,7 @@ export default async function RestaurantPage({ params }) {
   ])
 
   const photoUrl = r.photo_override_url ?? fetchedPhotoUrl
+  const proxiedPhotoUrl = photoUrl ? `/api/photo?url=${encodeURIComponent(photoUrl)}` : null
 
   const neighborhoodRestaurants = shuffleTake4(neighborhoodRaw)
   const difficultyRestaurants   = shuffleTake4(difficultyRaw)
@@ -268,9 +269,9 @@ export default async function RestaurantPage({ params }) {
           <ShareButton restaurantName={r.restaurant} platform={r.platform} releaseTime={r.release_time} observedDays={r.observed_days} slug={slug} />
         </div>
       </div>
-      {photoUrl && (
+      {proxiedPhotoUrl && (
         <div className="rp-photo-banner" style={{ height: `${r.photo_height ?? 420}px` }}>
-          <Image src={photoUrl} alt={r.restaurant} fill className="rp-photo-img" sizes="100vw" style={{ objectPosition: r.photo_position || 'center' }} unoptimized />
+          <Image src={proxiedPhotoUrl} alt={r.restaurant} fill className="rp-photo-img" sizes="100vw" style={{ objectPosition: r.photo_position || 'center' }} unoptimized />
         </div>
       )}
       {isClosed && <div className="rp-closed-notice">This restaurant is permanently closed.</div>}
