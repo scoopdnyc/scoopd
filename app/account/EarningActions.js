@@ -53,14 +53,14 @@ export default function EarningActions({ referralLink, socialFollowed, streak, s
           {!followed && (
             <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem' }}>
               <a
-                href="https://instagram.com/scoopd.nyc"
+                href="https://instagram.com/scoopdnyc"
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={handleSocialClick}
                 className="ac-social-link"
               >Instagram →</a>
               <a
-                href="https://x.com/scoopd_nyc"
+                href="https://x.com/scoopdnyc"
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={handleSocialClick}
