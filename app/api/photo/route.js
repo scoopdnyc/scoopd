@@ -18,7 +18,14 @@ export async function GET(request) {
   }
 
   try {
-    const res = await fetch(url, { cache: 'no-store' })
+    const res = await fetch(url, {
+      cache: 'no-store',
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+        'Referer': 'https://www.google.com/',
+        'Accept': 'image/webp,image/apng,image/*,*/*;q=0.8',
+      },
+    })
     if (!res.ok) {
       console.error('[photo-proxy] upstream error:', res.status, url)
       return new Response('Upstream error', { status: 502 })
