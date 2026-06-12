@@ -1,7 +1,5 @@
 import { unstable_cache } from 'next/cache'
 import { createSupabaseStatic } from '../../../lib/supabase-static'
-import { createSupabaseServer } from '../../../lib/supabase-server'
-import { createClient } from '@supabase/supabase-js'
 import { computeNextDropDate } from '../../../lib/dropDate'
 import { slugify } from '../../../lib/slugify'
 import Link from 'next/link'
@@ -14,9 +12,9 @@ import AlertBell from '../../components/AlertBell'
 import NsiField from '../../components/NsiField'
 import PremiumReveal from './PremiumReveal'
 import BookingLink from './BookingLink'
+import ReferralConversionTracker from './ReferralConversionTracker'
 import HowToBook from '../../components/HowToBook'
 import { getPlacePhoto } from '../../../lib/places'
-import { extendAccess } from '../../../lib/access'
 import './restaurant.css'
 
 export const revalidate = 3600
@@ -120,39 +118,6 @@ export default async function RestaurantPage({ params }) {
 
   const r = await getRestaurantCached(slug)
   if (!r) notFound()
-
-  // Referral conversion: fire once when a referred user views their first restaurant
-  try {
-    const serverSupabase = await createSupabaseServer()
-    const { data: { user } } = await serverSupabase.auth.getUser()
-    if (user) {
-      const { data: sub } = await serverSupabase
-        .from('subscriptions')
-        .select('referred_by')
-        .eq('user_id', user.id)
-        .single()
-      if (sub?.referred_by) {
-        const serviceClient = createClient(
-          process.env.NEXT_PUBLIC_SUPABASE_URL,
-          process.env.SUPABASE_SERVICE_ROLE_KEY
-        )
-        const { data: triggered } = await serviceClient
-          .from('user_actions')
-          .select('id')
-          .eq('user_id', user.id)
-          .eq('action_type', 'referral_triggered')
-          .maybeSingle()
-        if (!triggered) {
-          await serviceClient.from('user_actions').insert({
-            user_id: user.id,
-            action_type: 'referral_triggered',
-            metadata: { referrer_id: sub.referred_by },
-          })
-          extendAccess(sub.referred_by, 14, 'referral_converted', { referred_user: user.id }).catch(() => {})
-        }
-      }
-    }
-  } catch {}
 
   const isNonStandardInventory = r.non_standard_inventory === true
 
@@ -293,6 +258,7 @@ export default async function RestaurantPage({ params }) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
       <ScoopNav />
+      <ReferralConversionTracker />
       <Link href="/" className="rp-back">← Back to directory</Link>
       <div className="rp-hero">
         <div className="rp-eyebrow">{r.neighborhood} · {r.cuisine}</div>
