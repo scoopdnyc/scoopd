@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { createSupabaseServer } from '../../../lib/supabase-server'
+import { createHash } from 'crypto'
 
 export async function POST(request) {
   const serverSupabase = await createSupabaseServer()
@@ -25,7 +26,7 @@ export async function POST(request) {
   }
 
   const expiresAt = new Date(Date.now() + 45 * 24 * 60 * 60 * 1000).toISOString()
-  const referralCode = `ref_${user.id.replace(/-/g, '').slice(0, 12)}`
+  const referralCode = createHash('md5').update(user.id).digest('hex').slice(0, 8)
 
   const { error } = await supabase.from('subscriptions').upsert({
     user_id: user.id,
