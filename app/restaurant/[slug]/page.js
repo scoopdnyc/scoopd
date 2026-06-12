@@ -130,7 +130,9 @@ export default async function RestaurantPage({ params }) {
   ])
 
   const photoUrl = r.photo_override_url ?? fetchedPhotoUrl
-  const proxiedPhotoUrl = photoUrl ? `/api/photo?url=${encodeURIComponent(photoUrl)}` : null
+  const proxiedPhotoUrl = r.google_place_id
+    ? `/api/photo?place_id=${r.google_place_id}`
+    : photoUrl ? `/api/photo?url=${encodeURIComponent(photoUrl)}` : null
 
   const neighborhoodRestaurants = shuffleTake4(neighborhoodRaw)
   const difficultyRestaurants   = shuffleTake4(difficultyRaw)
