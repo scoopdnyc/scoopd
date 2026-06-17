@@ -13,19 +13,22 @@ No Supabase logging. Outputs JSON summary to stdout.
 import json
 import os
 import sys
+import urllib.parse
 import urllib.request
 from datetime import datetime, timedelta
 
 
 FOREUP_URL = "https://foreupsoftware.com/index.php/api/booking/times"
 FOREUP_PARAMS_BASE = {
-    "booking_class": "0",
-    "course_id": "21474",
-    "schedule_id": "5479",
-    "holes": "18",
+    "time": "all",
+    "holes": "all",
     "players": "0",
-    "api_key": "no_limits",
+    "booking_class": "50294",
+    "schedule_id": "2431",
+    "specials_only": "0",
+    "api_key": "",
 }
+SCHEDULE_IDS = ["2517", "2431", "2433", "2539", "2538", "2434", "2432", "2435"]
 TARGET_COURSE = "Bethpage Black Course"
 
 
@@ -49,8 +52,10 @@ def fetch_times(token, session, check_date_str):
     params = dict(FOREUP_PARAMS_BASE)
     params["date"] = check_date_str
 
-    query = "&".join(f"{k}={urllib.parse.quote(str(v))}" for k, v in params.items())
-    url = f"{FOREUP_URL}?{query}"
+    query_parts = urllib.parse.urlencode(params)
+    for sid in SCHEDULE_IDS:
+        query_parts += f"&schedule_ids%5B%5D={sid}"
+    url = f"{FOREUP_URL}?{query_parts}"
 
     req = urllib.request.Request(url)
     req.add_header("x-authorization", f"Bearer {token}")
@@ -74,7 +79,8 @@ def filter_slots(times, check_date_str):
             continue
         time_str = t.get("time", "")
         try:
-            hour = int(time_str.split(":")[0])
+            time_part = time_str.split(" ")[-1] if " " in time_str else time_str
+            hour = int(time_part.split(":")[0])
         except (ValueError, IndexError):
             continue
         if hour >= 12:
@@ -135,8 +141,6 @@ def send_email(api_key, to_email, slots, ts):
 
 
 def main():
-    import urllib.parse
-
     token = os.environ.get("FOREUP_TOKEN", "").strip()
     session = os.environ.get("FOREUP_SESSION", "").strip()
     resend_key = os.environ.get("RESEND_API_KEY", "").strip()
