@@ -16,6 +16,10 @@ import sys
 import urllib.parse
 import urllib.request
 from datetime import datetime, timedelta
+from pathlib import Path
+
+
+NOTIFIED_PATH = Path.home() / "Library" / "Logs" / "bethpage-notified.json"
 
 
 FOREUP_URL = "https://foreupsoftware.com/index.php/api/booking/times"
@@ -94,6 +98,28 @@ def filter_slots(times, check_date_str):
     return slots
 
 
+def slot_key(slot):
+    time_part = slot["time"].split(" ")[-1] if " " in slot["time"] else slot["time"]
+    return f"{slot['date']}|{time_part}"
+
+
+def load_notified(today_iso):
+    if not NOTIFIED_PATH.exists():
+        return {}
+    try:
+        data = json.loads(NOTIFIED_PATH.read_text())
+    except Exception:
+        return {}
+    return {k: v for k, v in data.items() if k.split("|")[0] >= today_iso}
+
+
+def save_notified(notified):
+    try:
+        NOTIFIED_PATH.write_text(json.dumps(notified, indent=2))
+    except Exception as e:
+        print(f"[bethpage] warning: could not save notified cache: {e}", file=sys.stderr, flush=True)
+
+
 def send_email(api_key, to_email, slots, ts):
     subject = f"Bethpage Black tee times available ({len(slots)} slot{'s' if len(slots) != 1 else ''})"
 
@@ -155,6 +181,9 @@ def main():
 
     ts = et_timestamp()
     today = today_et()
+    today_iso = today.isoformat()
+
+    notified = load_notified(today_iso)
 
     all_slots = []
     errors = []
@@ -171,22 +200,31 @@ def main():
             print(f"{ts} [bethpage] {check_date.isoformat()} FAILED: {e}", file=sys.stderr, flush=True)
             errors.append({"date": check_date.isoformat(), "error": str(e)})
 
+    new_slots = [s for s in all_slots if slot_key(s) not in notified]
+
     email_sent = False
-    if all_slots:
+    if not all_slots:
+        print(f"{ts} [bethpage] no morning slots found -- no email sent", file=sys.stderr, flush=True)
+    elif not new_slots:
+        print(f"{ts} [bethpage] all slots already notified -- skipping", file=sys.stderr, flush=True)
+    else:
         try:
-            result = send_email(resend_key, notify_email, all_slots, ts)
+            result = send_email(resend_key, notify_email, new_slots, ts)
             email_sent = True
             print(f"{ts} [bethpage] email sent: {result.get('id')}", file=sys.stderr, flush=True)
+            now_iso = datetime.utcnow().isoformat()
+            for s in new_slots:
+                notified[slot_key(s)] = now_iso
+            save_notified(notified)
         except Exception as e:
             print(f"{ts} [bethpage] email failed: {e}", file=sys.stderr, flush=True)
             errors.append({"email_error": str(e)})
-    else:
-        print(f"{ts} [bethpage] no morning slots found -- no email sent", file=sys.stderr, flush=True)
 
     summary = {
         "run_time": ts,
         "dates_checked": 7,
         "slots_found": len(all_slots),
+        "new_slots": len(new_slots),
         "email_sent": email_sent,
         "slots": all_slots,
         "errors": errors,
