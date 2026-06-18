@@ -41,7 +41,12 @@ RESTAURANTS = [
         "slug": "oresh",
         "name": "Or'Esh",
         "reservation_store_id": "0128c310-5d6e-4cac-95a2-291a356f7dca",
-    },  
+    },
+    {
+        "slug": "sartianos",
+        "name": "Sartiano's",
+        "reservation_store_id": "f05d32b4-0460-4374-a5f6-c78e586636c1",
+    },
 ]
 
 
