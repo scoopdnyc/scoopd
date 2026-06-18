@@ -12,25 +12,36 @@ Does not contain: monitor algorithms, design system values, founding system spec
 
 ---
 
-## Current Status — May 2026
+## Current Status — June 2026
 
 - Phase 1: Complete
 - Phase 2: Complete
 - Phase 3: Complete (including alerts)
 - Phase 4: Complete (SEO + editorial)
+- Phase 4A: Active (traffic + marketing)
 - Phase 5: Not started
-- Availability monitor: Live (Resy + SevenRooms + OpenTable).
+- Availability monitor: Live (Resy + SevenRooms + OpenTable + DoorDash).
 - 192 restaurants in DB. All notes complete as of May 2026.
+- Sartianos moved to DoorDash, 28 days out, 10 AM release, DD store ID f05d32b4-0460-4374-a5f6-c78e586636c1, added to DD monitor.
+- DD token refreshed June 11, expires ~June 14 (monthly rotation).
+- Reddit digest live and running daily at 2 PM ET.
+- Site open: 45 days free on signup. Stripe tabled but intact.
+- Referral system live: codes generated on signup, account page shows days remaining, click-through count, referral link, earning actions (refer a friend, follow on social, 7-day login streak).
+- Google Places photo proxy live at /api/photo, 24h Vercel edge cache, all 192 photos backfilled June 2026.
+- Carbone and Via Carota how-to blog posts live. Carbone post has TEMPORARY-METHOD-SECTION-START/END comment flags around execution guide section — remove ~June 25 2026.
 
 ---
 
 ## Open Tasks
 
 - **Blog content** — ten posts live: `/blog/the-reservation-economy`, `/blog/rolling-windows-and-monthly-drops`, `/blog/reservation-shadow-market`, `/blog/who-gets-the-table`, plus six how-to-get-a-reservation posts (carbone, lilia, via-carota, don-angie, torrisi, 4-charles-prime-rib). High ROI backlog continues.
-- **SEO action plan** — audit run May 17 2026 at 67/100. L3 and L8 shipped May 18. M1, M6, M7, L2, L6 all shipped May 24. No open audit items.
-- **DD_WEB_TOKEN expires June 20** — refresh by June 19. Extract from Chrome DevTools (Application > Cookies > doordash.com > ddweb_token), update DD_WEB_TOKEN in GitHub Actions secrets.
+- **SEO action plan** — audit run May 17 2026 at 67/100. All shipped items closed May 24. No open audit items.
+- **DD token refresh due ~June 14** — extract fresh ddweb_token from Chrome DevTools (Application > Cookies > doordash.com), update DD_WEB_TOKEN in GitHub Actions secrets.
+- **Carbone temporary method section removal ~June 25 2026** — find TEMPORARY-METHOD-SECTION-START/END comments in content/blog/how-to-get-a-reservation-at-carbone.mdx and remove that block.
+- **Reddit account (fw076) needs 2-3 weeks genuine food sub activity** before next link drop — no promotional posts yet.
+- **Blog post date/byline formatting fix pending** — date and byline too close together on blog post pages.
+- **Reddit digest log investigation pending** — confirm digest is writing output to expected log location.
 - **actions/checkout@v4 → @v5** — upgrade before September 2026.
-- **Six how-to-get-a-reservation blog posts** — stubs created as part of M6, full content published May 24 for all six M6 restaurants.
 - **Need to Know box system** — deferred.
 - **Catch Hospitality blog post** — deferred.
 - **Backlink outreach** — not started.
@@ -149,7 +160,7 @@ Supabase Auth, Stripe subscriptions (monthly + yearly), premium blur/unlock patt
 - SevenRooms long calendar: Live. Marea, Rezdora. Daily at 12:30 PM ET.
 - SevenRooms monthly: Live. Sushi Noz only. Runs 1st and 15th of month at 2 PM UTC.
 - NSI opportunistic (SevenRooms): Live. Corner Store, Or'Esh, The 86. Every 5 min noon–6 PM ET via GitHub Actions (self-hosted Mac runner).
-- DoorDash: Live. Corner Store, The Eighty Six, Or'Esh. Every 5 min noon–6 PM ET via GitHub Actions (self-hosted Mac runner). DD_WEB_TOKEN expires ~June 20 — refresh by June 19.
+- DoorDash: Live. Corner Store, The Eighty Six, Or'Esh, Sartiano's. Every 5 min noon–6 PM ET via GitHub Actions (self-hosted Mac runner). DD token refreshed June 11, refresh due ~June 14.
 - OpenTable: Live. 28 restaurants, daily 5 PM UTC via GitHub Actions (self-hosted Mac runner). Moved from Inngest — Akamai blocks datacenter IPs, bypassed via residential IP.
 
 ### Infrastructure
@@ -162,7 +173,7 @@ Supabase Auth, Stripe subscriptions (monthly + yearly), premium blur/unlock patt
 - Lilia: known false positive (closed day compression)
 - Cafe Spaghetti: known false positive (temporary closure)
 - Rezdora: observed_days corrected from 30 to 31 (first monitor catch)
-- DD_WEB_TOKEN expires ~June 20. Extract fresh token from Chrome DevTools (Application > Cookies > doordash.com > ddweb_token) and update DD_WEB_TOKEN GitHub Actions secret.
+- DD token refreshed June 11, expires ~June 14. Extract fresh ddweb_token from Chrome DevTools (Application > Cookies > doordash.com) and update DD_WEB_TOKEN GitHub Actions secret.
 
 ### Algorithm Detail
 See scoopd-reference.md for full algorithm-level documentation of each monitor.
@@ -218,6 +229,7 @@ See scoopd-reference.md for full algorithm-level documentation of each monitor.
 - `admin/photos/` — photo picker (page.js, PhotoPicker.js, photos.css)
 
 ### app/api/
+- `photo/route.js` — Google Places photo proxy. Accepts ?place_id= (fetches fresh from Places API) or ?url= (proxies direct googleusercontent.com URL). 24h Vercel edge cache. Only allows *.googleusercontent.com upstream. nodejs runtime.
 - `stripe/checkout/route.js`, `stripe/portal/route.js`, `stripe/webhook/route.js`
 - `inngest/route.js` — serves 4 Inngest functions (resy-daily-check, sevenrooms-daily-check, sevenrooms-longcal-monthly-check, alert-digest)
 - `alerts/route.js` — GET (list alerts), POST toggle (upsert/delete)
@@ -256,6 +268,13 @@ Full schema including monitor columns in scoopd-reference.md. Fields actively us
 - `status` — active or inactive
 - `current_period_end`
 - `founding_member` — boolean; true if subscribed via /founding at founding rate
+- `referral_code` — 8-char hex (md5 of user_id), generated on register, used for ?ref= links
+- `referred_by` — user_id of referrer, set on register when valid ref code supplied
+
+### user_actions table
+- `user_id`, `action_type`, `metadata` (jsonb), `created_at`
+- action_types in use: referral_triggered, referral_converted, click_through, social_follow, daily_login, login_streak_7, banner_dismissed
+- `lib/access.js` exports `extendAccess(userId, days, actionType, metadata)` — extends current_period_end and inserts user_actions row
 
 ### restaurant_alerts table
 - `user_id`, `restaurant_slug`, UNIQUE(user_id, restaurant_slug)

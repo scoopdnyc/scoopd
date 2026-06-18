@@ -65,7 +65,7 @@ Required in .env.local and Vercel:
 - resy_slug — override for known Resy slug mismatches (cote→cote-nyc, saga→saga-ny, saga-lounge→saga-the-lounge-and-terraces, sartriano→sartianos)
 - sevenrooms_slug — SevenRooms venue slug
 - sevenrooms_type — rolling, long_calendar, or null (for monthly/NSI restaurants)
-- doordash_reservation_store_id — UUID, used by DoorDash availability monitor. Populated for corner-store (28147fe3-96cf-4826-af76-e54872b4e248), the-86 (a0b42bce-c259-483a-bf70-1729bbc3d5e4), oresh (0128c310-5d6e-4cac-95a2-291a356f7dca).
+- doordash_reservation_store_id — UUID, used by DoorDash availability monitor. Populated for corner-store (28147fe3-96cf-4826-af76-e54872b4e248), the-86 (a0b42bce-c259-483a-bf70-1729bbc3d5e4), oresh (0128c310-5d6e-4cac-95a2-291a356f7dca), sartianos (f05d32b4-0460-4374-a5f6-c78e586636c1).
 
 ### subscriptions table
 - user_id — references auth.users
@@ -74,6 +74,16 @@ Required in .env.local and Vercel:
 - status — active or inactive
 - current_period_end
 - founding_member — boolean, true if user subscribed via /founding at founding rate
+- referral_code — 8-char hex string (md5 of user_id), generated on register. Used in ?ref= signup links.
+- referred_by — user_id of the referring user; set on register when a valid ref code is supplied
+
+### user_actions table
+- user_id — references auth.users
+- action_type — text; types in use: referral_triggered, referral_converted, click_through, social_follow, daily_login, login_streak_7, banner_dismissed
+- metadata — jsonb, optional context per action
+- created_at
+
+`lib/access.js` exports `extendAccess(userId, days, actionType, metadata)` — extends current_period_end from max(now, current expiry) and inserts a user_actions row. Used by register route (referral reward) and account page (login streak reward).
 
 ### monitor_log table
 - id
@@ -259,7 +269,7 @@ Persisted GraphQL query hash: `cbcf4838a9b399f742e3741785df64560a826d8d3cc2828aa
 
 ### DoorDash monitor (lib/monitors/doordash.py)
 
-**Status:** Live. Covers Corner Store, The Eighty Six, Or'Esh. Every 5 min noon-6 PM ET via `.github/workflows/doordash-check.yml` on self-hosted Mac runner.
+**Status:** Live. Covers Corner Store, The Eighty Six, Or'Esh, Sartiano's. Every 5 min noon-6 PM ET via `.github/workflows/doordash-check.yml` on self-hosted Mac runner.
 
 **Auth:** `ddweb_token` cookie only. Uses `curl_cffi` with Chrome TLS impersonation (`impersonate='chrome124'`) to bypass Cloudflare TLS fingerprinting. Token expires ~monthly. Refresh by extracting from Chrome DevTools (Application > Cookies > doordash.com > ddweb_token) and updating `DD_WEB_TOKEN` GitHub Actions secret.
 
@@ -270,7 +280,18 @@ Persisted GraphQL query hash: `cbcf4838a9b399f742e3741785df64560a826d8d3cc2828aa
 **Notes:**
 - `business_id=1337` in merchant/details URL is a generic DoorDash placeholder, not restaurant-specific.
 - Datacenter IPs (GitHub ubuntu-latest, Vercel) get 403 from Cloudflare. Self-hosted Mac runner on residential IP required.
-- restaurant_store_ids: corner-store `28147fe3-96cf-4826-af76-e54872b4e248`, the-86 `a0b42bce-c259-483a-bf70-1729bbc3d5e4`, oresh `0128c310-5d6e-4cac-95a2-291a356f7dca`.
+- restaurant_store_ids: corner-store `28147fe3-96cf-4826-af76-e54872b4e248`, the-86 `a0b42bce-c259-483a-bf70-1729bbc3d5e4`, oresh `0128c310-5d6e-4cac-95a2-291a356f7dca`, sartianos `f05d32b4-0460-4374-a5f6-c78e586636c1`.
+- Sartianos: DoorDash platform, 28 days out, 10 AM release.
+
+## Photo Proxy
+
+`/api/photo` — server-side proxy for Google Places restaurant photos.
+
+- **`?place_id=PLACE_ID`** — fetches fresh `photo_reference` from Places Details API, follows redirect to `googleusercontent.com`, returns image with 24h Vercel edge cache (`Cache-Control: public, max-age=86400, s-maxage=86400`). Use this path; stored `photo_override_url` values expire.
+- **`?url=ENCODED_URL`** — proxies a pre-known `googleusercontent.com` URL directly. Validates that hostname ends in `.googleusercontent.com`; rejects all others with 403.
+- Runtime: `nodejs` (required for `arrayBuffer()` streaming).
+- All 192 `photo_override_url` values backfilled via `scripts/refresh-photos.js` in June 2026.
+- Restaurant pages use `<Image src="/api/photo?place_id=..." unoptimized />` to bypass Vercel Image Optimizer (which cannot fetch expiring signed URLs).
 
 ## Alerts System
 
