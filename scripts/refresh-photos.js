@@ -21,7 +21,32 @@ if (!PLACES_API_KEY) {
   process.exit(1)
 }
 
+const PLACES_API_DAILY_CAP = 300
+
 const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY)
+
+async function getPlacesApiCount() {
+  const today = new Date().toISOString().split('T')[0]
+  const { data } = await supabase
+    .from('api_usage')
+    .select('places_api_calls')
+    .eq('date', today)
+    .single()
+  return { today, count: data?.places_api_calls ?? 0 }
+}
+
+async function incrementPlacesApiCount(today) {
+  const { data } = await supabase
+    .from('api_usage')
+    .select('places_api_calls')
+    .eq('date', today)
+    .single()
+  const current = data?.places_api_calls ?? 0
+  await supabase.from('api_usage').upsert(
+    { date: today, places_api_calls: current + 1 },
+    { onConflict: 'date' }
+  )
+}
 
 async function fetchFreshPhotoUrl(placeId) {
   const detailsRes = await fetch(
@@ -53,12 +78,28 @@ if (error) { console.error('DB query failed:', error.message); process.exit(1) }
 
 console.log(`Refreshing photos for ${restaurants.length} restaurants...`)
 
+let { today, count: apiCallCount } = await getPlacesApiCount()
+console.log(`Places API calls today so far: ${apiCallCount}/${PLACES_API_DAILY_CAP}`)
+
+if (apiCallCount >= PLACES_API_DAILY_CAP) {
+  console.error(`Daily cap of ${PLACES_API_DAILY_CAP} already reached. Aborting.`)
+  process.exit(1)
+}
+
 let updated = 0
 let failed = 0
+let capped = 0
 
 for (const r of restaurants) {
+  if (apiCallCount >= PLACES_API_DAILY_CAP) {
+    console.log(`  cap reached (${apiCallCount}/${PLACES_API_DAILY_CAP}) -- stopping`)
+    capped++
+    continue
+  }
   try {
     const url = await fetchFreshPhotoUrl(r.google_place_id)
+    apiCallCount++
+    await incrementPlacesApiCount(today)
     if (!url) {
       console.log(`  skip (no photo): ${r.slug}`)
       continue
@@ -77,4 +118,5 @@ for (const r of restaurants) {
   await new Promise(res => setTimeout(res, 120)) // ~8 req/s, under Places API limit
 }
 
-console.log(`\nDone. ${updated} updated, ${failed} failed.`)
+console.log(`\nDone. ${updated} updated, ${failed} failed, ${capped} skipped (cap).`)
+console.log(`Places API calls today: ${apiCallCount}/${PLACES_API_DAILY_CAP}`)

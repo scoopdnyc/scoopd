@@ -1,5 +1,45 @@
 export const runtime = 'nodejs'
 
+import { createClient } from '@supabase/supabase-js'
+
+const PLACES_API_DAILY_CAP = 300
+
+function getServiceClient() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY
+  )
+}
+
+function todayIso() {
+  return new Date().toISOString().split('T')[0]
+}
+
+async function getPlacesApiCount(supabase, date) {
+  try {
+    const { data } = await supabase
+      .from('api_usage')
+      .select('places_api_calls')
+      .eq('date', date)
+      .single()
+    return data?.places_api_calls ?? 0
+  } catch {
+    return 0
+  }
+}
+
+async function incrementPlacesApiCount(supabase, date) {
+  try {
+    const current = await getPlacesApiCount(supabase, date)
+    await supabase.from('api_usage').upsert(
+      { date, places_api_calls: current + 1 },
+      { onConflict: 'date' }
+    )
+  } catch {
+    // non-fatal
+  }
+}
+
 async function fetchFreshPhotoUrl(placeId) {
   const key = process.env.GOOGLE_PLACES_API_KEY
   if (!key) return null
@@ -32,8 +72,16 @@ export async function GET(request) {
   let photoUrl = null
 
   if (placeId) {
+    const supabase = getServiceClient()
+    const today = todayIso()
+    const count = await getPlacesApiCount(supabase, today)
+    if (count >= PLACES_API_DAILY_CAP) {
+      console.warn('[photo-proxy] daily cap reached:', count)
+      return new Response('Daily cap reached', { status: 429 })
+    }
     try {
       photoUrl = await fetchFreshPhotoUrl(placeId)
+      await incrementPlacesApiCount(supabase, today)
     } catch (err) {
       console.error('[photo-proxy] places api error:', err?.message, placeId)
       return new Response('Places API error', { status: 502 })
