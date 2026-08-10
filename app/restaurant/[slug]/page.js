@@ -14,7 +14,6 @@ import PremiumReveal from './PremiumReveal'
 import BookingLink from './BookingLink'
 import ReferralConversionTracker from './ReferralConversionTracker'
 import HowToBook from '../../components/HowToBook'
-import { getPlacePhoto } from '../../../lib/places'
 import './restaurant.css'
 
 export const revalidate = 3600
@@ -121,18 +120,11 @@ export default async function RestaurantPage({ params }) {
 
   const isNonStandardInventory = r.non_standard_inventory === true
 
-  const [
-    { neighborhoodRaw, difficultyRaw, platformRaw },
-    fetchedPhotoUrl,
-  ] = await Promise.all([
-    getCrossLinksCached(slug, r.neighborhood, r.difficulty, r.platform),
-    r.photo_override_url ? Promise.resolve(null) : (r.google_place_id ? getPlacePhoto(r.google_place_id) : Promise.resolve(null)),
-  ])
+  const { neighborhoodRaw, difficultyRaw, platformRaw } = await getCrossLinksCached(slug, r.neighborhood, r.difficulty, r.platform)
 
-  const photoUrl = r.photo_override_url ?? fetchedPhotoUrl
   const proxiedPhotoUrl = r.google_place_id
     ? `/api/photo?place_id=${r.google_place_id}`
-    : photoUrl ? `/api/photo?url=${encodeURIComponent(photoUrl)}` : null
+    : r.photo_override_url ? `/api/photo?url=${encodeURIComponent(r.photo_override_url)}` : null
 
   const neighborhoodRestaurants = shuffleTake4(neighborhoodRaw)
   const difficultyRestaurants   = shuffleTake4(difficultyRaw)
