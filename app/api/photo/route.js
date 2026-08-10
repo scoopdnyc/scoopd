@@ -107,7 +107,7 @@ export async function GET(request) {
     return new Response(buffer, {
       headers: {
         'Content-Type': contentType,
-        'Cache-Control': 'public, max-age=86400, s-maxage=86400, stale-while-revalidate=3600',
+        'Cache-Control': 'public, max-age=604800, s-maxage=604800',
       },
     })
   } catch (err) {
