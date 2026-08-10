@@ -223,7 +223,7 @@ export default async function RestaurantPage({ params }) {
         ...(postalCode && { postalCode }),
       },
     }),
-    ...(photoUrl && { image: photoUrl }),
+    ...(proxiedPhotoUrl && { image: proxiedPhotoUrl }),
     ...(descriptionText && { description: descriptionText }),
     ...(r.price_tier && { priceRange: r.price_tier }),
     acceptsReservations: r.platform !== 'Walk-in' && r.platform !== 'CLOSED',
