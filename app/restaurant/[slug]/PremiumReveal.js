@@ -4,17 +4,6 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { getSupabaseBrowser } from '@/lib/supabase-browser'
 
-function getPlaceholderDate() {
-  const d = new Date()
-  d.setDate(d.getDate() + 30)
-  return d.toLocaleDateString('en-US', {
-    weekday: 'long',
-    month: 'long',
-    day: 'numeric',
-    timeZone: 'America/New_York',
-  }) + ' at 10:00 AM ET'
-}
-
 export default function PremiumReveal({ dropDate, isPlatformWalkIn }) {
   const [revealed, setRevealed] = useState(false)
   const [loading, setLoading]   = useState(true)
@@ -51,7 +40,7 @@ export default function PremiumReveal({ dropDate, isPlatformWalkIn }) {
   return (
     <div className="rp-drop-card">
       <div className="rp-drop-label">Next Drop Date</div>
-      <div className="rp-drop-blurred">{getPlaceholderDate()}</div>
+      <div className="rp-drop-blurred">{dropDate}</div>
       {!loading && (
         <div className="rp-drop-overlay">
           <span className="rp-drop-lock">
