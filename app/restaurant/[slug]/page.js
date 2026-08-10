@@ -13,7 +13,6 @@ import NsiField from '../../components/NsiField'
 import PremiumReveal from './PremiumReveal'
 import BookingLink from './BookingLink'
 import ReferralConversionTracker from './ReferralConversionTracker'
-import DebugLog from './DebugLog'
 import HowToBook from '../../components/HowToBook'
 import { getPlacePhoto } from '../../../lib/places'
 import './restaurant.css'
@@ -263,8 +262,7 @@ export default async function RestaurantPage({ params }) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
       <ScoopNav />
       <ReferralConversionTracker />
-      {slug === 'red-hook-tavern' && <DebugLog releaseTime={r.release_time} observedDays={r.observed_days} serverDisplay={dropDateDisplay} />}
-      <Link href="/" className="rp-back">← Back to directory</Link>
+<Link href="/" className="rp-back">← Back to directory</Link>
       <div className="rp-hero">
         <div className="rp-eyebrow">{r.neighborhood} · {r.cuisine}</div>
         <h1 className="rp-restaurant-name">{r.restaurant} Reservations</h1>

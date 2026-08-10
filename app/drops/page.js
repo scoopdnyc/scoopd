@@ -148,8 +148,10 @@ export default async function DropsPage() {
           <tbody>
             {sorted.map((r, i) => {
               const { dateET } = computeNextDropDate(r)
-              const dropDate = dateET.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
-              const dropDateShort = dateET.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
+              const opensForDate = new Date(dateET)
+              opensForDate.setDate(opensForDate.getDate() + 1)
+              const dropDate = opensForDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
+              const dropDateShort = opensForDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
               const diffColor = DIFF_COLOR[r.difficulty] ?? '#8a8a80'
               const bucket = timeBucket[r.release_time ?? ''] ?? 4
 
