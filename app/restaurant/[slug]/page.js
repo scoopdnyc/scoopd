@@ -139,7 +139,7 @@ export default async function RestaurantPage({ params }) {
   const difficultyRestaurants   = shuffleTake4(difficultyRaw)
   const platformRestaurants     = shuffleTake4(platformRaw)
 
-  const { display: dropDateDisplay, _debug: dropDateDebug } = computeNextDropDate(r)
+  const { display: dropDateDisplay } = computeNextDropDate(r)
 
   const isClosed = r.platform === 'CLOSED'
   const isWalkin = r.platform === 'Walk-in'
@@ -263,7 +263,7 @@ export default async function RestaurantPage({ params }) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
       <ScoopNav />
       <ReferralConversionTracker />
-      {slug === 'red-hook-tavern' && <DebugLog data={{ release_time: r.release_time, observed_days: r.observed_days, display: dropDateDisplay, ...dropDateDebug }} />}
+      {slug === 'red-hook-tavern' && <DebugLog releaseTime={r.release_time} observedDays={r.observed_days} serverDisplay={dropDateDisplay} />}
       <Link href="/" className="rp-back">← Back to directory</Link>
       <div className="rp-hero">
         <div className="rp-eyebrow">{r.neighborhood} · {r.cuisine}</div>
