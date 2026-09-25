@@ -9,23 +9,33 @@ Logic per restaurant:
   1. Call reservation_filters → parse unavailable_dates from date filter config
   2. Find dates in window NOT in unavailable_dates = available dates
   3. If none: log flag_reason=null, raw_value='no_inventory'
-  4. If any: call merchant/details for today's live slot count
-     (date param is ignored by the endpoint -- always returns today)
-  5. Log flag_reason='inventory_available', raw_value='{N} dates available, {M} today slots'
+  4. If any: fetch time slots per date; apply dedup against seen file
+  5. If dedup allows: log flag_reason='inventory_available'
+     Else: log flag_reason='inventory_suppressed'
+
+Dedup (/tmp/doordash-seen.json, keyed by "{slug}_{date}"):
+  count=1 (first seen)       → notify, last_notified=None
+  count=2                    → notify, last_notified=now
+  count≥3, within 4h        → suppress
+  count≥3, >4h since notify → notify, reset last_notified=now
+  date disappears            → entry pruned from seen file
 
 Writes one row to monitor_log per restaurant per run.
 Outputs JSON summary to stdout.
 """
 import json
 import os
-import re
 import sys
 import urllib.request
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
+from pathlib import Path
 
 from curl_cffi import requests as cfr
 
 DD_BASE = "https://www.doordash.com"
+SEEN_PATH = Path("/tmp/doordash-seen.json")
+NOTIFY_COOLDOWN_HOURS = 4
+
 RESTAURANTS = [
     {
         "slug": "corner-store",
@@ -56,7 +66,6 @@ RESTAURANTS = [
 
 
 def today_et():
-    from datetime import datetime
     now_utc = datetime.utcnow()
     month = now_utc.month
     offset = -4 if 4 <= month <= 10 else -5
@@ -65,12 +74,60 @@ def today_et():
 
 
 def et_timestamp():
-    from datetime import datetime
     now_utc = datetime.utcnow()
     month = now_utc.month
     offset = -4 if 4 <= month <= 10 else -5
     now_et = now_utc + timedelta(hours=offset)
     return now_et.strftime("[%Y-%m-%d %H:%M ET]")
+
+
+def load_seen():
+    try:
+        with open(SEEN_PATH) as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {}
+
+
+def save_seen(seen):
+    with open(SEEN_PATH, "w") as f:
+        json.dump(seen, f, indent=2)
+
+
+def check_should_notify(seen, key, now_iso):
+    """
+    Mutates seen[key] in place. Returns True if this detection should trigger a notification.
+
+    count=1 (first seen)       → notify, last_notified=None
+    count=2                    → notify, last_notified=now
+    count≥3, within 4h        → suppress
+    count≥3, >4h since notify → notify, reset last_notified=now
+    """
+    now = datetime.fromisoformat(now_iso)
+
+    if key not in seen:
+        seen[key] = {"count": 1, "first_seen": now_iso, "last_notified": None}
+        return True
+
+    entry = seen[key]
+    entry["count"] += 1
+
+    if entry["count"] == 2:
+        entry["last_notified"] = now_iso
+        return True
+
+    # count >= 3
+    last = entry.get("last_notified")
+    if not last:
+        entry["last_notified"] = now_iso
+        return True
+
+    hours_since = (now - datetime.fromisoformat(last)).total_seconds() / 3600
+    if hours_since >= NOTIFY_COOLDOWN_HOURS:
+        entry["last_notified"] = now_iso
+        return True
+
+    return False
 
 
 def get_reservation_filters(token, reservation_store_id, check_date, party_size="2"):
@@ -91,7 +148,7 @@ def get_reservation_filters(token, reservation_store_id, check_date, party_size=
 
 
 def parse_available_times(filters_data):
-    """Return sorted list of available time strings from reservation.time filter, or []."""
+    """Return list of available time strings from reservation.time filter, or []."""
     time_filter = next(
         (f for f in filters_data.get("filters", []) if f.get("id") == "reservation.time"),
         None,
@@ -156,11 +213,8 @@ def parse_available_dates(filters_data, check_date):
     return available
 
 
-
 def write_monitor_log(supabase_url, service_role_key, row):
     """Insert a row into monitor_log via Supabase REST API."""
-    import urllib.request
-
     url = f"{supabase_url}/rest/v1/monitor_log"
     body = json.dumps(row).encode()
     req = urllib.request.Request(
@@ -179,7 +233,7 @@ def write_monitor_log(supabase_url, service_role_key, row):
             raise RuntimeError(f"Supabase insert failed: {resp.status}")
 
 
-def check_restaurant(token, restaurant, check_date, supabase_url, service_role_key, ts):
+def check_restaurant(token, restaurant, check_date, supabase_url, service_role_key, ts, seen, now_iso):
     slug = restaurant["slug"]
     name = restaurant["name"]
     store_id = restaurant["reservation_store_id"]
@@ -193,7 +247,7 @@ def check_restaurant(token, restaurant, check_date, supabase_url, service_role_k
         found = len(all_dates) > 0
 
         if found:
-            # Phase 2: fetch time slots per date (cap at 7 to limit API calls)
+            # Fetch time slots per date (cap at 7 to limit API calls)
             slots = []
             for d in all_dates[:7]:
                 time_parties = {}  # {time_str: set_of_party_sizes}
@@ -217,13 +271,21 @@ def check_restaurant(token, restaurant, check_date, supabase_url, service_role_k
                         slots.append(f"{d} (party=2)")
                     else:
                         slots.append(f"{d} (party=4)")
+
             raw_value = "dates=" + ", ".join(slots)
-            flag_reason = "inventory_available"
+
+            # Dedup: notify only if any available date passes the cooldown check
+            should_notify = any(
+                check_should_notify(seen, f"{slug}_{d}", now_iso)
+                for d in all_dates
+            )
+            flag_reason = "inventory_available" if should_notify else "inventory_suppressed"
         else:
             raw_value = "no_inventory"
             flag_reason = None
+            should_notify = False
 
-        row = {
+        write_monitor_log(supabase_url, service_role_key, {
             "restaurant_slug": slug,
             "source": "doordash_monitor",
             "field": "availability",
@@ -231,22 +293,22 @@ def check_restaurant(token, restaurant, check_date, supabase_url, service_role_k
             "new_value": raw_value,
             "raw_value": raw_value,
             "flag_reason": flag_reason,
-        }
-        write_monitor_log(supabase_url, service_role_key, row)
+        })
 
-        result = {
+        print(f"{ts} [doordash] {name}: {raw_value} [{flag_reason}]", file=sys.stderr, flush=True)
+        return {
             "slug": slug,
             "found": found,
+            "should_notify": should_notify,
             "available_dates": len(all_dates),
+            "seen_keys": {f"{slug}_{d}" for d in all_dates},
             "raw_value": raw_value,
         }
-        print(f"{ts} [doordash] {name}: {raw_value}", file=sys.stderr, flush=True)
-        return result
 
     except Exception as e:
         msg = f"error: {e}"
-        is_auth_error = '401' in str(e)
-        flag_reason = 'auth_error' if is_auth_error else None
+        is_auth_error = "401" in str(e)
+        flag_reason = "auth_error" if is_auth_error else None
         print(f"{ts} [doordash] {name} FAILED: {e}", file=sys.stderr, flush=True)
         try:
             write_monitor_log(supabase_url, service_role_key, {
@@ -260,7 +322,7 @@ def check_restaurant(token, restaurant, check_date, supabase_url, service_role_k
             })
         except Exception:
             pass
-        return {"slug": slug, "found": False, "auth_error": is_auth_error, "error": str(e)}
+        return {"slug": slug, "found": False, "should_notify": False, "auth_error": is_auth_error, "error": str(e), "seen_keys": None}
 
 
 def trigger_notify(cron_secret, ts):
@@ -297,21 +359,34 @@ def main():
 
     ts = et_timestamp()
     check_date = today_et()
+    now_iso = datetime.utcnow().replace(microsecond=0).isoformat()
+
+    seen = load_seen()
+    current_keys = set()
+
     results = []
     for restaurant in RESTAURANTS:
-        result = check_restaurant(token, restaurant, check_date, supabase_url, service_role_key, ts)
+        result = check_restaurant(token, restaurant, check_date, supabase_url, service_role_key, ts, seen, now_iso)
         results.append(result)
+        if result.get("seen_keys") is not None:
+            current_keys.update(result["seen_keys"])
+
+    # Prune seen entries for dates no longer in inventory
+    stale = [k for k in seen if k not in current_keys]
+    for k in stale:
+        del seen[k]
+    save_seen(seen)
 
     summary = {"check_date": check_date, "run_time": ts, "results": results}
     print(json.dumps(summary))
 
     if cron_secret:
-        has_inventory = any(r.get("found") for r in results)
+        has_notify = any(r.get("should_notify") for r in results)
         has_auth_error = any(r.get("auth_error") for r in results)
-        if has_inventory or has_auth_error:
+        if has_notify or has_auth_error:
             trigger_notify(cron_secret, ts)
         else:
-            print(f"{ts} [doordash] no inventory found -- skipping notify-monitor", file=sys.stderr, flush=True)
+            print(f"{ts} [doordash] nothing to notify -- skipping notify-monitor", file=sys.stderr, flush=True)
     else:
         print(f"{ts} [doordash] CRON_SECRET not set -- skipping notify-monitor", file=sys.stderr, flush=True)
 
