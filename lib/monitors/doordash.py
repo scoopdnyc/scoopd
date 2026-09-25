@@ -90,6 +90,40 @@ def get_reservation_filters(token, reservation_store_id, check_date, party_size=
     return r.json()
 
 
+def parse_available_times(filters_data):
+    """Return sorted list of available time strings from reservation.time filter, or []."""
+    time_filter = next(
+        (f for f in filters_data.get("filters", []) if f.get("id") == "reservation.time"),
+        None,
+    )
+    if not time_filter:
+        return []
+    config = time_filter.get("config", {})
+    options = (
+        config.get("options")
+        or config.get("values")
+        or config.get("times")
+        or config.get("items")
+        or []
+    )
+    times = []
+    for opt in options:
+        if isinstance(opt, dict):
+            val = (
+                opt.get("value")
+                or opt.get("time")
+                or opt.get("label")
+                or opt.get("display_value")
+            )
+        elif isinstance(opt, str):
+            val = opt
+        else:
+            val = None
+        if val and val.lower() not in ("anytime", "any time", ""):
+            times.append(val)
+    return times
+
+
 def parse_available_dates(filters_data, check_date):
     """Return list of available date strings (ISO) in the booking window."""
     date_filter = next(
@@ -159,15 +193,31 @@ def check_restaurant(token, restaurant, check_date, supabase_url, service_role_k
         found = len(all_dates) > 0
 
         if found:
-            parts = []
-            for d in all_dates:
-                if d in dates_2 and d in dates_4:
-                    parts.append(f"{d} (party=2,4)")
-                elif d in dates_2:
-                    parts.append(f"{d} (party=2)")
+            # Phase 2: fetch time slots per date (cap at 7 to limit API calls)
+            slots = []
+            for d in all_dates[:7]:
+                time_parties = {}  # {time_str: set_of_party_sizes}
+                for party, date_set in [("2", dates_2), ("4", dates_4)]:
+                    if d not in date_set:
+                        continue
+                    try:
+                        tf = get_reservation_filters(token, store_id, d, party_size=party)
+                        for t in parse_available_times(tf):
+                            time_parties.setdefault(t, set()).add(party)
+                    except Exception:
+                        pass  # time fetch non-fatal — fall through to date-only
+                if time_parties:
+                    for t in sorted(time_parties):
+                        parties = ",".join(sorted(time_parties[t]))
+                        slots.append(f"{d} {t} (party={parties})")
                 else:
-                    parts.append(f"{d} (party=4)")
-            raw_value = "dates=" + ", ".join(parts)
+                    if d in dates_2 and d in dates_4:
+                        slots.append(f"{d} (party=2,4)")
+                    elif d in dates_2:
+                        slots.append(f"{d} (party=2)")
+                    else:
+                        slots.append(f"{d} (party=4)")
+            raw_value = "dates=" + ", ".join(slots)
             flag_reason = "inventory_available"
         else:
             raw_value = "no_inventory"
