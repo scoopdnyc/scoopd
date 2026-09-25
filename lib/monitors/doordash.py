@@ -194,7 +194,6 @@ def check_restaurant(token, restaurant, check_date, supabase_url, service_role_k
 
         if found:
             # Phase 2: fetch time slots per date (cap at 7 to limit API calls)
-            debug_logged = False
             slots = []
             for d in all_dates[:7]:
                 time_parties = {}  # {time_str: set_of_party_sizes}
@@ -203,12 +202,6 @@ def check_restaurant(token, restaurant, check_date, supabase_url, service_role_k
                         continue
                     try:
                         tf = get_reservation_filters(token, store_id, d, party_size=party)
-                        if not debug_logged:
-                            with open("/tmp/doordash-debug.log", "a") as dbg:
-                                dbg.write(f"\n=== {ts} {slug} date={d} party={party} ===\n")
-                                dbg.write(json.dumps(tf, indent=2))
-                                dbg.write("\n")
-                            debug_logged = True
                         for t in parse_available_times(tf):
                             time_parties.setdefault(t, set()).add(party)
                     except Exception:
