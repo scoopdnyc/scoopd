@@ -42,6 +42,16 @@ RESTAURANTS = [
         "name": "Or'Esh",
         "reservation_store_id": "0128c310-5d6e-4cac-95a2-291a356f7dca",
     },
+    {
+        "slug": "cafe-charmant",
+        "name": "Cafe Charmant",
+        "reservation_store_id": "bf0b8e75-d475-402e-89f0-1a6fc310de28",
+    },
+    {
+        "slug": "peoples",
+        "name": "People's",
+        "reservation_store_id": "1f68d49c-38d3-4919-8a89-aba76630b0c3",
+    },
 ]
 
 
