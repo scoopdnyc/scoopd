@@ -301,7 +301,7 @@ def check_restaurant(token, restaurant, check_date, supabase_url, service_role_k
             "found": found,
             "should_notify": should_notify,
             "available_dates": len(all_dates),
-            "seen_keys": {f"{slug}_{d}" for d in all_dates},
+            "seen_keys": [f"{slug}_{d}" for d in all_dates],
             "raw_value": raw_value,
         }
 
