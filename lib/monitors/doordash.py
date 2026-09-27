@@ -274,11 +274,9 @@ def check_restaurant(token, restaurant, check_date, supabase_url, service_role_k
 
             raw_value = "dates=" + ", ".join(slots)
 
-            # Dedup: notify only if any available date passes the cooldown check
-            should_notify = any(
-                check_should_notify(seen, f"{slug}_{d}", now_iso)
-                for d in all_dates
-            )
+            # Dedup: evaluate ALL dates first (no short-circuit), then check if any notify
+            notify_flags = [check_should_notify(seen, f"{slug}_{d}", now_iso) for d in all_dates]
+            should_notify = any(notify_flags)
             flag_reason = "inventory_available" if should_notify else "inventory_suppressed"
         else:
             raw_value = "no_inventory"
